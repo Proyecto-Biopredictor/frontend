@@ -1,6 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import FileManager from './components/FileManager';
+import Register from './components/Register';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
         </a> */}
         <h1>Hello World!</h1>
         <FileManager/>
+        <Register />
       </header>
     </div>
   );
