@@ -1,5 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
+import FileManager from './components/FileManager';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           Learn React
         </a> */}
         <h1>Hello World!</h1>
+        <FileManager/>
       </header>
     </div>
   );
