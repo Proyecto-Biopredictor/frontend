@@ -13,7 +13,7 @@ const initialFValues = {
     id: 0,
     name: '',
     description: '',
-    isTimeSerie: '',
+    isTimeSeries: false,
     image: '',
     type: 'regresion'
 }
@@ -29,8 +29,8 @@ export default function CreateBioprocess() {
             ...temp
         })
 
-        if (fieldValues == values)
-            return Object.values(temp).every(x => x == "")
+        if (fieldValues === values)
+            return Object.values(temp).every(x => x === "")
     }
 
     const {
@@ -46,6 +46,7 @@ export default function CreateBioprocess() {
         e.preventDefault()
         if (validate()){
             console.log("validado");
+            console.log(values);
             resetForm()
         }
     }
@@ -78,9 +79,9 @@ export default function CreateBioprocess() {
                         items={predictionItems}
                     />
                     <Controls.Checkbox
-                        name="isTimeSerie"
+                        name="isTimeSeries"
                         label="Es serie temporal"
-                        value={values.isTimeSerie}
+                        value={values.isTimeSeries}
                         onChange={handleInputChange}
                     />
 

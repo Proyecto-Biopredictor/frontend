@@ -1,10 +1,8 @@
 import React from 'react'
-import { AppBar, Toolbar, Grid, InputBase, IconButton, Badge, makeStyles, CssBaseline } from '@material-ui/core'
-import NotificationsNoneIcon from '@material-ui/icons/NotificationsNone';
-import ChatBubbleOutlineIcon from '@material-ui/icons/ChatBubbleOutline';
-import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
-import SearchIcon from '@material-ui/icons/Search';
+import { AppBar, Toolbar, makeStyles, CssBaseline, IconButton } from '@material-ui/core'
+import MenuIcon from '@material-ui/icons/Menu';
 import Typography from '@material-ui/core/Typography';
+import clsx from 'clsx';
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
@@ -18,6 +16,7 @@ const useStyles = makeStyles((theme) => ({
         width: drawerWidth,
         flexShrink: 0,
     },
+    
     drawerPaper: {
         width: drawerWidth,
     },
@@ -28,6 +27,7 @@ const useStyles = makeStyles((theme) => ({
         flexGrow: 1,
         padding: theme.spacing(3),
     },
+    
 }));
 
 export default function Header() {

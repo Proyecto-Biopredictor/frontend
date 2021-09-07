@@ -1,17 +1,17 @@
-import logo from './logo.svg';
 import './App.css';
 import FileManager from './components/FileManager';
 import Register from './components/Register';
 import Header from "./components/Header";
 import SideMenu from "./components/SideMenu";
-import { makeStyles, CssBaseline, createMuiTheme, ThemeProvider } from '@material-ui/core';
+import { makeStyles, CssBaseline, createTheme, ThemeProvider, Box } from '@material-ui/core';
 import Bioprocesses from './pages/Bioprocess/Bioprocesses';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
 
-const theme = createMuiTheme({
+const theme = createTheme({
   palette: {
     primary: {
-      main: "#333996",
+      main: "#33963a",
       light: '#3c44b126'
     },
     secondary: {
@@ -47,30 +47,28 @@ const useStyles = makeStyles({
 function App() {
   const classes = useStyles();
   return (
-    <ThemeProvider theme={theme}>
-      <Header />
+    <Router>
+      <ThemeProvider theme={theme}>
+        <Header />
 
-      <div className={classes.appMain}>
-        <SideMenu />
-        {/* <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a> */}
-        <h1>Hello World!</h1>
-        <FileManager />
-        <Register />
-        <Bioprocesses/>
-      </div>
-      <CssBaseline />
-    </ThemeProvider>
+        <div className={classes.appMain}>
+        <Box m={10}></Box>
+          <SideMenu />
+          <Switch>
+            <Route path='/index'>
+              
+              <FileManager />
+              <Register />
+            </Route>
+            <Route path='/bioprocess/create'>
+              <Bioprocesses />
+            </Route>
+          </Switch>
+
+        </div>
+        <CssBaseline />
+      </ThemeProvider>
+    </Router>
   );
 }
 
