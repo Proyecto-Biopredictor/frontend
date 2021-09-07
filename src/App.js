@@ -5,6 +5,7 @@ import Register from './components/Register';
 import Header from "./components/Header";
 import SideMenu from "./components/SideMenu";
 import { makeStyles, CssBaseline, createMuiTheme, ThemeProvider } from '@material-ui/core';
+import Bioprocesses from './pages/Bioprocess/Bioprocesses';
 
 
 const theme = createMuiTheme({
@@ -66,6 +67,7 @@ function App() {
         <h1>Hello World!</h1>
         <FileManager />
         <Register />
+        <Bioprocesses/>
       </div>
       <CssBaseline />
     </ThemeProvider>

@@ -40,7 +40,7 @@ export default function Header() {
             <AppBar position="fixed" className={classes.appBar}>
                 <Toolbar>
                     <Typography variant="h6" noWrap>
-                        Clipped drawer
+                        Biopredictor
                     </Typography>
                 </Toolbar>
             </AppBar>
