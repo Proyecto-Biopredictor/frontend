@@ -66,7 +66,7 @@ export default function CreateBioprocess() {
               };
               console.log(config);
           
-              axios.post("/api/private/bioprocess", values, config)
+              axios.put("/api/private/bioprocess", values, config)
               .then(confirmPost).catch(console.log);
               
         }

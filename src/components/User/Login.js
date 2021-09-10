@@ -24,7 +24,7 @@ const Login = ({ history }) => {
     };
 
     try {
-      const { data } = await axios.post(
+      const { data } = await axios.put(
         "/api/auth/login",
         { email, password },
         config

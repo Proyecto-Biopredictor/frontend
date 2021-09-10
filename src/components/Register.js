@@ -28,7 +28,7 @@ export default function Register() {
               };
               console.log(config);
           
-              axios.post("https://backend-ic7841.herokuapp.com/api/auth/register", data, config)
+              axios.put("/api/auth/register", data, config)
               .then(console.log).catch(console.log);
           
         

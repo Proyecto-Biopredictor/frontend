@@ -37,7 +37,7 @@ const Register = ({ }) => {
     }
 
     try {
-      const { data } = await axios.post(
+      const { data } = await axios.put(
         "/api/auth/register",
         {
           username,
