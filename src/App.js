@@ -1,12 +1,14 @@
 import './App.css';
-import FileManager from './components/FileManager';
-import Register from './components/Register';
+
 import Header from "./components/Header";
 import SideMenu from "./components/SideMenu";
 import { makeStyles, CssBaseline, createTheme, ThemeProvider, Box } from '@material-ui/core';
 import Bioprocesses from './pages/Bioprocess/Bioprocesses';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
+import Login from './components/User/Login';
+import Home from './pages/Home'
+import RequireAuth from './components/routing/RequireAuth';
+import Register from './components/User/Register'
 
 const theme = createTheme({
   palette: {
@@ -41,7 +43,7 @@ const useStyles = makeStyles({
   appMain: {
     paddingLeft: '320px',
     width: '100%'
-  }
+  },
 })
 
 function App() {
@@ -49,20 +51,34 @@ function App() {
   return (
     <Router>
       <ThemeProvider theme={theme}>
-        <Header />
+        <div>
+          <Switch>
+            <Route exact path="/login" component={Login}/>
+          </Switch>
+        </div>
 
         <div className={classes.appMain}>
         <Box m={10}></Box>
-          <SideMenu />
+          
           <Switch>
-            <Route path='/index'>
-              
-              <FileManager />
-              <Register />
-            </Route>
-            <Route path='/bioprocess/create'>
+            <RequireAuth exact path='/'>   
+              <Header />
+              <SideMenu />           
+              <Home/>
+            </RequireAuth>
+            
+            <RequireAuth exact path='/bioprocess/create'>
+              <Header />
+              <SideMenu />
               <Bioprocesses />
-            </Route>
+            </RequireAuth>
+
+            <RequireAuth exact path='/register'>
+              <Header />
+              <SideMenu />
+              <Register />
+            </RequireAuth>
+            <Redirect to="/login" />
           </Switch>
 
         </div>

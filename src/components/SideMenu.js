@@ -70,7 +70,7 @@ export default function SideMenu() {
         <Toolbar />
         <div className={classes.drawerContainer}>
           <List>
-            <ListItem button key={'principal'} onClick={() => moveRoute('/index')}>
+            <ListItem button key={'principal'} onClick={() => moveRoute('/')}>
               <ListItemIcon>{1 % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
               <ListItemText primary={'Menú Principal'}/>
             </ListItem>
@@ -80,6 +80,13 @@ export default function SideMenu() {
             <ListItem button key={'bioproceso'} onClick={() => moveRoute('/bioprocess/create')}>
               <ListItemIcon>{1 % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
               <ListItemText primary={'Crear Bioproceso'}/>
+            </ListItem>
+          </List>
+          <Divider />
+          <List>
+            <ListItem button key={'register'} onClick={() => moveRoute('/register')}>
+              <ListItemIcon>{1 % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+              <ListItemText primary={'Registrar Usuario'}/>
             </ListItem>
           </List>
         </div>

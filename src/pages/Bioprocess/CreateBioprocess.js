@@ -3,6 +3,10 @@ import { Grid, } from '@material-ui/core';
 import Controls from "../../components/controls/Controls";
 import { useForm, Form } from '../../components/useForm';
 import axios from "axios";
+import CloseIcon from '@material-ui/icons/Close';
+import Alert from '@material-ui/lab/Alert';
+import IconButton from '@material-ui/core/IconButton';
+import Collapse from '@material-ui/core/Collapse';
 
 const predictionItems = [
     { id: 'regresion', title: 'Regresión lineal' },
@@ -18,6 +22,7 @@ const initialBValues = {
 }
 
 export default function CreateBioprocess() {
+    const [open, setOpen] = React.useState(false);
     const validate = (fieldValues = values) => {
         let temp = { ...errors }
         if ('name' in fieldValues)
@@ -41,26 +46,52 @@ export default function CreateBioprocess() {
         resetForm
     } = useForm(initialBValues, true, validate);
 
+    const confirmPost = () =>{
+        setOpen(true);
+        resetForm({
+            
+        })
+        setTimeout(function(){
+            setOpen(false);
+        }, 6000);
+    }
     const handleSubmit = e => {
         e.preventDefault()
         if (validate()){
             const config = {
                 headers: {
                   "Content-Type": "application/json",
-                  Authorization: `Bearer {localStorage.getItem("authToken")}`,
+                  Authorization: `Bearer ${localStorage.getItem("authToken")}`,
                 }
               };
               console.log(config);
           
               axios.post("/api/private/bioprocess", values, config)
-              .then(console.log).catch(console.log);
-          
+              .then(confirmPost).catch(console.log);
               
         }
     }
 
     return (
         <Form onSubmit={handleSubmit}>
+            <Collapse in={open}>
+                <Alert
+                action={
+                    <IconButton
+                    aria-label="close"
+                    color="inherit"
+                    size="small"
+                    onClick={() => {
+                        setOpen(false);
+                    }}
+                    >
+                    <CloseIcon fontSize="inherit" />
+                    </IconButton>
+                }
+                >
+                Se ha agregado un bioproceso
+                </Alert>
+            </Collapse>
             <Grid container>
                 <Grid item xs={6}>
                     <Controls.Input
@@ -96,9 +127,11 @@ export default function CreateBioprocess() {
                     <div>
                         <Controls.Button
                             type="submit"
-                            text="Agregar" />
+                            text="Agregar"
+                        />
+                            
                         <Controls.Button
-                            text="Reiniciar"
+                            text="Limpiar"
                             color="default"
                             onClick={resetForm} />
                     </div>
