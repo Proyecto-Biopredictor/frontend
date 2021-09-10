@@ -57,14 +57,25 @@ export default function Header() {
     };
     const classes = useStyles();
 
+    const home= () =>{
+        history.push("/")
+    }
+
     return (
         <div className={classes.root}>
             <CssBaseline />
             <AppBar position="fixed" className={classes.appBar}>
                 <Toolbar>
-                    <Typography variant="h6" noWrap>
-                        Biopredictor
-                    </Typography>
+                    <div onClick={home}>
+                        <IconButton 
+                            color="inherit"    
+                        >
+                            <Typography variant="h6" noWrap >
+                                Biopredictor
+                            </Typography>
+                        </IconButton>
+                        
+                    </div>
                     <div className={classes.toolbarButtons}>
                         <IconButton
                             aria-label="account of current user"

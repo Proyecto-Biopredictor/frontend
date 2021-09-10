@@ -82,6 +82,13 @@ export default function SideMenu() {
               <ListItemText primary={'Crear Bioproceso'}/>
             </ListItem>
           </List>
+          <Divider />
+          <List>
+            <ListItem button key={'register'} onClick={() => moveRoute('/register')}>
+              <ListItemIcon>{1 % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+              <ListItemText primary={'Registrar Usuario'}/>
+            </ListItem>
+          </List>
         </div>
       </Drawer>
       

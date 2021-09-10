@@ -76,10 +76,6 @@ const Login = ({ history }) => {
         <button type="submit" className="btn btn-primary">
           Inicia Sesión
         </button>
-
-        <span className="login-screen__subtext">
-          ¿No tiene una cuenta? <Link to="/register">Regístrate</Link>
-        </span>
       </form>
     </div>
   );
