@@ -47,15 +47,14 @@ export default function CreateBioprocess() {
             const config = {
                 headers: {
                   "Content-Type": "application/json",
-                  Authorization: `Bearer {localStorage.getItem("authToken")}`,
+                  Authorization: `Bearer ${localStorage.getItem("authToken")}`,
                 }
               };
               console.log(config);
           
               axios.post("/api/private/bioprocess", values, config)
               .then(console.log).catch(console.log);
-          
-              
+              window.location.reload();
         }
     }
 

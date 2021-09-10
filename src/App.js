@@ -1,12 +1,13 @@
 import './App.css';
-import FileManager from './components/FileManager';
-import Register from './components/Register';
+
 import Header from "./components/Header";
 import SideMenu from "./components/SideMenu";
 import { makeStyles, CssBaseline, createTheme, ThemeProvider, Box } from '@material-ui/core';
 import Bioprocesses from './pages/Bioprocess/Bioprocesses';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-
+import PrivateRoute from "./components/routing/PrivateRoute";
+import Login from './components/User/Login';
+import Home from './pages/Home'
 
 const theme = createTheme({
   palette: {
@@ -53,16 +54,17 @@ function App() {
 
         <div className={classes.appMain}>
         <Box m={10}></Box>
-          <SideMenu />
+          
           <Switch>
-            <Route path='/index'>
-              
-              <FileManager />
-              <Register />
-            </Route>
-            <Route path='/bioprocess/create'>
+            <PrivateRoute exact path='/'>   
+              <SideMenu />           
+              <Home/>
+            </PrivateRoute>
+            <Route exact path="/login" component={Login} />
+            <PrivateRoute exact path='/bioprocess/create'>
+              <SideMenu />
               <Bioprocesses />
-            </Route>
+            </PrivateRoute>
           </Switch>
 
         </div>
