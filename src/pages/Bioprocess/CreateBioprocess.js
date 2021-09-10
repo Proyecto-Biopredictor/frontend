@@ -2,15 +2,14 @@ import React from 'react'
 import { Grid, } from '@material-ui/core';
 import Controls from "../../components/controls/Controls";
 import { useForm, Form } from '../../components/useForm';
-
+import axios from "axios";
 
 const predictionItems = [
     { id: 'regresion', title: 'Regresión lineal' },
     { id: 'clasificacion', title: 'Clasificación' },
 ]
 
-const initialFValues = {
-    id: 0,
+const initialBValues = {
     name: '',
     description: '',
     isTimeSeries: false,
@@ -40,14 +39,23 @@ export default function CreateBioprocess() {
         setErrors,
         handleInputChange,
         resetForm
-    } = useForm(initialFValues, true, validate);
+    } = useForm(initialBValues, true, validate);
 
     const handleSubmit = e => {
         e.preventDefault()
         if (validate()){
-            console.log("validado");
-            console.log(values);
-            resetForm()
+            const config = {
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer {localStorage.getItem("authToken")}`,
+                }
+              };
+              console.log(config);
+          
+              axios.post("/api/private/bioprocess", values, config)
+              .then(console.log).catch(console.log);
+          
+              
         }
     }
 
