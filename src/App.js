@@ -50,18 +50,20 @@ function App() {
   return (
     <Router>
       <ThemeProvider theme={theme}>
-        <Header />
+        
 
         <div className={classes.appMain}>
         <Box m={10}></Box>
           
           <Switch>
             <PrivateRoute exact path='/'>   
+              <Header />
               <SideMenu />           
               <Home/>
             </PrivateRoute>
             <Route exact path="/login" component={Login} />
             <PrivateRoute exact path='/bioprocess/create'>
+              <Header />
               <SideMenu />
               <Bioprocesses />
             </PrivateRoute>
