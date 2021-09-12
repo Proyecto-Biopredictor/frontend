@@ -89,6 +89,13 @@ export default function SideMenu() {
               <ListItemText primary={'Registrar Usuario'}/>
             </ListItem>
           </List>
+          <Divider />
+          <List>
+            <ListItem button key={'assignRole'} onClick={() => moveRoute('/assignRole')}>
+              <ListItemIcon>{1 % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+              <ListItemText primary={'Asignar rol'}/>
+            </ListItem>
+          </List>
         </div>
       </Drawer>
       
