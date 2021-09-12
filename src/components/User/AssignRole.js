@@ -149,7 +149,7 @@ const AssignRole = ({ }) => {
                     <Fade
                         in={loading}
                         style={{
-                            transitionDelay: loading ? '0ms' : '0ms',
+                            transitionDelay: '0m',
                         }}
                         unmountOnExit
                     >

@@ -7,7 +7,9 @@ import Controls from "../../components/controls/Controls";
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
 import React from 'react'
-
+import CircularProgress from '@material-ui/core/CircularProgress';
+import Fade from '@material-ui/core/Fade';
+import { makeStyles } from '@material-ui/core/styles';
 
 const Register = ({ }) => {
   const history = useHistory();
@@ -20,22 +22,22 @@ const Register = ({ }) => {
   const [type, setType] = useState("user");
   const [roleType, setRole] = useState("investigador");
   const [error, setError] = useState("");
-  const [items, setItems] = React.useState([{name:""}]);
+  const [items, setItems] = React.useState([{ name: "" }]);
   const [selected, setSelected] = React.useState(false);
   const config = {
     headers: {
       "Content-Type": "application/json",
       Authorization: `Bearer ${localStorage.getItem("authToken")}`,
     },
-  };  
-  function wrapValues(bioprocesses){
+  };
+  function wrapValues(bioprocesses) {
     setItems(bioprocesses);
     setLoading(false);
   }
-  
-  useEffect(() =>{
+
+  useEffect(() => {
     let unmounted = false;
-    async function getBio(){
+    async function getBio() {
       try {
         const bioprocesses = await axios.get(
           "https://backend-ic7841.herokuapp.com/api/private/bioprocess",
@@ -43,7 +45,7 @@ const Register = ({ }) => {
         );
         wrapValues(bioprocesses.data.bioprocesses);
 
-        
+
       } catch (error) {
         setTimeout(() => {
           setError("Authentication failed!");
@@ -52,7 +54,7 @@ const Register = ({ }) => {
       }
     }
     getBio();
-    return () => {    unmounted = true;  };
+    return () => { unmounted = true; };
   }, []);
 
   const [value, setValue] = React.useState(items[0]);
@@ -70,27 +72,30 @@ const Register = ({ }) => {
 
   const registerHandler = async (e) => {
     e.preventDefault();
+    setLoading(true);
     if (password !== confirmpassword) {
       setPassword("");
       setConfirmPassword("");
       setTimeout(() => {
         setError("");
       }, 5000);
+      setLoading(false);
       return setError("Las contraseñas no coinciden");
     }
-    if (selected===false && type === 'user'){
-      
+    if (selected === false && type === 'user') {
+
       setTimeout(() => {
         setError("");
       }, 5000);
+      setLoading(false);
       return setError("Seleccione un bioproceso");
     }
-      
+
 
     try {
       const role = {
         bioprocessId: value.id,
-        role: roleType 
+        role: roleType
       }
       const { data } = await axios.post(
         "https://backend-ic7841.herokuapp.com/api/private/register",
@@ -103,19 +108,41 @@ const Register = ({ }) => {
         },
         config
       );
+      setLoading(false);
       history.push("/");
-      } catch (error) {
+    } catch (error) {
       console.log(error);
       setError(error.response.data.error);
       setTimeout(() => {
         setError("");
       }, 5000);
-      }
+      setLoading(false);
+    }
   };
+
+  const useStyles = makeStyles(() => ({
+    placeholder: {
+        height: 40,
+        textAlign: 'center'
+    },
+  }));
+  const classes = useStyles();
 
   return (
     <div className="register-screen">
       <form onSubmit={registerHandler} className="register-screen__form">
+        <div className={classes.placeholder} hidden={!loading}>
+          <Fade
+            in={loading}
+            style={{
+              transitionDelay: '0m',
+            }}
+            unmountOnExit
+          >
+            <CircularProgress />
+          </Fade>
+          <br />
+        </div>
         <h3 className="register-screen__title">Crear una cuenta</h3>
         {error && <span className="error-message">{error}</span>}
         <div className="form-group">
@@ -165,22 +192,22 @@ const Register = ({ }) => {
           />
         </div>
         <Controls.RadioGroup
-            name="type"
-            label="Tipo de usuario"
-            value={type}
-            onChange={(e) => {
-              setType(e.target.value);
-              if(type === 'admin')
-                setUser(false);
-              else
-                setUser(true);
-              
+          name="type"
+          label="Tipo de usuario"
+          value={type}
+          onChange={(e) => {
+            setType(e.target.value);
+            if (type === 'admin')
+              setUser(false);
+            else
+              setUser(true);
 
-            }}
-            items={typeItems}
+
+          }}
+          items={typeItems}
         />
-        <br/>
-        <div hidden = {isUser}> 
+        <br />
+        <div hidden={isUser}>
           <Autocomplete
             value={value}
             onChange={(event, newValue) => {
@@ -196,17 +223,17 @@ const Register = ({ }) => {
             getOptionLabel={(option) => option.name}
             style={{ width: 300 }}
             renderInput={(params) => <TextField {...params} label="Bioprocesos" variant="outlined" />}
-            disabled = {loading}
+            disabled={loading}
             disableClearable
           />
-          <br/>
+          <br />
           <Controls.RadioGroup
             name="role"
             label="Tipo de rol"
             value={roleType}
-            onChange={(e) => {setRole(e.target.value);}}
+            onChange={(e) => { setRole(e.target.value); }}
             items={roleItems}
-        />
+          />
         </div>
         <br />
         <button type="submit" className="btn btn-primary">
