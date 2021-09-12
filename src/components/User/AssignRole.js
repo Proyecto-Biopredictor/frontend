@@ -44,7 +44,7 @@ const AssignRole = ({ }) => {
             setLoading(true);
             setSelectedUser(false);
             const bioprocesses = await axios.get(
-                `api/private/filteredbioprocess/${userValue.id}`,
+                `https://backend-ic7841.herokuapp.com/api/private/filteredbioprocess/${userValue.id}`,
                 config
             );
             wrapBioprocesses(bioprocesses.data.bioprocesses);
@@ -64,7 +64,7 @@ const AssignRole = ({ }) => {
         async function getUsers() {
             try {
                 const users = await axios.get(
-                    "api/private/users/",
+                    "https://backend-ic7841.herokuapp.com/api/private/users/",
                     config
                 );
                 wrapUsers(users.data.users);
@@ -113,7 +113,7 @@ const AssignRole = ({ }) => {
             }
             userValue.roles.push(role);
             const { data } = await axios.patch(
-                `api/private/users/${userValue.id}`,
+                `https://backend-ic7841.herokuapp.com/api/private/users/${userValue.id}`,
                 {
                     username: userValue.username,
                     email: userValue.email,
