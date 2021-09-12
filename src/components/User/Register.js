@@ -1,59 +1,116 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import "./Register.css";
 import { useHistory } from "react-router-dom";
-
+import Controls from "../../components/controls/Controls";
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import TextField from '@material-ui/core/TextField';
+import React from 'react'
 
 
 const Register = ({ }) => {
   const history = useHistory();
+  const [loading, setLoading] = React.useState(true);
+  const [isUser, setUser] = React.useState(false);
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmpassword, setConfirmPassword] = useState("");
+  const [type, setType] = useState("user");
+  const [roleType, setRole] = useState("investigador");
   const [error, setError] = useState("");
-
+  const [items, setItems] = React.useState([{name:""}]);
+  const [selected, setSelected] = React.useState(false);
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+    },
+  };  
+  function wrapValues(bioprocesses){
+    setItems(bioprocesses);
+    setLoading(false);
+  }
   
+  useEffect(() =>{
+    let unmounted = false;
+    async function getBio(){
+      try {
+        const bioprocesses = await axios.get(
+          "api/private/bioprocess",
+          config
+        );
+        wrapValues(bioprocesses.data.bioprocesses);
+
+        
+      } catch (error) {
+        setTimeout(() => {
+          setError("Authentication failed!");
+        }, 5000);
+        return setError("Authentication failed!");
+      }
+    }
+    getBio();
+    return () => {    unmounted = true;  };
+  }, []);
+
+  const [value, setValue] = React.useState(items[0]);
+  const [inputValue, setInputValue] = React.useState('');
+
+  const roleItems = [
+    { id: 'investigador', title: 'Investigador' },
+    { id: 'asistente', title: 'Asistente' },
+  ]
+
+  const typeItems = [
+    { id: 'user', title: 'Usuario' },
+    { id: 'admin', title: 'Administrador' },
+  ]
 
   const registerHandler = async (e) => {
     e.preventDefault();
-    
-
-
-    const config = {
-      header: {
-        "Content-Type": "application/json",
-      },
-    };
-
     if (password !== confirmpassword) {
       setPassword("");
       setConfirmPassword("");
       setTimeout(() => {
         setError("");
       }, 5000);
-      return setError("Passwords do not match");
+      return setError("Las contraseñas no coinciden");
     }
+    if (selected===false && type === 'user'){
+      
+      setTimeout(() => {
+        setError("");
+      }, 5000);
+      return setError("Seleccione un bioproceso");
+    }
+      
 
     try {
+      const role = {
+        bioprocessId: value.id,
+        role: roleType 
+      }
       const { data } = await axios.post(
-        "https://backend-ic7841.herokuapp.com/api/auth/register",
+        "api/private/register",
         {
           username,
           email,
           password,
+          type,
+          role
         },
         config
       );
       history.push("/");
-    } catch (error) {
+      } catch (error) {
       console.log(error);
       setError(error.response.data.error);
       setTimeout(() => {
         setError("");
       }, 5000);
-    }
+      }
   };
 
   return (
@@ -107,6 +164,51 @@ const Register = ({ }) => {
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
         </div>
+        <Controls.RadioGroup
+            name="type"
+            label="Tipo de usuario"
+            value={type}
+            onChange={(e) => {
+              setType(e.target.value);
+              if(type === 'admin')
+                setUser(false);
+              else
+                setUser(true);
+              
+
+            }}
+            items={typeItems}
+        />
+        <br/>
+        <div hidden = {isUser}> 
+          <Autocomplete
+            value={value}
+            onChange={(event, newValue) => {
+              setValue(newValue);
+              setSelected(true);
+            }}
+            inputValue={inputValue}
+            onInputChange={(event, newInputValue) => {
+              setInputValue(newInputValue);
+            }}
+            id="combo-box-demo"
+            options={items}
+            getOptionLabel={(option) => option.name}
+            style={{ width: 300 }}
+            renderInput={(params) => <TextField {...params} label="Bioprocesos" variant="outlined" />}
+            disabled = {loading}
+            disableClearable
+          />
+          <br/>
+          <Controls.RadioGroup
+            name="role"
+            label="Tipo de rol"
+            value={roleType}
+            onChange={(e) => {setRole(e.target.value);}}
+            items={roleItems}
+        />
+        </div>
+        <br />
         <button type="submit" className="btn btn-primary">
           Registrar Cuenta
         </button>

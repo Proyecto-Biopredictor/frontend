@@ -9,6 +9,7 @@ import Login from './components/User/Login';
 import Home from './pages/Home'
 import RequireAuth from './components/routing/RequireAuth';
 import Register from './components/User/Register'
+import AssignRole from './components/User/AssignRole';
 
 const theme = createTheme({
   palette: {
@@ -77,6 +78,12 @@ function App() {
               <Header />
               <SideMenu />
               <Register />
+            </RequireAuth>
+
+            <RequireAuth exact path='/assignRole'>
+              <Header />
+              <SideMenu />
+              <AssignRole />
             </RequireAuth>
             <Redirect to="/login" />
           </Switch>

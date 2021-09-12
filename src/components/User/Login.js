@@ -25,7 +25,7 @@ const Login = ({ history }) => {
 
     try {
       const { data } = await axios.post(
-        "https://backend-ic7841.herokuapp.com/api/auth/login",
+        "api/auth/login",
         { email, password },
         config
       );
