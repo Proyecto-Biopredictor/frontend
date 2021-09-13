@@ -84,7 +84,7 @@ export default function Header() {
                             onClick={handleMenu}
                             color="inherit"
                         >
-                            <AccountCircle />
+                            <AccountCircle fontSize="large"/>
                         </IconButton>
                         <Menu
                             id="menu-appbar"

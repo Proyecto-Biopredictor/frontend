@@ -77,9 +77,9 @@ export default function SideMenu() {
           </List>
           <Divider />
           <List>
-            <ListItem button key={'bioproceso'} onClick={() => moveRoute('/bioprocess/create')}>
+            <ListItem button key={'bioproceso'} onClick={() => moveRoute('/bioprocess/')}>
               <ListItemIcon>{1 % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-              <ListItemText primary={'Crear Bioproceso'}/>
+              <ListItemText primary={'Administrar Bioprocesos'}/>
             </ListItem>
           </List>
           <Divider />

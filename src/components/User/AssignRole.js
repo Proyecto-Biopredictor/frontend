@@ -52,7 +52,7 @@ const AssignRole = ({ }) => {
 
         } catch (error) {
             setTimeout(() => {
-                setError("Authentication failed!");
+                setError("");
             }, 5000);
             setLoading(false);
             return setError("Authentication failed!");
@@ -72,7 +72,7 @@ const AssignRole = ({ }) => {
 
             } catch (error) {
                 setTimeout(() => {
-                    setError("Authentication failed!");
+                    setError("");
                 }, 5000);
                 setLoading(false);
                 return setError("Authentication failed!");
