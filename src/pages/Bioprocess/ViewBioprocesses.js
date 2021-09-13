@@ -212,7 +212,7 @@ export default function ViewBioprocess() {
                         </IconButton>
                     }
                 >
-                    <AlertTitle>{error ? "Error!" : "Success!"}</AlertTitle>
+                    <AlertTitle>{error ? error : "Success!"}</AlertTitle>
                     {error}
                 </Alert>
             </Collapse>
@@ -247,7 +247,7 @@ export default function ViewBioprocess() {
                                             justifyContent="center"
                                             alignItems="center"
                                         >
-                                            <Button color="primary" variant="contained" style={{ marginRight: 10 }} component={Link} to={`/bioprocess/edit/${bioprocess._id}`}>Edit</Button>
+                                            <Button color="primary" variant="contained" style={{ marginRight: 10 }} component={Link} to={`/bioprocess/update/${bioprocess._id}`}>Edit</Button>
                                             <Button className={classes.button} variant="contained" style={{ marginRight: 10 }} component={Link} to={`/bioprocess/show/${bioprocess._id}`}>Show</Button>
                                             <Button color="secondary" variant="contained" onClick={() => {
                                                 setOpenDialog(true); setBioprocessId(bioprocess._id);

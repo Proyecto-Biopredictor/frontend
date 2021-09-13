@@ -3,7 +3,7 @@ import './App.css';
 import Header from "./components/Header";
 import SideMenu from "./components/SideMenu";
 import { makeStyles, CssBaseline, createTheme, ThemeProvider, Box } from '@material-ui/core';
-import Bioprocesses from './pages/Bioprocess/Bioprocesses';
+import CreateBioprocess from './pages/Bioprocess/CreateBioprocess';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import Login from './components/User/Login';
 import Home from './pages/Home'
@@ -12,6 +12,7 @@ import Register from './components/User/Register'
 import AssignRole from './components/User/AssignRole';
 import ViewBioprocesses from './pages/Bioprocess/ViewBioprocesses'
 import ShowBioprocess from './pages/Bioprocess/ShowBioprocess';
+import UpdateBioprocess from './pages/Bioprocess/UpdateBioprocess';
 
 const theme = createTheme({
   palette: {
@@ -73,7 +74,7 @@ function App() {
             <RequireAuth exact path='/bioprocess/create'>
               <Header />
               <SideMenu />
-              <Bioprocesses />
+              <CreateBioprocess />
             </RequireAuth>
 
             <RequireAuth exact path='/bioprocess/'>
@@ -86,6 +87,12 @@ function App() {
               <Header />
               <SideMenu />
               <ShowBioprocess />
+            </RequireAuth>
+
+            <RequireAuth exact path='/bioprocess/update/:id'>
+              <Header />
+              <SideMenu />
+              <UpdateBioprocess />
             </RequireAuth>
 
             <RequireAuth exact path='/register'>
