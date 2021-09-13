@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Table, TableHead, TableCell, Paper, TableRow, TableBody, Button, makeStyles, CssBaseline, Grid } from '@material-ui/core'
 import { Link } from 'react-router-dom';
-import { getBioprocesses } from '../../services/bioprocessService';
+import { deleteBioprocess } from '../../services/bioprocessService';
 import Controls from "../../components/controls/Controls";
 import { Alert, AlertTitle } from '@material-ui/lab/';
 import IconButton from '@material-ui/core/IconButton';
@@ -9,12 +9,20 @@ import Collapse from '@material-ui/core/Collapse';
 import CloseIcon from '@material-ui/icons/Close';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Fade from '@material-ui/core/Fade';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Slide from '@material-ui/core/Slide';
+
 
 import InfoIcon from '@material-ui/icons/Info';
 import PageHeader from "../../components/PageHeader";
 import TableContainer from '@material-ui/core/TableContainer';
 import TablePagination from '@material-ui/core/TablePagination';
 import ButtonBase from '@material-ui/core/ButtonBase';
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
     table: {
@@ -39,9 +47,9 @@ const useStyles = makeStyles((theme) => ({
             fontSize: 18
         }
     },
-    buttonheader:{
-        display:'flex'
-        
+    buttonheader: {
+        display: 'flex'
+
     },
     placeholder: {
         height: 40,
@@ -52,6 +60,11 @@ const useStyles = makeStyles((theme) => ({
         color: '#FFFFFF'
     },
 }));
+
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
 
 
 
@@ -69,42 +82,95 @@ export default function ViewBioprocess() {
     };
     const [bioprocesses, setBioprocesses] = useState([]);
     const [open, setOpen] = React.useState(false);
+    const [openDialog, setOpenDialog] = React.useState(false);
     const [error, setError] = useState('');
     const [loading, setLoading] = React.useState(true);
+    const [bioprocessId, setBioprocessId] = React.useState('');;
 
     const classes = useStyles();
-    useEffect(() => {
-        getAllBioprocesses();
-    }, []);
 
-    const deleteUserData = async (id) => {
-        //await deleteUser(id);
-        getAllBioprocesses();
+    function wrapValues(bioprocesses) {
+        setBioprocesses(bioprocesses);
+        setLoading(false);
     }
 
-    const getAllBioprocesses = async () => {
+    const handleClose = () => {
+        setOpenDialog(false);
+    };
+
+    const handleAccept = () => {
+        deleteBioprocessData()
+        setOpenDialog(false);
+    }
+
+    const handleDelete = () => {
+
+    }
+
+    const config = {
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
+    };
+
+    async function getAllBioprocesses() {
         try {
-            let response = await getBioprocesses();
-            setBioprocesses(response.data.bioprocesses);
-            setLoading(false);
+            const bioprocesses = await axios.get(
+                "https://backend-ic7841.herokuapp.com/api/private/bioprocess",
+                config
+            );
+            wrapValues(bioprocesses.data.bioprocesses);
+
+
         } catch (error) {
             setTimeout(() => {
-                setOpen(false);
                 setTimeout(() => {
                     setError("");
                 }, 2000);
-
             }, 5000);
-            setOpen(true);
-            setLoading(false);
             return setError("Authentication failed!");
         }
+    }
+    useEffect(() => {
+        let unmounted = false;
+        getAllBioprocesses();
+        return () => { unmounted = true; };
+    }, []);
 
+    const deleteBioprocessData = async () => {
+        await deleteBioprocess(bioprocessId);
+        getAllBioprocesses();
     }
 
     return (
         <div className={classes.root}>
             <CssBaseline />
+            <Dialog
+                open={openDialog}
+                TransitionComponent={Transition}
+                keepMounted
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-slide-title"
+                aria-describedby="alert-dialog-slide-description"
+            >
+                <DialogTitle id="alert-dialog-slide-title">{"¿Desea borrar este bioproceso?"}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-slide-description">
+                        Esta decisión no es reversible.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose} color="primary">
+                        Disagree
+                    </Button>
+                    <Button onClick={handleAccept} color="primary">
+                        Agree
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+
             <ButtonBase
                 className={'MuiButton-label'}
                 component={Link} to={'/bioprocess/create/'}
@@ -183,7 +249,9 @@ export default function ViewBioprocess() {
                                         >
                                             <Button color="primary" variant="contained" style={{ marginRight: 10 }} component={Link} to={`/bioprocess/edit/${bioprocess._id}`}>Edit</Button>
                                             <Button className={classes.button} variant="contained" style={{ marginRight: 10 }} component={Link} to={`/bioprocess/show/${bioprocess._id}`}>Show</Button>
-                                            <Button color="secondary" variant="contained" onClick={() => deleteUserData(bioprocess.id)}>Delete</Button>
+                                            <Button color="secondary" variant="contained" onClick={() => {
+                                                setOpenDialog(true); setBioprocessId(bioprocess._id);
+                                            }}>Delete</Button>
                                         </Grid>
                                     </TableCell>
                                 </TableRow>

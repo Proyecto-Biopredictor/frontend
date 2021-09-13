@@ -15,7 +15,7 @@ export const getBioprocesses = async (id) => {
 }
 
 export const addBioprocess = async (bioprocess) => {
-    return await axios.post(`${bioprocessURL}/add`, bioprocess, config);
+    return await axios.post(`${bioprocessURL}/`, bioprocess, config);
 }
 
 export const deleteBioprocess = async (id) => {

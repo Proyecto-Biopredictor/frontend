@@ -38,12 +38,14 @@ const initialValue = {
   isTimeSeries: true,
   image: '',
   type: '',
+  places: [],
+  factors: []
 }
 
 
 export default function ShowBioprocesses() {
   const [bioprocess, setBioprocess] = useState(initialValue);
-  const { name, description, isTimeSeries, image, type } = bioprocess;
+  const { name, description, isTimeSeries, image, type, places, factors } = bioprocess;
   const [open, setOpen] = React.useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = React.useState(true);

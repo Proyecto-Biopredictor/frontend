@@ -18,7 +18,9 @@ const initialBValues = {
     description: '',
     isTimeSeries: false,
     image: '',
-    type: 'regresion'
+    type: 'regresion',
+    places: [],
+    factors: []
 }
 
 export default function CreateBioprocess() {
