@@ -122,6 +122,7 @@ const AssignRole = ({ }) => {
                 },
                 config
             );
+            setuserValue(users[0]);
             setLoading(false);
             history.push("/");
         } catch (error) {

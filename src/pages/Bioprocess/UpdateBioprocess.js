@@ -14,6 +14,7 @@ import Fade from '@material-ui/core/Fade';
 import {addBioprocess, getBioprocesses, editBioprocess} from '../../services/bioprocessService'
 import {useParams } from 'react-router-dom';
 import { useHistory } from "react-router-dom";
+import axios from "axios";
 
 const predictionItems = [
     { id: 'regresion', title: 'Regresión lineal' },
@@ -55,9 +56,15 @@ export default function UpdateBioprocess() {
         return () => { unmounted = true; };
       }, []);
 
+    const config = {
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
+    };
     const getBioprocess = async () => {
     try {
-        let response = await getBioprocesses(id);
+        let response = await axios.get(`https://backend-ic7841.herokuapp.com/api/private/bioprocess/${id}`, config);
         setValues(response.data.bioprocess);
         console.log(response.data.bioprocess);
         setLoading(false);        
