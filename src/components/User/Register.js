@@ -48,7 +48,7 @@ const Register = ({ }) => {
 
       } catch (error) {
         setTimeout(() => {
-          setError("Authentication failed!");
+          setError("");
         }, 5000);
         return setError("Authentication failed!");
       }

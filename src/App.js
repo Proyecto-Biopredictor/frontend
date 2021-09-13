@@ -10,6 +10,8 @@ import Home from './pages/Home'
 import RequireAuth from './components/routing/RequireAuth';
 import Register from './components/User/Register'
 import AssignRole from './components/User/AssignRole';
+import ViewBioprocesses from './pages/Bioprocess/ViewBioprocesses'
+import ShowBioprocess from './pages/Bioprocess/ShowBioprocess';
 
 const theme = createTheme({
   palette: {
@@ -72,6 +74,18 @@ function App() {
               <Header />
               <SideMenu />
               <Bioprocesses />
+            </RequireAuth>
+
+            <RequireAuth exact path='/bioprocess/'>
+              <Header />
+              <SideMenu />
+              <ViewBioprocesses />
+            </RequireAuth>
+
+            <RequireAuth exact path='/bioprocess/show/:id'>
+              <Header />
+              <SideMenu />
+              <ShowBioprocess />
             </RequireAuth>
 
             <RequireAuth exact path='/register'>
