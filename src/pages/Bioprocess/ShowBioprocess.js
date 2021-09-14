@@ -8,14 +8,8 @@ import Typography from '@material-ui/core/Typography';
 import Grid from '@material-ui/core/Grid'
 import InfoIcon from '@material-ui/icons/Info';
 import PageHeader from "../../components/PageHeader";
-import { editBioprocesses } from '../../services/bioprocessService';
-import { editPlaces, addPlace } from '../../services/placeService';
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { Alert, AlertTitle } from '@material-ui/lab/';
-import IconButton from '@material-ui/core/IconButton';
-import Collapse from '@material-ui/core/Collapse';
-import CloseIcon from '@material-ui/icons/Close';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Fade from '@material-ui/core/Fade';
 import Controls from "../../components/controls/Controls";
@@ -25,11 +19,12 @@ import { Link } from 'react-router-dom';
 import TableContainer from '@material-ui/core/TableContainer';
 import TablePagination from '@material-ui/core/TablePagination';
 import { Table, TableHead, TableCell, Paper, TableRow, TableBody, Button, CssBaseline } from '@material-ui/core'
-import ButtonBase from '@material-ui/core/ButtonBase';
 import { useForm, Form } from '../../components/useForm';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
 import Divider from '@material-ui/core/Divider';
+import Snackbar from '@material-ui/core/Snackbar';
+import MuiAlert from '@material-ui/lab/Alert';
 
 const useStyles = makeStyles(theme => ({
   cardContainer: {
@@ -75,7 +70,13 @@ const useStyles = makeStyles(theme => ({
   center: {
     display: 'flex',
     textAlign: 'center'
-  }
+  },
+  root: {
+    width: '100%',
+    '& > * + *': {
+      marginTop: theme.spacing(2),
+    },
+  },
 }));
 
 const initialValue = {
@@ -337,6 +338,10 @@ export default function ShowBioprocesses() {
   const [placeValue, setPlaceValue] = React.useState(filteredPlaces[0]);
   const [inputValue, setInputValue] = React.useState('');
 
+  function Alert(props) {
+    return <MuiAlert elevation={6} variant="filled" {...props} />;
+  }
+
   return (
 
     <div className={classes.root}>
@@ -352,27 +357,14 @@ export default function ShowBioprocesses() {
         </Fade>
         <br />
       </div>
-      <Collapse in={open}>
-        <Alert
+      <div className={classes.root}>
+        <Snackbar open={open} autoHideDuration={3000}>
+          <Alert severity={error ? "error" : "success"}>
+          {error ? "Error!" : "Se ha asociado el lugar!"}
+          </Alert>
+        </Snackbar>
+      </div>
 
-          severity={error ? "error" : "success"}
-          action={
-            <IconButton
-              aria-label="close"
-              color="inherit"
-              size="small"
-              onClick={() => {
-                setOpen(false);
-              }}
-            >
-              <CloseIcon fontSize="inherit" />
-            </IconButton>
-          }
-        >
-          <AlertTitle>{error ? "Error!" : "Success!"}</AlertTitle>
-          {error}
-        </Alert>
-      </Collapse>
 
       <PageHeader
         title="Información detallada sobre un bioproceso"
@@ -442,27 +434,6 @@ export default function ShowBioprocesses() {
             </Fade>
             <br />
           </div>
-          <Collapse in={open}>
-            <Alert
-
-              severity={error ? "error" : "success"}
-              action={
-                <IconButton
-                  aria-label="close"
-                  color="inherit"
-                  size="small"
-                  onClick={() => {
-                    setOpen(false);
-                  }}
-                >
-                  <CloseIcon fontSize="inherit" />
-                </IconButton>
-              }
-            >
-              <AlertTitle>{error ? error : "Success!"}</AlertTitle>
-              {error}
-            </Alert>
-          </Collapse>
           <Paper className={classes.table}>
             <TableContainer >
               <Table stickyHeader aria-label="sticky table" className={classes.container}>
@@ -534,27 +505,6 @@ export default function ShowBioprocesses() {
         </Fade>
         <br />
       </div>
-      <Collapse in={open}>
-        <Alert
-
-          severity={error ? "error" : "success"}
-          action={
-            <IconButton
-              aria-label="close"
-              color="inherit"
-              size="small"
-              onClick={() => {
-                setOpen(false);
-              }}
-            >
-              <CloseIcon fontSize="inherit" />
-            </IconButton>
-          }
-        >
-          <AlertTitle>{error ? "Error!" : "Success!"}</AlertTitle>
-          {error}
-        </Alert>
-      </Collapse>
       <Paper className={classes.pageContent}>
         <Grid
           container
