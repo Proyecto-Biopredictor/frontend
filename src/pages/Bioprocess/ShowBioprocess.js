@@ -288,18 +288,20 @@ export default function ShowBioprocesses() {
 
   const associatePlace = async() =>{
     await updatePlace().then(setLoadingAso(false));
-    await updateBioprocess().then(setLoadingAso(false));
+    await updateBioprocess(placeValue).then(setLoadingAso(false));
     await getFilteredPlaces();
     await getPlacesBio();
     setPlaceValue(filteredPlaces[0]);
     setInputValue('');
     setIsEmpty(true);
+    confirmPost();
   }
 
   const wrapPlace = async( place) =>{
     await updateBioprocess(place).then(setLoadingAso(false));
     await getFilteredPlaces();
     await getPlacesBio();
+    confirmPost();
   }
 
   const {
@@ -326,8 +328,6 @@ export default function ShowBioprocesses() {
       addNewPlace().then((response) =>{
         setLoadingAso(false);
         setValues(cleanPlace);
-        confirmPost();
-        
         wrapPlace(response.data.Place);
       });
 
@@ -579,7 +579,7 @@ export default function ShowBioprocesses() {
               setInputValue(newInputValue);
               if (newInputValue === ''){
                 setIsEmpty(true);
-                setPlaceValue(filteredPlaces[0]);
+                setPlaceValue('');
               }
               else
                 setIsEmpty(false);
