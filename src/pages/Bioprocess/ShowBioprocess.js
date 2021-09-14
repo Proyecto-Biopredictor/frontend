@@ -266,10 +266,10 @@ export default function ShowBioprocesses() {
     }
   }
 
-  const updateBioprocess = async() => {
+  const updateBioprocess = async(place) => {
     try{
       setLoadingAso(true);
-      bioprocess.places.push(placeValue.id);
+      bioprocess.places.push(place._id);
       axios.patch(`https://backend-ic7841.herokuapp.com/api/private/bioprocess/${id}`, bioprocess, config);
       setLoadingAso(false);
     }catch(error){
@@ -296,8 +296,8 @@ export default function ShowBioprocesses() {
     setIsEmpty(true);
   }
 
-  const wrapPlace = async() =>{
-    await updateBioprocess().then(setLoadingAso(false));
+  const wrapPlace = async( place) =>{
+    await updateBioprocess(place).then(setLoadingAso(false));
     await getFilteredPlaces();
     await getPlacesBio();
   }
@@ -327,7 +327,8 @@ export default function ShowBioprocesses() {
         setLoadingAso(false);
         setValues(cleanPlace);
         confirmPost();
-        wrapPlace();
+        
+        wrapPlace(response.data.Place);
       });
 
     }
@@ -674,18 +675,18 @@ export default function ShowBioprocesses() {
                   {placeValue ? placeValue.name : ''}
                 </Typography>
                 <Typography variant="subtitle1" color="textSecondary" component="p">
-                  {placeValue ? placeValue.name : ''}
+                  {placeValue ? placeValue.description : ''}
                 </Typography>
               </CardContent>
 
               <CardActions>
                 <Typography variant="subtitle1" color="primary" component="p">
                   <span >Latitud: </span>
-                  {placeValue? placeValue.name : ''}
+                  {placeValue? placeValue.latitude : ''}
                 </Typography>
                 <Typography variant="subtitle1" color="primary" component="p">
                   <span>Longitud: </span>
-                  {placeValue ? placeValue.name : ''}
+                  {placeValue ? placeValue.longitude : ''}
                 </Typography>
               </CardActions>
             </Card>
