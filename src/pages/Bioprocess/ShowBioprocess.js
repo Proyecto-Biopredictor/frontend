@@ -26,6 +26,7 @@ import Divider from '@material-ui/core/Divider';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import CreateFactor from '../Factors/CreateFactor';
+import ViewFactors from '../Factors/ViewFactors';
 
 const useStyles = makeStyles(theme => ({
   cardContainer: {
@@ -678,6 +679,7 @@ export default function ShowBioprocesses() {
         <br />
       </div>
       <CreateFactor id={id}/>
+      <ViewFactors id={id}/>
       
     </div>
   );

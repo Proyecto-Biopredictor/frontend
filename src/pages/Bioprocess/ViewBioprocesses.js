@@ -103,10 +103,6 @@ export default function ViewBioprocess() {
         setOpenDialog(false);
     }
 
-    const handleDelete = () => {
-
-    }
-
     const config = {
         headers: {
             "Content-Type": "application/json",
