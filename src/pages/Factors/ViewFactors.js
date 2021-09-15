@@ -1,162 +1,270 @@
-import React from 'react'
-import { makeStyles } from '@material-ui/core/styles';
-import Card from '@material-ui/core/Card';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Typography from '@material-ui/core/Typography';
-import Grid from '@material-ui/core/Grid'
-import InfoIcon from '@material-ui/icons/Info';
-import PageHeader from "../../components/PageHeader";
-import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Table, TableHead, TableCell, Paper, TableRow, TableBody, Button, makeStyles, CssBaseline, Grid } from '@material-ui/core'
+import { Link } from 'react-router-dom';
+import { deleteFactor } from '../../services/factorService';
+import Controls from "../../components/controls/Controls";
+import { Alert, AlertTitle } from '@material-ui/lab/';
+import IconButton from '@material-ui/core/IconButton';
+import Collapse from '@material-ui/core/Collapse';
+import CloseIcon from '@material-ui/icons/Close';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Fade from '@material-ui/core/Fade';
-import Controls from "../../components/controls/Controls";
-import axios from "axios";
-import PlaceIcon from '@material-ui/icons/Place';
-import { Link } from 'react-router-dom';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Slide from '@material-ui/core/Slide';
+
+
+import InfoIcon from '@material-ui/icons/Info';
+import PageHeader from "../../components/PageHeader";
 import TableContainer from '@material-ui/core/TableContainer';
 import TablePagination from '@material-ui/core/TablePagination';
-import { Table, TableHead, TableCell, Paper, TableRow, TableBody, Button, CssBaseline } from '@material-ui/core'
-import { useForm, Form } from '../../components/useForm';
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import TextField from '@material-ui/core/TextField';
-import Divider from '@material-ui/core/Divider';
-import Snackbar from '@material-ui/core/Snackbar';
-import MuiAlert from '@material-ui/lab/Alert';
+import ButtonBase from '@material-ui/core/ButtonBase';
+import axios from "axios";
 
-const useStyles = makeStyles(theme => ({
-    cardContainer: {
-      width: 800,
-      justifyContent: "center",
-      alignItems: "center"
-    },
-    media: {
-      height: 300,
-    },
+const useStyles = makeStyles((theme) => ({
     table: {
-      width: '90%',
-      margin: '50px 0 0 50px'
+        width: '90%',
+        margin: '50px 0 0 50px'
     },
     thead: {
-      '& > *': {
+        '& > *': {
+            fontSize: 20,
+            background: '#8ade8f',
+            color: '#FFFFFF'
+        }
+    },
+    head: {
         fontSize: 20,
         background: '#8ade8f',
         color: '#FFFFFF'
-      }
+
     },
     row: {
-      '& > *': {
-        fontSize: 18
-      }
+        '& > *': {
+            fontSize: 18
+        }
     },
     buttonheader: {
-      display: 'flex'
-  
+        display: 'flex'
+
     },
     placeholder: {
-      height: 40,
-      textAlign: 'center'
+        height: 40,
+        textAlign: 'center'
     },
     button: {
-      background: '#4287f5',
-      color: '#FFFFFF'
+        background: '#4287f5',
+        color: '#FFFFFF'
     },
-    pageContent: {
-      margin: theme.spacing(5),
-      padding: theme.spacing(3),
-    },
-    center: {
-      display: 'flex',
-      textAlign: 'center'
-    },
-    root: {
-      width: '100%',
-      '& > * + *': {
-        marginTop: theme.spacing(2),
-      },
-    },
-  }));
+}));
+
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
+
+
 
 export default function ViewFactors() {
-    return (
-        <div>
-            <br />
-      <br />
-      <PageHeader
-        title="Lugares asociados al bioproceso"
-        subTitle="Acá se muestran todos los lugares relacionados a este bioproceso"
-        icon={<PlaceIcon fontSize="large"
-        />}
-      />
+    const [page, setPage] = React.useState(0);
+    const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
-      <div className={classes.root}>
-        <div hidden={!isPlacesBio}>
-          <CssBaseline />
-          <div className={classes.placeholder} hidden={!loading}>
-            <Fade
-              in={loading}
-              style={{
-                transitionDelay: '0m',
-              }}
-              unmountOnExit
+    const handleChangePage = (event, newPage) => {
+        setPage(newPage);
+    };
+
+    const handleChangeRowsPerPage = (event) => {
+        setRowsPerPage(+event.target.value);
+        setPage(0);
+    };
+    const [factors, setFactors] = useState([]);
+    const [open, setOpen] = React.useState(false);
+    const [openDialog, setOpenDialog] = React.useState(false);
+    const [error, setError] = useState('');
+    const [loading, setLoading] = React.useState(true);
+    const [factorId, setFactorId] = React.useState('');;
+
+    const classes = useStyles();
+
+    function wrapValues(factors) {
+        setFactors(factors);
+        setLoading(false);
+    }
+
+    const handleClose = () => {
+        setOpenDialog(false);
+    };
+
+    const handleAccept = () => {
+        deleteFactorData()
+        setOpenDialog(false);
+    }
+
+    const config = {
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
+    };
+
+    async function getAllFactors() {
+        try {
+            const factors = await axios.get(
+                "https://backend-ic7841.herokuapp.com/api/private/factor",
+                config
+            );
+            wrapValues(factors.data.factors);
+
+
+        } catch (error) {
+            setTimeout(() => {
+                setTimeout(() => {
+                    setError("");
+                }, 2000);
+            }, 5000);
+            return setError("Authentication failed!");
+        }
+    }
+    useEffect(() => {
+        let unmounted = false;
+        getAllFactors();
+        return () => { unmounted = true; };
+    }, []);
+
+    const deleteFactorData = async () => {
+        await deleteFactor(factorId);
+        getAllFactors();
+    }
+
+    return (
+        <div className={classes.root}>
+            <CssBaseline />
+            <Dialog
+                open={openDialog}
+                TransitionComponent={Transition}
+                keepMounted
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-slide-title"
+                aria-describedby="alert-dialog-slide-description"
             >
-              <CircularProgress />
-            </Fade>
-            <br />
-          </div>
-          <Paper className={classes.table}>
-            <TableContainer >
-              <Table stickyHeader aria-label="sticky table" className={classes.container}>
-                <TableHead>
-                  <TableRow className={classes.thead}>
-                    <TableCell>Nombre</TableCell>
-                    <TableCell>Latitud</TableCell>
-                    <TableCell>Longitud</TableCell>
-                    <TableCell className={classes.placeholder}>Acciones</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {placesBio.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((place) => (
-                    <TableRow hover className={classes.row} key={place.id}>
-                      <TableCell>{place.name}</TableCell>
-                      <TableCell>{place.latitude}</TableCell>
-                      <TableCell>{place.longitude}</TableCell>
-                      <TableCell>
-                        <Grid
-                          container
-                          direction="row"
-                          justifyContent="center"
-                          alignItems="center"
+                <DialogTitle id="alert-dialog-slide-title">{"¿Desea borrar este factor?"}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-slide-description">
+                        Esta decisión no es reversible.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleClose} color="primary">
+                        Disagree
+                    </Button>
+                    <Button onClick={handleAccept} color="primary">
+                        Agree
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+
+            <ButtonBase
+                className={'MuiButton-label'}
+                component={Link} to={'/factor/create/'}
+            >
+                <PageHeader
+                    title="Información sobre los factores"
+                    subTitle="Si quiere agregar un factor, haz click acá"
+                    icon={<InfoIcon fontSize="large"
+                    />}
+                />
+            </ButtonBase>
+
+            <div className={classes.placeholder} hidden={!loading}>
+                <Fade
+                    in={loading}
+                    style={{
+                        transitionDelay: '0m',
+                    }}
+                    unmountOnExit
+                >
+                    <CircularProgress />
+                </Fade>
+                <br />
+            </div>
+            <Collapse in={open}>
+                <Alert
+
+                    severity={error ? "error" : "success"}
+                    action={
+                        <IconButton
+                            aria-label="close"
+                            color="inherit"
+                            size="small"
+                            onClick={() => {
+                                setOpen(false);
+                            }}
                         >
-                          <Button className={classes.button} variant="contained" style={{ marginRight: 10 }} component={Link} to={`/place/show/${bioprocess._id}`}>Show</Button>
-                          <Button color="primary" variant="contained" style={{ marginRight: 10 }}>Add data</Button>
-                        </Grid>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </TableContainer>
-            <TablePagination
-              rowsPerPageOptions={[10, 25, 100]}
-              component="div"
-              count={placesBio.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
-          </Paper>
-        </div>
-        <div className={classes.placeholder} hidden={isPlacesBio}>
-          <br />
-          <Typography variant="subtitle1" color="textSecondary" component="p">
-            No hay nada qué mostrar en está sección
-          </Typography>
-        </div>
-      </div>
+                            <CloseIcon fontSize="inherit" />
+                        </IconButton>
+                    }
+                >
+                    <AlertTitle>{error ? error : "Success!"}</AlertTitle>
+                    {error}
+                </Alert>
+            </Collapse>
+            <Paper className={classes.table}>
+                <TableContainer >
+                    <Table stickyHeader aria-label="sticky table" className={classes.container}>
+                        <TableHead>
+                            <TableRow className={classes.thead}>
+                                <TableCell>Nombre</TableCell>
+                                <TableCell>¿Es serie temporal?</TableCell>
+                                <TableCell>Tipo</TableCell>
+                                <TableCell className={classes.placeholder}>Acciones</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {factors.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((factor) => (
+                                <TableRow hover className={classes.row} key={factor.id}>
+                                    <TableCell>{factor.name}</TableCell>
+                                    <TableCell>
+                                        <Controls.Checkbox
+                                            name="isTimeSeries"
+                                            label=""
+                                            value={factor.isTimeSeries}
+                                            disabled={true}
+                                        />
+                                    </TableCell>
+                                    <TableCell>{factor.type === 'regresion' ? 'Regresión' : 'Clasificación'}</TableCell>
+                                    <TableCell>
+                                        <Grid
+                                            container
+                                            direction="row"
+                                            justifyContent="center"
+                                            alignItems="center"
+                                        >
+                                            <Button color="primary" variant="contained" style={{ marginRight: 10 }} component={Link} to={`/factor/update/${factor._id}`}>Edit</Button>
+                                            <Button className={classes.button} variant="contained" style={{ marginRight: 10 }} component={Link} to={`/factor/show/${factor._id}`}>Show</Button>
+                                            <Button color="secondary" variant="contained" onClick={() => {
+                                                setOpenDialog(true); setFactorId(factor._id);
+                                            }}>Delete</Button>
+                                        </Grid>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+                <TablePagination
+                    rowsPerPageOptions={[10, 25, 100]}
+                    component="div"
+                    count={factors.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                />
+            </Paper>
         </div>
     )
 }
