@@ -25,6 +25,7 @@ import TextField from '@material-ui/core/TextField';
 import Divider from '@material-ui/core/Divider';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
+import CreateFactor from '../Factors/CreateFactor';
 
 const useStyles = makeStyles(theme => ({
   cardContainer: {
@@ -655,6 +656,29 @@ export default function ShowBioprocesses() {
           </Grid>
         </div>
       </Paper>
+      
+      <br />
+      <br />
+      <PageHeader
+        title="Asociar factor a bioproceso"
+        subTitle="Si el factor no existe, rellene los campos para crear uno nuevo"
+        icon={<InfoIcon fontSize="large"
+        />}
+      />
+      <div className={classes.placeholder} hidden={!loadingAso}>
+        <Fade
+          in={loadingAso}
+          style={{
+            transitionDelay: '0m',
+          }}
+          unmountOnExit
+        >
+          <CircularProgress />
+        </Fade>
+        <br />
+      </div>
+      <CreateFactor id={id}/>
+      
     </div>
   );
 }
