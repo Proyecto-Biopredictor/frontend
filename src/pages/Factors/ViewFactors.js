@@ -15,7 +15,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
-
+import { useParams } from "react-router-dom";
 
 import InfoIcon from '@material-ui/icons/Info';
 import PageHeader from "../../components/PageHeader";
@@ -71,6 +71,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 export default function ViewFactors() {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    const { id } = useParams();
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -113,7 +114,7 @@ export default function ViewFactors() {
     async function getAllFactors() {
         try {
             const factors = await axios.get(
-                "https://backend-ic7841.herokuapp.com/api/private/factor",
+                `https://backend-ic7841.herokuapp.com/api/private/factorbioprocess/${id}`,
                 config
             );
             wrapValues(factors.data.factors);
