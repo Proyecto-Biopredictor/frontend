@@ -18,6 +18,7 @@ import CreateFactor from './pages/Factors/CreateFactor';
 import ShowPlace from './pages/Place/ShowPlace';
 import ViewPlace from './pages/Place/ViewPlace';
 import CreatePlace from './pages/Place/CreatePlace';
+import CreateData from './pages/Data/CreateData';
 
 const theme = createTheme({
   palette: {
@@ -141,6 +142,12 @@ function App() {
               <Header />
               <SideMenu />
               <ViewPlace />
+            </RequireAuth>
+
+            <RequireAuth exact path='/data/:bid/:pid'>
+              <Header />
+              <SideMenu />
+              <CreateData />
             </RequireAuth>
 
             <Redirect to="/login" />
