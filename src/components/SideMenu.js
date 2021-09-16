@@ -96,6 +96,13 @@ export default function SideMenu() {
               <ListItemText primary={'Asignar rol'}/>
             </ListItem>
           </List>
+          <Divider />
+          <List>
+            <ListItem button key={'lugar'} onClick={() => moveRoute('/place')}>
+              <ListItemIcon>{1 % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
+              <ListItemText primary={'Administrar Lugares'}/>
+            </ListItem>
+          </List>
         </div>
       </Drawer>
       

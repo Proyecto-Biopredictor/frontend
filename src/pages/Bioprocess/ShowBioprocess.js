@@ -226,11 +226,11 @@ export default function ShowBioprocesses() {
       return Object.values(temp).every(x => x === "")
   }
 
-  const addNewPlace = async() => {
+  const addNewPlace = async () => {
     try {
       setLoadingAso(true);
       values.bioprocesses.push(id);
-      return await axios.post(`https://backend-ic7841.herokuapp.com/api/private/place/`, values, config);      
+      return await axios.post(`https://backend-ic7841.herokuapp.com/api/private/place/`, values, config);
     } catch (error) {
       setTimeout(() => {
         setOpen(false);
@@ -245,11 +245,11 @@ export default function ShowBioprocesses() {
     }
   }
 
-  const updatePlace = async() => {
+  const updatePlace = async () => {
     try {
       setLoadingAso(true);
       placeValue.bioprocesses.push(id);
-      return await axios.patch(`https://backend-ic7841.herokuapp.com/api/private/place/${placeValue.id}`, placeValue, config);      
+      return await axios.patch(`https://backend-ic7841.herokuapp.com/api/private/place/${placeValue.id}`, placeValue, config);
     } catch (error) {
       setTimeout(() => {
         setOpen(false);
@@ -264,13 +264,13 @@ export default function ShowBioprocesses() {
     }
   }
 
-  const updateBioprocess = async(place) => {
-    try{
+  const updateBioprocess = async (place) => {
+    try {
       setLoadingAso(true);
       bioprocess.places.push(place._id);
       axios.patch(`https://backend-ic7841.herokuapp.com/api/private/bioprocess/${id}`, bioprocess, config);
       setLoadingAso(false);
-    }catch(error){
+    } catch (error) {
       setTimeout(() => {
         setOpen(false);
         setTimeout(() => {
@@ -284,7 +284,7 @@ export default function ShowBioprocesses() {
     }
   }
 
-  const associatePlace = async() =>{
+  const associatePlace = async () => {
     await updatePlace().then(setLoadingAso(false));
     await updateBioprocess(placeValue).then(setLoadingAso(false));
     await getFilteredPlaces();
@@ -295,7 +295,7 @@ export default function ShowBioprocesses() {
     confirmPost();
   }
 
-  const wrapPlace = async( place) =>{
+  const wrapPlace = async (place) => {
     await updateBioprocess(place).then(setLoadingAso(false));
     await getFilteredPlaces();
     await getPlacesBio();
@@ -311,8 +311,8 @@ export default function ShowBioprocesses() {
     resetForm
   } = useForm(initialPlaceValues, true, validate);
 
-  const confirmPost = () =>{
-    setOpen(true);    
+  const confirmPost = () => {
+    setOpen(true);
     resetForm({
 
     })
@@ -323,7 +323,7 @@ export default function ShowBioprocesses() {
   const handleSubmit = e => {
     e.preventDefault()
     if (validate()) {
-      addNewPlace().then((response) =>{
+      addNewPlace().then((response) => {
         setLoadingAso(false);
         setValues(cleanPlace);
         wrapPlace(response.data.Place);
@@ -357,14 +357,14 @@ export default function ShowBioprocesses() {
       <div className={classes.root}>
         <Snackbar open={open} autoHideDuration={3000}>
           <Alert severity={error ? "error" : "success"}>
-          {error ? "Error!" : "Se ha asociado el lugar!"}
+            {error ? "Error!" : "Se ha asociado el lugar!"}
           </Alert>
         </Snackbar>
       </div>
 
 
       <PageHeader
-        title="Información detallada sobre un bioproceso"      
+        title="Información detallada sobre un bioproceso"
         icon={<InfoIcon fontSize="large"
         />}
       />
@@ -408,7 +408,7 @@ export default function ShowBioprocesses() {
       </Grid>
       <br />
       <PageHeader
-        title="Lugares asociados al bioproceso"        
+        title="Lugares asociados al bioproceso"
         icon={<PlaceIcon fontSize="large"
         />}
       />
@@ -521,7 +521,7 @@ export default function ShowBioprocesses() {
             inputValue={inputValue}
             onInputChange={(event, newInputValue) => {
               setInputValue(newInputValue);
-              if (newInputValue === ''){
+              if (newInputValue === '') {
                 setIsEmpty(true);
                 setPlaceValue('');
               }
@@ -549,7 +549,13 @@ export default function ShowBioprocesses() {
             </Grid>
 
             <br />
-            <Grid container>
+            <Grid
+              container
+              direction="row"
+              justifyContent="center"
+              alignItems="center"
+              style={{textAlign: 'center'}}
+            >
               <Grid item xs={6}>
                 <Controls.Input
                   name="name"
@@ -588,6 +594,7 @@ export default function ShowBioprocesses() {
                 direction="row"
                 justifyContent="center"
                 alignItems="center"
+                style={{marginTop: '20px'}}
               >
 
                 <Controls.Button
@@ -626,7 +633,7 @@ export default function ShowBioprocesses() {
               <CardActions>
                 <Typography variant="subtitle1" color="primary" component="p">
                   <span >Latitud: </span>
-                  {placeValue? placeValue.latitude : ''}
+                  {placeValue ? placeValue.latitude : ''}
                 </Typography>
                 <Typography variant="subtitle1" color="primary" component="p">
                   <span>Longitud: </span>
@@ -635,7 +642,7 @@ export default function ShowBioprocesses() {
               </CardActions>
             </Card>
           </Grid>
-          <br/>
+          <br />
           <Grid
             container
             direction="row"
@@ -649,7 +656,7 @@ export default function ShowBioprocesses() {
           </Grid>
         </div>
       </Paper>
-      
+
       <br />
       <br />
       <div className={classes.placeholder} hidden={!loadingAso}>
@@ -663,12 +670,12 @@ export default function ShowBioprocesses() {
           <CircularProgress />
         </Fade>
         <br />
-      </div>      
-      <ViewFactors id={id}/>
-      <br/>
-      <br/>
-      <br/>
-      
+      </div>
+      <ViewFactors id={id} />
+      <br />
+      <br />
+      <br />
+
     </div>
   );
 }
