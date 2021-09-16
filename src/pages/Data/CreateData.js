@@ -58,20 +58,20 @@ function CreateData() {
 
     return (
         <Container>
-            <h1>Add New Member</h1>
+            <h1>Agregar nuevo registro</h1>
             <form className={classes.root} onSubmit={handleSubmit}>
                 {inputFields.map(inputField => (
                     <div key={inputField.id}>
                         <TextField required
                             name="firstName"
-                            label="First Name"
+                            label="Factor1"
                             variant="outlined"
                             value={inputField.firstName}
                             onChange={event => handleChangeInput(inputField.id, event)}
                         />
                         <TextField required
                             name="lastName"
-                            label="Last Name"
+                            label="Factor2"
                             variant="outlined"
                             value={inputField.lastName}
                             onChange={event => handleChangeInput(inputField.id, event)}
@@ -92,7 +92,7 @@ function CreateData() {
                     color="primary"
                     type="submit"
                     onClick={handleSubmit}
-                >Send</Button>
+                >Aceptar</Button>
             </form>
         </Container>
     );

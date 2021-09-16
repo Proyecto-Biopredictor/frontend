@@ -137,7 +137,7 @@ export default function CreateFactor() {
                 </IconButton>
               }
             >
-              {error ? error : "Se ha agregado un nuevo factors!"}
+              {error ? error : "Se ha agregado un nuevo factor!"}
             </Alert>
           </Collapse>
           <Grid container>
