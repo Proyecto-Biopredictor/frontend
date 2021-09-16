@@ -181,7 +181,7 @@ export default function ViewFactors() {
                 alignItems="center"
                 className={classes.table}
             >
-                <Button color="primary" variant="contained" component={Link} to={`/factor/create/`}>Crear factor</Button>
+                <Button color="primary" variant="contained" component={Link} to={`/factor/create/${id}`}>Crear factor</Button>
             </Grid>
             <div className={classes.placeholder} hidden={!loading}>
                 <Fade

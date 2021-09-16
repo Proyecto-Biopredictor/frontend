@@ -83,7 +83,7 @@ function App() {
               <CreateBioprocess />
             </RequireAuth>
 
-            <RequireAuth exact path='/factor/create'>
+            <RequireAuth exact path='/factor/create/:id'>
               <Header />
               <SideMenu />
               <CreateFactor />
