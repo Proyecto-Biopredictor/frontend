@@ -73,7 +73,8 @@ function App() {
           <Switch>
             <RequireAuth exact path='/'>   
               <Header />
-              <SideMenu />           
+              <SideMenu />
+              <Home />           
             </RequireAuth>
             
             <RequireAuth exact path='/bioprocess/create'>
