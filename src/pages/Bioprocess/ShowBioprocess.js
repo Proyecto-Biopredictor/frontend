@@ -452,7 +452,7 @@ export default function ShowBioprocesses() {
                           justifyContent="center"
                           alignItems="center"
                         >
-                          <Button className={classes.button} variant="contained" style={{ marginRight: 10 }} component={Link} to={`/place/show/${bioprocess._id}`}>Mostrar</Button>
+                          <Button className={classes.button} variant="contained" style={{ marginRight: 10 }} component={Link} to={`/place/show/${place._id}`}>Mostrar</Button>
                           <Button color="primary" variant="contained" style={{ marginRight: 10 }}>Agregar</Button>
                         </Grid>
                       </TableCell>

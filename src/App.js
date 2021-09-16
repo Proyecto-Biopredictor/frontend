@@ -15,6 +15,7 @@ import ShowBioprocess from './pages/Bioprocess/ShowBioprocess';
 import UpdateBioprocess from './pages/Bioprocess/UpdateBioprocess';
 import UpdateFactor from './pages/Factors/UpdateFactor';
 import CreateFactor from './pages/Factors/CreateFactor';
+import ShowPlace from './pages/Place/ShowPlace';
 
 const theme = createTheme({
   palette: {
@@ -120,6 +121,13 @@ function App() {
               <SideMenu />
               <UpdateFactor />
             </RequireAuth>
+
+            <RequireAuth exact path='/place/show/:id'>
+              <Header />
+              <SideMenu />
+              <ShowPlace />
+            </RequireAuth>
+
             <Redirect to="/login" />
           </Switch>
 
