@@ -27,7 +27,7 @@ import axios from "axios";
 const useStyles = makeStyles((theme) => ({
     table: {
         width: '90%',
-        margin: '50px 0 0 50px'
+        margin: '50px 0 0 0'
     },
     thead: {
         '& > *': {
@@ -158,26 +158,32 @@ export default function ViewBioprocess() {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} color="primary">
-                        Disagree
+                        Rechazar
                     </Button>
                     <Button onClick={handleAccept} color="primary">
-                        Agree
+                        Aceptar
                     </Button>
                 </DialogActions>
             </Dialog>
 
 
-            <ButtonBase
-                className={'MuiButton-label'}
-                component={Link} to={'/bioprocess/create/'}
+            <PageHeader
+                title="Información sobre los bioprocesos"
+                
+                icon={<InfoIcon fontSize="large"
+                />}
+            />
+           
+
+            <Grid
+                container
+                direction="row"
+                justifyContent="center"
+                alignItems="center"
+                className={classes.table}
             >
-                <PageHeader
-                    title="Información sobre los bioprocesos"
-                    subTitle="Si quiere agregar un bioproceso, haz click acá"
-                    icon={<InfoIcon fontSize="large"
-                    />}
-                />
-            </ButtonBase>
+                <Button color="primary" variant="contained" component={Link} to={`/bioprocess/create/`}>Crear bioproceso</Button>
+            </Grid>
 
             <div className={classes.placeholder} hidden={!loading}>
                 <Fade
@@ -189,7 +195,7 @@ export default function ViewBioprocess() {
                 >
                     <CircularProgress />
                 </Fade>
-                <br />
+                
             </div>
             <Collapse in={open}>
                 <Alert
@@ -243,11 +249,11 @@ export default function ViewBioprocess() {
                                             justifyContent="center"
                                             alignItems="center"
                                         >
-                                            <Button color="primary" variant="contained" style={{ marginRight: 10 }} component={Link} to={`/bioprocess/update/${bioprocess._id}`}>Edit</Button>
-                                            <Button className={classes.button} variant="contained" style={{ marginRight: 10 }} component={Link} to={`/bioprocess/show/${bioprocess._id}`}>Show</Button>
+                                            <Button color="primary" variant="contained" style={{ marginRight: 10 }} component={Link} to={`/bioprocess/update/${bioprocess._id}`}>Editar</Button>
+                                            <Button className={classes.button} variant="contained" style={{ marginRight: 10 }} component={Link} to={`/bioprocess/show/${bioprocess._id}`}>Más información</Button>
                                             <Button color="secondary" variant="contained" onClick={() => {
                                                 setOpenDialog(true); setBioprocessId(bioprocess._id);
-                                            }}>Delete</Button>
+                                            }}>Eliminar</Button>
                                         </Grid>
                                     </TableCell>
                                 </TableRow>

@@ -13,6 +13,8 @@ import AssignRole from './components/User/AssignRole';
 import ViewBioprocesses from './pages/Bioprocess/ViewBioprocesses'
 import ShowBioprocess from './pages/Bioprocess/ShowBioprocess';
 import UpdateBioprocess from './pages/Bioprocess/UpdateBioprocess';
+import UpdateFactor from './pages/Factors/UpdateFactor';
+import CreateFactor from './pages/Factors/CreateFactor';
 
 const theme = createTheme({
   palette: {
@@ -77,6 +79,12 @@ function App() {
               <CreateBioprocess />
             </RequireAuth>
 
+            <RequireAuth exact path='/factor/create'>
+              <Header />
+              <SideMenu />
+              <CreateFactor />
+            </RequireAuth>
+
             <RequireAuth exact path='/bioprocess/'>
               <Header />
               <SideMenu />
@@ -105,6 +113,12 @@ function App() {
               <Header />
               <SideMenu />
               <AssignRole />
+            </RequireAuth>
+
+            <RequireAuth exact path='/factor/update/:id'>
+              <Header />
+              <SideMenu />
+              <UpdateFactor />
             </RequireAuth>
             <Redirect to="/login" />
           </Switch>

@@ -33,7 +33,8 @@ const initialValues = {
 
 const useStyles = makeStyles(theme => ({
     pageContent: {
-        margin: theme.spacing(5),
+        margin: '50px 0 0 0',
+        width: '90%',
         padding: theme.spacing(3)
     },
     placeholder: {
@@ -63,23 +64,23 @@ export default function UpdateBioprocess() {
         },
     };
     const getBioprocess = async () => {
-    try {
-        let response = await axios.get(`https://backend-ic7841.herokuapp.com/api/private/bioprocess/${id}`, config);
-        setValues(response.data.bioprocess);
-        console.log(response.data.bioprocess);
-        setLoading(false);        
-    } catch (error) {
-        setTimeout(() => {
-        setOpen(false);
-        setTimeout(() => {
-            setError("");
-        }, 2000);
+        try {
+            let response = await axios.get(`https://backend-ic7841.herokuapp.com/api/private/bioprocess/${id}`, config);
+            setValues(response.data.bioprocess);
+            console.log(response.data.bioprocess);
+            setLoading(false);        
+        } catch (error) {
+            setTimeout(() => {
+            setOpen(false);
+            setTimeout(() => {
+                setError("");
+            }, 2000);
 
-        }, 5000);
-        setOpen(true);
-        setLoading(false);
-        return setError("Authentication failed!");
-    }
+            }, 5000);
+            setOpen(true);
+            setLoading(false);
+            return setError("Authentication failed!");
+        }
     }
     
     const validate = (fieldValues = values) => {

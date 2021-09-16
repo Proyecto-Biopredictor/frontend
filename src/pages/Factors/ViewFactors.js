@@ -27,7 +27,7 @@ import axios from "axios";
 const useStyles = makeStyles((theme) => ({
     table: {
         width: '90%',
-        margin: '50px 0 0 50px'
+        margin: '50px 0 0 0'
     },
     thead: {
         '& > *': {
@@ -159,27 +159,30 @@ export default function ViewFactors() {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} color="primary">
-                        Disagree
+                        Rechazar
                     </Button>
                     <Button onClick={handleAccept} color="primary">
-                        Agree
+                        Aceptar
                     </Button>
                 </DialogActions>
             </Dialog>
 
 
-            <ButtonBase
-                className={'MuiButton-label'}
-                component={Link} to={'/factor/create/'}
-            >
-                <PageHeader
-                    title="Información sobre los factores"
-                    subTitle="Si quiere agregar un factor, haz click acá"
-                    icon={<InfoIcon fontSize="large"
-                    />}
+            <PageHeader
+                title="Información sobre los factores"
+                icon={<InfoIcon fontSize="large"
+                />}
                 />
-            </ButtonBase>
-
+            
+            <Grid
+                container
+                direction="row"
+                justifyContent="center"
+                alignItems="center"
+                className={classes.table}
+            >
+                <Button color="primary" variant="contained" component={Link} to={`/factor/create/`}>Crear factor</Button>
+            </Grid>
             <div className={classes.placeholder} hidden={!loading}>
                 <Fade
                     in={loading}
@@ -219,7 +222,7 @@ export default function ViewFactors() {
                         <TableHead>
                             <TableRow className={classes.thead}>
                                 <TableCell>Nombre</TableCell>
-                                <TableCell>¿Es serie temporal?</TableCell>
+                                <TableCell>¿Es valor dependiente?</TableCell>
                                 <TableCell>Tipo</TableCell>
                                 <TableCell className={classes.placeholder}>Acciones</TableCell>
                             </TableRow>
@@ -230,13 +233,13 @@ export default function ViewFactors() {
                                     <TableCell>{factor.name}</TableCell>
                                     <TableCell>
                                         <Controls.Checkbox
-                                            name="isTimeSeries"
+                                            name="isDependent"
                                             label=""
-                                            value={factor.isTimeSeries}
+                                            value={factor.isDependent}
                                             disabled={true}
                                         />
                                     </TableCell>
-                                    <TableCell>{factor.type === 'regresion' ? 'Regresión' : 'Clasificación'}</TableCell>
+                                    <TableCell>{factor.type === 'value' ? 'Valor' : 'Imagen'}</TableCell>
                                     <TableCell>
                                         <Grid
                                             container
@@ -244,11 +247,10 @@ export default function ViewFactors() {
                                             justifyContent="center"
                                             alignItems="center"
                                         >
-                                            <Button color="primary" variant="contained" style={{ marginRight: 10 }} component={Link} to={`/factor/update/${factor._id}`}>Edit</Button>
-                                            <Button className={classes.button} variant="contained" style={{ marginRight: 10 }} component={Link} to={`/factor/show/${factor._id}`}>Show</Button>
+                                            <Button color="primary" variant="contained" style={{ marginRight: 10 }} component={Link} to={`/factor/update/${factor._id}`}>Editar</Button>
                                             <Button color="secondary" variant="contained" onClick={() => {
-                                                setOpenDialog(true); setFactorId(factor._id);
-                                            }}>Delete</Button>
+                                                setOpenDialog(true); setFactorId(factor._id); console.log(factor._id);
+                                            }}>Eliminar</Button>
                                         </Grid>
                                     </TableCell>
                                 </TableRow>

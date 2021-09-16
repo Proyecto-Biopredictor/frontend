@@ -30,7 +30,8 @@ const initialBValues = {
 
 const useStyles = makeStyles(theme => ({
     pageContent: {
-        margin: theme.spacing(5),
+        margin: '50px 0 0 0',
+        width: '90%',
         padding: theme.spacing(3)
     },
     placeholder: {

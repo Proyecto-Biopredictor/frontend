@@ -13,7 +13,7 @@ import CircularProgress from "@material-ui/core/CircularProgress";
 import Fade from "@material-ui/core/Fade";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import { addFactor } from "../../services/factorService";
+import { editFactor } from "../../services/factorService";
 
 const typeItems = [
   { id: "value", title: "Valor" },
@@ -24,7 +24,7 @@ const initialValues = {
   name: "",
   description: "",
   isDependent: false,
-  type: "value",
+  type: "",
   bioprocessID: "",
 };
 
@@ -39,12 +39,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function CreateFactor() {
+export default function Updatefactor() {
   const classes = useStyles();
   const [loading, setLoading] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [error, setError] = useState("");
   const { id } = useParams();
+
+  useEffect(() => {
+    let unmounted = false;
+    getFactor();
+    return () => { unmounted = true; };
+  }, []);
 
   const config = {
     headers: {
@@ -72,6 +78,25 @@ export default function CreateFactor() {
   const { values, setValues, errors, setErrors, handleInputChange, resetForm } =
     useForm(initialValues, true, validate);
 
+  const getFactor = async () => {
+    try {
+        let response = await axios.get(`https://backend-ic7841.herokuapp.com/api/private/factor/${id}`, config);
+        setValues(response.data.factor);
+        setLoading(false);        
+    } catch (error) {
+        setTimeout(() => {
+        setOpen(false);
+        setTimeout(() => {
+            setError("");
+        }, 2000);
+
+        }, 5000);
+        setOpen(true);
+        setLoading(false);
+        return setError("Authentication failed!");
+    }
+  }
+
   const confirmPost = () => {
     setOpen(true);
     resetForm({});
@@ -84,9 +109,8 @@ export default function CreateFactor() {
     if (validate()) {
       setLoading(true);
       try {
-        values.bioprocessID = id;
         console.log(values);
-        addFactor(values).then(confirmPost).catch(console.log);
+        editFactor(id,values).then(confirmPost).catch(console.log);
         
         setLoading(false);
       } catch (error) {
@@ -104,7 +128,7 @@ export default function CreateFactor() {
   return (
     <div>
       <PageHeader
-        title="Añadir nuevo factor"        
+        title="Editar Factor"        
         icon={<EcoIcon fontSize="large" color="primary" />}
       />
       <div className={classes.placeholder} hidden={!loading}>
@@ -137,7 +161,7 @@ export default function CreateFactor() {
                 </IconButton>
               }
             >
-              {error ? error : "Se ha agregado un nuevo factors!"}
+              {error ? error : "Se ha editado el factor!"}
             </Alert>
           </Collapse>
           <Grid container>
@@ -173,7 +197,7 @@ export default function CreateFactor() {
               />
 
               <div>
-                <Controls.Button type="submit" text="Agregar" />
+                <Controls.Button type="submit" text="Editar" />
 
                 <Controls.Button
                   text="Limpiar"

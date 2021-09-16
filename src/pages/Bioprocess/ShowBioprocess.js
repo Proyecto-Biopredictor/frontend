@@ -39,7 +39,7 @@ const useStyles = makeStyles(theme => ({
   },
   table: {
     width: '90%',
-    margin: '50px 0 0 50px'
+    margin: '50px 0 0 0'
   },
   thead: {
     '& > *': {
@@ -66,18 +66,13 @@ const useStyles = makeStyles(theme => ({
     color: '#FFFFFF'
   },
   pageContent: {
-    margin: theme.spacing(5),
+    width: '90%',
+    margin: '50px 0 0 0',
     padding: theme.spacing(3),
   },
   center: {
     display: 'flex',
     textAlign: 'center'
-  },
-  root: {
-    width: '100%',
-    '& > * + *': {
-      marginTop: theme.spacing(2),
-    },
   },
 }));
 
@@ -369,8 +364,7 @@ export default function ShowBioprocesses() {
 
 
       <PageHeader
-        title="Información detallada sobre un bioproceso"
-        subTitle="Los datos contenidos no son modificables"
+        title="Información detallada sobre un bioproceso"      
         icon={<InfoIcon fontSize="large"
         />}
       />
@@ -413,10 +407,8 @@ export default function ShowBioprocesses() {
         </Card>
       </Grid>
       <br />
-      <br />
       <PageHeader
-        title="Lugares asociados al bioproceso"
-        subTitle="Acá se muestran todos los lugares relacionados a este bioproceso"
+        title="Lugares asociados al bioproceso"        
         icon={<PlaceIcon fontSize="large"
         />}
       />
@@ -460,8 +452,8 @@ export default function ShowBioprocesses() {
                           justifyContent="center"
                           alignItems="center"
                         >
-                          <Button className={classes.button} variant="contained" style={{ marginRight: 10 }} component={Link} to={`/place/show/${bioprocess._id}`}>Show</Button>
-                          <Button color="primary" variant="contained" style={{ marginRight: 10 }}>Add data</Button>
+                          <Button className={classes.button} variant="contained" style={{ marginRight: 10 }} component={Link} to={`/place/show/${bioprocess._id}`}>Mostrar</Button>
+                          <Button color="primary" variant="contained" style={{ marginRight: 10 }}>Agregar</Button>
                         </Grid>
                       </TableCell>
                     </TableRow>
@@ -660,12 +652,6 @@ export default function ShowBioprocesses() {
       
       <br />
       <br />
-      <PageHeader
-        title="Asociar factor a bioproceso"
-        subTitle="Si el factor no existe, rellene los campos para crear uno nuevo"
-        icon={<InfoIcon fontSize="large"
-        />}
-      />
       <div className={classes.placeholder} hidden={!loadingAso}>
         <Fade
           in={loadingAso}
@@ -677,9 +663,11 @@ export default function ShowBioprocesses() {
           <CircularProgress />
         </Fade>
         <br />
-      </div>
-      <CreateFactor id={id}/>
+      </div>      
       <ViewFactors id={id}/>
+      <br/>
+      <br/>
+      <br/>
       
     </div>
   );
