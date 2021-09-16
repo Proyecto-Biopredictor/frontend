@@ -103,7 +103,6 @@ export default function CreateBioprocess() {
         <div>
             <PageHeader
                 title="Añadir nuevo Bioproceso"
-                subTitle="Debe llenar todos los campos"
                 icon={<EcoIcon fontSize="large" color='primary'
                 />}
             />
