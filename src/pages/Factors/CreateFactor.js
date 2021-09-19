@@ -85,7 +85,6 @@ export default function CreateFactor() {
       setLoading(true);
       try {
         values.bioprocessID = id;
-        console.log(values);
         addFactor(values).then(confirmPost).catch(console.log);
         
         setLoading(false);
