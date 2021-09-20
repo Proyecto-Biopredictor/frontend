@@ -452,8 +452,9 @@ export default function ShowBioprocesses() {
                           justifyContent="center"
                           alignItems="center"
                         >
-                          <Button className={classes.button} variant="contained" style={{ marginRight: 10 }} component={Link} to={`/place/show/${place._id}`}>Mostrar</Button>
-                          <Button color="primary" variant="contained" style={{ marginRight: 10 }} component={Link} to={`/data/${id}/${place._id}`}>Agregar datos</Button>
+                          <Button className={classes.button} variant="contained" style={{ marginRight: 10 }} component={Link} to={`/place/show/${place._id}`}>Info</Button>
+                          <Button color="inherit" variant="contained" style={{ marginRight: 10 }} component={Link} to={`/data/show/${id}/${place._id}`}>Mostrar datos</Button>
+                          <Button color="primary" variant="contained" style={{ marginRight: 10 }} component={Link} to={`/data/add/${id}/${place._id}`}>Agregar datos</Button>
                         </Grid>
                       </TableCell>
                     </TableRow>
