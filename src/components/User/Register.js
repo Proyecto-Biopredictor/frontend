@@ -10,7 +10,10 @@ import React from 'react'
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Fade from '@material-ui/core/Fade';
 import { makeStyles } from '@material-ui/core/styles';
-
+import Alert from '@material-ui/lab/Alert';
+import IconButton from '@material-ui/core/IconButton';
+import Collapse from '@material-ui/core/Collapse';
+import CloseIcon from '@material-ui/icons/Close';
 const Register = ({ }) => {
   const history = useHistory();
   const [loading, setLoading] = React.useState(true);
@@ -24,6 +27,9 @@ const Register = ({ }) => {
   const [error, setError] = useState("");
   const [items, setItems] = React.useState([{ name: "" }]);
   const [selected, setSelected] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
+  const [inputBioprocess, setInputBioprocess] = React.useState('');
+
   const config = {
     headers: {
       "Content-Type": "application/json",
@@ -33,6 +39,7 @@ const Register = ({ }) => {
   function wrapValues(bioprocesses) {
     setItems(bioprocesses);
     setLoading(false);
+
   }
 
   useEffect(() => {
@@ -70,6 +77,18 @@ const Register = ({ }) => {
     { id: 'admin', title: 'Administrador' },
   ]
 
+  function cleanForm() {
+    setUser(false);
+    setRole("investigador");
+    setType("user");
+    setPassword("");
+    setConfirmPassword("");
+    setEmail("");
+    setUsername("");
+    setSelected(false);
+    setInputBioprocess("");
+
+  }
   const registerHandler = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -109,7 +128,11 @@ const Register = ({ }) => {
         config
       );
       setLoading(false);
-      history.push("/");
+      setOpen(true);
+      cleanForm();
+      setTimeout(function () {
+        setOpen(false);
+      }, 6000);
     } catch (error) {
       console.log(error);
       setError(error.response.data.error);
@@ -122,8 +145,8 @@ const Register = ({ }) => {
 
   const useStyles = makeStyles(() => ({
     placeholder: {
-        height: 40,
-        textAlign: 'center'
+      height: 40,
+      textAlign: 'center'
     },
   }));
   const classes = useStyles();
@@ -143,6 +166,25 @@ const Register = ({ }) => {
           </Fade>
           <br />
         </div>
+        <Collapse in={open}>
+          <Alert
+            severity={error ? "error" : "success"}
+            action={
+              <IconButton
+                aria-label="close"
+                color="inherit"
+                size="small"
+                onClick={() => {
+                  setOpen(false);
+                }}
+              >
+                <CloseIcon fontSize="inherit" />
+              </IconButton>
+            }
+          >
+            {error ? error : 'Se ha creado un nuevo usuario!'}
+          </Alert>
+        </Collapse>
         <h3 className="register-screen__title">Crear una cuenta</h3>
         {error && <span className="error-message">{error}</span>}
         <div className="form-group">
@@ -177,6 +219,7 @@ const Register = ({ }) => {
             placeholder="Contraseña"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
+            
           />
         </div>
         <div className="form-group">
@@ -225,6 +268,10 @@ const Register = ({ }) => {
             renderInput={(params) => <TextField {...params} label="Bioprocesos" variant="outlined" />}
             disabled={loading}
             disableClearable
+            inputValue={inputBioprocess}
+            onInputChange={(event, newInputValue) => {
+              setInputBioprocess(newInputValue);
+            }}
           />
           <br />
           <Controls.RadioGroup

@@ -108,6 +108,7 @@ export default function SideMenu() {
               <ListItemText primary={'Lugares'}/>
             </ListItem>
           </List>
+          <Divider />
         </div>
       </Drawer>
       

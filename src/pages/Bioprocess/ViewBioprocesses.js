@@ -55,6 +55,11 @@ const useStyles = makeStyles((theme) => ({
         height: 40,
         textAlign: 'center'
     },
+    placeholderLoading: {
+        height: 40,
+        textAlign: 'center',
+        width: '90%'
+    },
     button: {
         background: '#4287f5',
         color: '#FFFFFF'
@@ -185,7 +190,8 @@ export default function ViewBioprocess() {
                 <Button color="primary" variant="contained" component={Link} to={`/bioprocess/create/`}>Crear bioproceso</Button>
             </Grid>
 
-            <div className={classes.placeholder} hidden={!loading}>
+            <div className={classes.placeholderLoading} hidden={!loading}>
+                <br/>
                 <Fade
                     in={loading}
                     style={{

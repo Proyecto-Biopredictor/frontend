@@ -39,7 +39,8 @@ const useStyles = makeStyles(theme => ({
     },
     placeholder: {
         height: 40,
-        textAlign: 'center'
+        textAlign: 'center',
+        width: '90%'
     },
 }))
 
@@ -108,19 +109,19 @@ export default function UpdateBioprocess() {
 
     const confirmPatch = () => {
         setOpen(true);
+        setLoading(false);
         setTimeout(function () {
-            setOpen(false);
-            history.push("/bioprocess/")
+            setOpen(false);            
         }, 2000);
     }
 
-    const handleSubmit = e => {
+    const handleSubmit = async e => {
         e.preventDefault()
         if (validate()) {
             setLoading(true);
             try {
-                editBioprocess(id,values).then(confirmPatch).catch(console.log);
-                setLoading(false);
+                await editBioprocess(id,values).then(confirmPatch).catch(console.log);
+                
             }
 
             catch (error) {

@@ -10,6 +10,10 @@ import React from 'react'
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Fade from '@material-ui/core/Fade';
 import { makeStyles } from '@material-ui/core/styles';
+import Alert from '@material-ui/lab/Alert';
+import IconButton from '@material-ui/core/IconButton';
+import Collapse from '@material-ui/core/Collapse';
+import CloseIcon from '@material-ui/icons/Close';
 
 const AssignRole = ({ }) => {
     const history = useHistory();
@@ -20,6 +24,9 @@ const AssignRole = ({ }) => {
     const [selectedUser, setSelectedUser] = React.useState(false);
     const [selectedBioprocess, setSelectedBioprocess] = React.useState(false);
     const [roleType, setRole] = useState("investigador");
+    const [open, setOpen] = React.useState(false);
+    const [inputUser, setInputUser] = React.useState('');
+    const [inputBioprocess, setInputBioprocess] = React.useState('');
     const config = {
         headers: {
             "Content-Type": "application/json",
@@ -37,6 +44,14 @@ const AssignRole = ({ }) => {
         setBioprocesses(bioprocesses);
         setLoading(false);
         setSelectedUser(true);
+
+    }
+
+    function cleanForm() {
+        setSelectedBioprocess(false);
+        setRole("investigador");
+        setInputBioprocess("");
+        
     }
 
     async function getBio(userValue) {
@@ -122,9 +137,13 @@ const AssignRole = ({ }) => {
                 },
                 config
             );
-            setuserValue(users[0]);
+            await getBio(userValue);
             setLoading(false);
-            history.push("/");
+            setOpen(true);
+            cleanForm();
+            setTimeout(function () {
+                setOpen(false);
+            }, 6000);
         } catch (error) {
             console.log(error);
             setError(error.response.data.error);
@@ -156,9 +175,29 @@ const AssignRole = ({ }) => {
                     >
                         <CircularProgress />
                     </Fade>
-                    <br/>
+                    <br />
                 </div>
-                
+
+                <Collapse in={open}>
+                    <Alert
+                        severity={error ? "error" : "success"}
+                        action={
+                            <IconButton
+                                aria-label="close"
+                                color="inherit"
+                                size="small"
+                                onClick={() => {
+                                    setOpen(false);
+                                }}
+                            >
+                                <CloseIcon fontSize="inherit" />
+                            </IconButton>
+                        }
+                    >
+                        {error ? error : 'Se ha asociado el rol!'}
+                    </Alert>
+                </Collapse>
+
                 <h3 className="register-screen__title">Asignar rol a usuario existente</h3>
                 {error && <span className="error-message">{error}</span>}
                 <br />
@@ -179,6 +218,10 @@ const AssignRole = ({ }) => {
                         renderInput={(params) => <TextField {...params} label="Usuarios" variant="outlined" />}
                         disabled={loading}
                         disableClearable
+                        inputValue={inputUser}
+                        onInputChange={(event, newInputValue) => {
+                            setInputUser(newInputValue);
+                        }}
                     />
                     <br />
                     <Autocomplete
@@ -194,6 +237,10 @@ const AssignRole = ({ }) => {
                         renderInput={(params) => <TextField {...params} label="Bioprocesos" variant="outlined" />}
                         disabled={!selectedUser}
                         disableClearable
+                        inputValue={inputBioprocess}
+                        onInputChange={(event, newInputValue) => {
+                            setInputBioprocess(newInputValue);
+                        }}
                     />
                     <br />
                     <Controls.RadioGroup

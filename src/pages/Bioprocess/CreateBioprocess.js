@@ -36,7 +36,8 @@ const useStyles = makeStyles(theme => ({
     },
     placeholder: {
         height: 40,
-        textAlign: 'center'
+        textAlign: 'center',
+        width: '90%'
     },
 }))
 
@@ -73,17 +74,19 @@ export default function CreateBioprocess() {
         resetForm({
 
         })
+        setLoading(false);
         setTimeout(function () {
             setOpen(false);
         }, 6000);
+        
     }
-    const handleSubmit = e => {
+    const handleSubmit = async e => {
         e.preventDefault()
         if (validate()) {
             setLoading(true);
             try {
-                addBioprocess(values).then(confirmPost).catch(console.log);
-                setLoading(false);
+                console.log(values);
+                await addBioprocess(values).then(confirmPost).catch(console.log);                
             }
 
             catch (error) {

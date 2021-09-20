@@ -55,6 +55,11 @@ const useStyles = makeStyles((theme) => ({
         height: 40,
         textAlign: 'center'
     },
+    placeholderLoading: {
+        height: 40,
+        textAlign: 'center',
+        width: '90%'
+    },
     button: {
         background: '#4287f5',
         color: '#FFFFFF'
@@ -183,7 +188,7 @@ export default function ViewPlace() {
                 <Button color="primary" variant="contained" component={Link} to={`/place/create/`}>Crear lugar</Button>
             </Grid>
 
-            <div className={classes.placeholder} hidden={!loading}>
+            <div className={classes.placeholderLoading} hidden={!loading}>
                 <Fade
                     in={loading}
                     style={{

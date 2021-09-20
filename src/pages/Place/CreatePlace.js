@@ -30,7 +30,8 @@ const useStyles = makeStyles(theme => ({
     },
     placeholder: {
         height: 40,
-        textAlign: 'center'
+        textAlign: 'center',
+        width: '90%'
     },
     test: {
         justifyContent: 'center'
@@ -70,6 +71,7 @@ export default function CreatePlace() {
 
     const confirmPost = () => {
         setOpen(true);
+        setLoading(false);
         resetForm({
 
         })
@@ -77,13 +79,13 @@ export default function CreatePlace() {
             setOpen(false);
         }, 6000);
     }
-    const handleSubmit = e => {
+    const handleSubmit = async e => {
         e.preventDefault()
         if (validate()) {
             setLoading(true);
             try {
-                addPlace(values).then(confirmPost).catch(console.log);
-                setLoading(false);
+                await addPlace(values).then(confirmPost).catch(console.log);
+                
             }
 
             catch (error) {

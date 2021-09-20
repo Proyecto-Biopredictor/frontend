@@ -36,6 +36,7 @@ const useStyles = makeStyles((theme) => ({
   placeholder: {
     height: 40,
     textAlign: "center",
+    width: '90%'
   },
 }));
 
@@ -74,20 +75,21 @@ export default function CreateFactor() {
 
   const confirmPost = () => {
     setOpen(true);
+    setLoading(false);
     resetForm({});
     setTimeout(function () {
       setOpen(false);
     }, 6000);
   };
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (validate()) {
       setLoading(true);
       try {
         values.bioprocessID = id;
-        addFactor(values).then(confirmPost).catch(console.log);
+        await addFactor(values).then(confirmPost).catch(console.log);
         
-        setLoading(false);
+        
       } catch (error) {
         setLoading(false);
         setTimeout(() => {

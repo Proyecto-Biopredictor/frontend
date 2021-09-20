@@ -36,6 +36,7 @@ const useStyles = makeStyles((theme) => ({
   placeholder: {
     height: 40,
     textAlign: "center",
+    width: '90%'
   },
 }));
 
