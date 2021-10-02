@@ -17,7 +17,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
-
+import Tooltip from '@mui/material/Tooltip';
 import InfoIcon from '@material-ui/icons/Info';
 import PageHeader from "../../components/PageHeader";
 import TableContainer from '@material-ui/core/TableContainer';
@@ -174,11 +174,11 @@ export default function ViewBioprocess() {
 
             <PageHeader
                 title="Información sobre los bioprocesos"
-                
+
                 icon={<InfoIcon fontSize="large"
                 />}
             />
-           
+
 
             <Grid
                 container
@@ -191,7 +191,7 @@ export default function ViewBioprocess() {
             </Grid>
 
             <div className={classes.placeholderLoading} hidden={!loading}>
-                <br/>
+                <br />
                 <Fade
                     in={loading}
                     style={{
@@ -201,7 +201,7 @@ export default function ViewBioprocess() {
                 >
                     <CircularProgress />
                 </Fade>
-                
+
             </div>
             <Collapse in={open}>
                 <Alert
@@ -255,11 +255,17 @@ export default function ViewBioprocess() {
                                             justifyContent="center"
                                             alignItems="center"
                                         >
-                                            <Button color="primary" variant="contained" style={{ marginRight: 10 }} component={Link} to={`/bioprocess/update/${bioprocess._id}`}><ModeEditIcon /></Button>
+                                            <Tooltip title="Editar">
+                                                <Button color="primary" variant="contained" style={{ marginRight: 10 }} component={Link} to={`/bioprocess/update/${bioprocess._id}`}><ModeEditIcon /></Button>
+                                            </Tooltip>
+                                            <Tooltip title="Informacion">
                                             <Button className={classes.button} variant="contained" style={{ marginRight: 10 }} component={Link} to={`/bioprocess/show/${bioprocess._id}`}><InfoIcon /></Button>
-                                            <Button color="secondary" variant="contained" onClick={() => {
-                                                setOpenDialog(true); setBioprocessId(bioprocess._id);
-                                            }}><DeleteIcon /></Button>
+                                            </Tooltip>
+                                            <Tooltip title="Eliminar">
+                                                <Button color="secondary" variant="contained" onClick={() => {
+                                                    setOpenDialog(true); setBioprocessId(bioprocess._id);
+                                                }}><DeleteIcon /></Button>
+                                            </Tooltip>
                                         </Grid>
                                     </TableCell>
                                 </TableRow>
