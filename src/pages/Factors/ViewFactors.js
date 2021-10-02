@@ -17,6 +17,8 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
 import { useParams } from "react-router-dom";
 
+import DeleteIcon from '@material-ui/icons/Delete';
+import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import InfoIcon from '@material-ui/icons/Info';
 import PageHeader from "../../components/PageHeader";
 import TableContainer from '@material-ui/core/TableContainer';
@@ -247,10 +249,10 @@ export default function ViewFactors() {
                                             justifyContent="center"
                                             alignItems="center"
                                         >
-                                            <Button color="primary" variant="contained" style={{ marginRight: 10 }} component={Link} to={`/factor/update/${factor._id}`}>Editar</Button>
+                                            <Button color="primary" variant="contained" style={{ marginRight: 10 }} component={Link} to={`/factor/update/${factor._id}`}><ModeEditIcon /></Button>
                                             <Button color="secondary" variant="contained" onClick={() => {
                                                 setOpenDialog(true); setFactorId(factor._id); console.log(factor._id);
-                                            }}>Eliminar</Button>
+                                            }}><DeleteIcon /></Button>
                                         </Grid>
                                     </TableCell>
                                 </TableRow>

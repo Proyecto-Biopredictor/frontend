@@ -245,7 +245,7 @@ export default function ViewPlace() {
                                             justifyContent="center"
                                             alignItems="center"
                                         >                                        
-                                            <Button className={classes.button} variant="contained" style={{ marginRight: 10 }} component={Link} to={`/place/show/${place._id}`}>Más información</Button>
+                                            <Button className={classes.button} variant="contained" style={{ marginRight: 10 }} component={Link} to={`/place/show/${place._id}`}><InfoIcon /></Button>
                                         </Grid>
                                     </TableCell>
                                 </TableRow>

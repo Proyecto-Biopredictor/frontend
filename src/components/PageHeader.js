@@ -7,13 +7,13 @@ const useStyles = makeStyles(theme => ({
         width: '90%'
     },
     pageHeader:{
-        padding:theme.spacing(4),
+        padding:theme.spacing(2),
         display:'flex',
         marginBottom:theme.spacing(2),
     },
     pageIcon:{
         display:'inline-block',
-        padding:theme.spacing(2),
+        padding:theme.spacing(1),
         color:'#3c44b1'
     },
     pageTitle:{
@@ -36,7 +36,7 @@ export default function PageHeader(props) {
                 </Card>
                 <div className={classes.pageTitle}>
                     <Typography
-                        variant="h4"
+                        variant="h5"
                         component="div">
                         {title}</Typography>
                     <Typography

@@ -7,6 +7,8 @@ import { Alert, AlertTitle } from '@material-ui/lab/';
 import IconButton from '@material-ui/core/IconButton';
 import Collapse from '@material-ui/core/Collapse';
 import CloseIcon from '@material-ui/icons/Close';
+import DeleteIcon from '@material-ui/icons/Delete';
+import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Fade from '@material-ui/core/Fade';
 import Dialog from '@material-ui/core/Dialog';
@@ -16,12 +18,10 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
 
-
 import InfoIcon from '@material-ui/icons/Info';
 import PageHeader from "../../components/PageHeader";
 import TableContainer from '@material-ui/core/TableContainer';
 import TablePagination from '@material-ui/core/TablePagination';
-import ButtonBase from '@material-ui/core/ButtonBase';
 import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
@@ -255,11 +255,11 @@ export default function ViewBioprocess() {
                                             justifyContent="center"
                                             alignItems="center"
                                         >
-                                            <Button color="primary" variant="contained" style={{ marginRight: 10 }} component={Link} to={`/bioprocess/update/${bioprocess._id}`}>Editar</Button>
-                                            <Button className={classes.button} variant="contained" style={{ marginRight: 10 }} component={Link} to={`/bioprocess/show/${bioprocess._id}`}>Más información</Button>
+                                            <Button color="primary" variant="contained" style={{ marginRight: 10 }} component={Link} to={`/bioprocess/update/${bioprocess._id}`}><ModeEditIcon /></Button>
+                                            <Button className={classes.button} variant="contained" style={{ marginRight: 10 }} component={Link} to={`/bioprocess/show/${bioprocess._id}`}><InfoIcon /></Button>
                                             <Button color="secondary" variant="contained" onClick={() => {
                                                 setOpenDialog(true); setBioprocessId(bioprocess._id);
-                                            }}>Eliminar</Button>
+                                            }}><DeleteIcon /></Button>
                                         </Grid>
                                     </TableCell>
                                 </TableRow>
