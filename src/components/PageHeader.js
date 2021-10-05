@@ -29,7 +29,7 @@ export default function PageHeader(props) {
     const classes = useStyles();
     const { title, subTitle, icon } = props;
     return (
-        <Paper elevation={0} square className={classes.pageForm}>
+        <Paper elevation={0} variant="outlined" className={classes.pageForm}>
             <div className={classes.pageHeader}>
                 <Card className={classes.pageIcon}>
                     {icon}

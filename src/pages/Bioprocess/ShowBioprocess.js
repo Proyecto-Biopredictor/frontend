@@ -371,6 +371,7 @@ export default function ShowBioprocesses() {
         icon={<InfoIcon fontSize="large"
         />}
       />
+      <br />
       <Grid
         container
         direction="row"
@@ -616,7 +617,7 @@ export default function ShowBioprocesses() {
 
                 <Controls.Button
                   type="submit"
-                  text="Agregar y asociar"
+                  text="AGREGAR Y ASOCIAR"
                 />
               </Grid>
             </Grid>

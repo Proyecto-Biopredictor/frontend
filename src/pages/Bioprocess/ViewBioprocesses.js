@@ -22,6 +22,8 @@ import InfoIcon from '@material-ui/icons/Info';
 import PageHeader from "../../components/PageHeader";
 import TableContainer from '@material-ui/core/TableContainer';
 import TablePagination from '@material-ui/core/TablePagination';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
@@ -62,8 +64,16 @@ const useStyles = makeStyles((theme) => ({
     },
     button: {
         background: '#4287f5',
-        color: '#FFFFFF'
+        color: '#FFFFFF',
+        justifyContent: 'center'
     },
+    paper: {
+        width: '100%',
+        height: '100%',
+        backgroundColor: 'white',
+        padding: 8
+    },
+
 }));
 
 
@@ -187,7 +197,17 @@ export default function ViewBioprocess() {
                 alignItems="center"
                 className={classes.table}
             >
-                <Button color="primary" variant="contained" component={Link} to={`/bioprocess/create/`}>Crear bioproceso</Button>
+                <Paper className={classes.paper} elevation={3}>
+                    <Box sx={{ width: 'auto' }} padding>
+                        <Typography variant="h6" align="center">¿Se necesita un nuevo bioproceso?</Typography>
+
+                    </Box>
+                    <Box textAlign='center'>
+                        <Button color="primary" variant="contained" component={Link} to={`/bioprocess/create/`}>Crear bioproceso</Button>
+                    </Box>
+
+                </Paper>
+
             </Grid>
 
             <div className={classes.placeholderLoading} hidden={!loading}>
@@ -258,8 +278,8 @@ export default function ViewBioprocess() {
                                             <Tooltip title="Editar">
                                                 <Button color="primary" variant="contained" style={{ marginRight: 10 }} component={Link} to={`/bioprocess/update/${bioprocess._id}`}><ModeEditIcon /></Button>
                                             </Tooltip>
-                                            <Tooltip title="Informacion">
-                                            <Button className={classes.button} variant="contained" style={{ marginRight: 10 }} component={Link} to={`/bioprocess/show/${bioprocess._id}`}><InfoIcon /></Button>
+                                            <Tooltip title="Información">
+                                                <Button className={classes.button} variant="contained" style={{ marginRight: 10 }} component={Link} to={`/bioprocess/show/${bioprocess._id}`}><InfoIcon /></Button>
                                             </Tooltip>
                                             <Tooltip title="Eliminar">
                                                 <Button color="secondary" variant="contained" onClick={() => {
