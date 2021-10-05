@@ -20,6 +20,7 @@ import ViewPlace from './pages/Place/ViewPlace';
 import CreatePlace from './pages/Place/CreatePlace';
 import CreateData from './pages/Data/CreateData';
 import ViewData from './pages/Data/ViewData';
+import { esES } from '@mui/material/locale';
 
 const theme = createTheme({
   palette: {
@@ -47,7 +48,7 @@ const theme = createTheme({
       disableRipple: true
     }
   }
-})
+},esES,);
 
 
 const useStyles = makeStyles({

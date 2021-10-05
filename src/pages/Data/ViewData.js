@@ -18,6 +18,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
 import { green, red } from '@material-ui/core/colors';
 import { getData } from "../../services/dataService";
+import Paper from '@mui/material/Paper';
 
 const useStyles = makeStyles((theme) => ({
     root: {

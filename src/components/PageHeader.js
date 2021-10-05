@@ -7,13 +7,13 @@ const useStyles = makeStyles(theme => ({
         width: '90%'
     },
     pageHeader:{
-        padding:theme.spacing(4),
+        padding:theme.spacing(2),
         display:'flex',
         marginBottom:theme.spacing(2),
     },
     pageIcon:{
         display:'inline-block',
-        padding:theme.spacing(2),
+        padding:theme.spacing(1),
         color:'#3c44b1'
     },
     pageTitle:{
@@ -29,14 +29,14 @@ export default function PageHeader(props) {
     const classes = useStyles();
     const { title, subTitle, icon } = props;
     return (
-        <Paper elevation={0} square className={classes.pageForm}>
+        <Paper elevation={0} variant="outlined" className={classes.pageForm}>
             <div className={classes.pageHeader}>
                 <Card className={classes.pageIcon}>
                     {icon}
                 </Card>
                 <div className={classes.pageTitle}>
                     <Typography
-                        variant="h4"
+                        variant="h5"
                         component="div">
                         {title}</Typography>
                     <Typography

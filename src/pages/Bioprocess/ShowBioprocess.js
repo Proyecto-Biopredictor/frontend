@@ -14,12 +14,15 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import Fade from '@material-ui/core/Fade';
 import Controls from "../../components/controls/Controls";
 import axios from "axios";
+import AddIcon from '@mui/icons-material/Add';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import PlaceIcon from '@material-ui/icons/Place';
 import { Link } from 'react-router-dom';
 import TableContainer from '@material-ui/core/TableContainer';
 import TablePagination from '@material-ui/core/TablePagination';
 import { Table, TableHead, TableCell, Paper, TableRow, TableBody, Button, CssBaseline } from '@material-ui/core'
 import { useForm, Form } from '../../components/useForm';
+import Tooltip from '@mui/material/Tooltip';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
 import Divider from '@material-ui/core/Divider';
@@ -368,6 +371,7 @@ export default function ShowBioprocesses() {
         icon={<InfoIcon fontSize="large"
         />}
       />
+      <br />
       <Grid
         container
         direction="row"
@@ -452,9 +456,22 @@ export default function ShowBioprocesses() {
                           justifyContent="center"
                           alignItems="center"
                         >
-                          <Button className={classes.button} variant="contained" style={{ marginRight: 10 }} component={Link} to={`/place/show/${place._id}`}>Info</Button>
-                          <Button color="inherit" variant="contained" style={{ marginRight: 10 }} component={Link} to={`/data/show/${id}/${place._id}`}>Mostrar datos</Button>
-                          <Button color="primary" variant="contained" style={{ marginRight: 10 }} component={Link} to={`/data/add/${id}/${place._id}`}>Agregar datos</Button>
+                          <Tooltip title="Información">
+                            <Button className={classes.button} variant="contained" style={{ marginRight: 10 }} component={Link} to={`/place/show/${place._id}`}>
+                              <InfoIcon />
+                            </Button>
+                          </Tooltip>
+                          <Tooltip title="Mostrar datos">
+                            <Button color="inherit" variant="contained" style={{ marginRight: 10 }} component={Link} to={`/data/show/${id}/${place._id}`}>
+                              <VisibilityIcon />
+                            </Button>
+                          </Tooltip>
+                          <Tooltip title="Agregar datos">
+                          <Button color="primary" variant="contained" style={{ marginRight: 10 }} component={Link} to={`/data/add/${id}/${place._id}`}>
+                            <AddIcon />
+                          </Button>
+                          </Tooltip>
+                          
                         </Grid>
                       </TableCell>
                     </TableRow>
@@ -600,7 +617,7 @@ export default function ShowBioprocesses() {
 
                 <Controls.Button
                   type="submit"
-                  text="Agregar y asociar"
+                  text="AGREGAR Y ASOCIAR"
                 />
               </Grid>
             </Grid>

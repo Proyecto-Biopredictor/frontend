@@ -116,11 +116,11 @@ function CreateData() {
     const parseInput = () => {
         let data = {
             "bioprocessID": bid,
-            "placeID" : pid,
-            "values" : []
+            "placeID": pid,
+            "values": []
         };
 
-        inputFields.forEach(inputField =>{
+        inputFields.forEach(inputField => {
             let element = {};
             element.timestamp = inputField.fecha + "T" + inputField.hora;
             element.values = {};
@@ -138,7 +138,7 @@ function CreateData() {
         e.preventDefault();
 
         let data = parseInput();
-        
+
         try {
             addData(data).then(cleanData(factorsObj));
         } catch (error) {
@@ -331,21 +331,15 @@ function CreateData() {
                             </Avatar>
                         </IconButton>
                     </Box>
-                    <Box
-                        sx={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            p: 10
-                        }}
-                    >
-                        <Button style={{ position: "fixed" }}
-                            className={classes.button}
-                            variant="contained"
-                            type="submit"
-                            color="primary"
-                            onClick={handleSubmit}
-                        >Agregar datos</Button>
-                    </Box>
+                </Box>
+                <Box>
+                    <Button style={{ position: "fixed" }}
+                        className={classes.button}
+                        variant="contained"
+                        type="submit"
+                        color="primary"
+                        onClick={handleSubmit}
+                    >Guardar datos ingresados</Button>
                 </Box>
             </form>
         </Container>

@@ -16,11 +16,15 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
 import { useParams } from "react-router-dom";
-
+import Tooltip from '@mui/material/Tooltip';
+import DeleteIcon from '@material-ui/icons/Delete';
+import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import InfoIcon from '@material-ui/icons/Info';
 import PageHeader from "../../components/PageHeader";
 import TableContainer from '@material-ui/core/TableContainer';
 import TablePagination from '@material-ui/core/TablePagination';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import axios from "axios";
 
@@ -57,7 +61,14 @@ const useStyles = makeStyles((theme) => ({
     },
     button: {
         background: '#4287f5',
-        color: '#FFFFFF'
+        color: '#FFFFFF',
+        justifyContent: 'center'
+    },
+    paper: {
+        width: '100%',
+        height: '100%',
+        backgroundColor: 'white',
+        padding: 8
     },
 }));
 
@@ -181,7 +192,15 @@ export default function ViewFactors() {
                 alignItems="center"
                 className={classes.table}
             >
-                <Button color="primary" variant="contained" component={Link} to={`/factor/create/${id}`}>Crear factor</Button>
+                <Paper className={classes.paper} elevation={3}>
+                    <Box sx={{ width: 'auto' }} padding>
+                        <Typography variant="h6" align="center">¿Se necesita un nuevo factor?</Typography>
+
+                    </Box>
+                    <Box textAlign='center'>
+                        <Button color="primary" variant="contained" component={Link} to={`/factor/create/${id}`}>Crear factor</Button>
+                    </Box>
+                </Paper>
             </Grid>
             <div className={classes.placeholder} hidden={!loading}>
                 <Fade
@@ -247,10 +266,14 @@ export default function ViewFactors() {
                                             justifyContent="center"
                                             alignItems="center"
                                         >
-                                            <Button color="primary" variant="contained" style={{ marginRight: 10 }} component={Link} to={`/factor/update/${factor._id}`}>Editar</Button>
+                                            <Tooltip title="Editar">
+                                                <Button color="primary" variant="contained" style={{ marginRight: 10 }} component={Link} to={`/factor/update/${factor._id}`}><ModeEditIcon /></Button>
+                                            </Tooltip>
+                                            <Tooltip title="Eliminar">
                                             <Button color="secondary" variant="contained" onClick={() => {
                                                 setOpenDialog(true); setFactorId(factor._id); console.log(factor._id);
-                                            }}>Eliminar</Button>
+                                            }}><DeleteIcon /></Button>
+                                            </Tooltip>
                                         </Grid>
                                     </TableCell>
                                 </TableRow>

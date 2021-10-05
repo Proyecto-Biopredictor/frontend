@@ -15,8 +15,9 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
-
-
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Tooltip from '@mui/material/Tooltip';
 import InfoIcon from '@material-ui/icons/Info';
 import PageHeader from "../../components/PageHeader";
 import TableContainer from '@material-ui/core/TableContainer';
@@ -62,8 +63,16 @@ const useStyles = makeStyles((theme) => ({
     },
     button: {
         background: '#4287f5',
-        color: '#FFFFFF'
+        color: '#FFFFFF',
+        justifyContent: 'center'
     },
+    paper: {
+        width: '100%',
+        height: '100%',
+        backgroundColor: 'white',
+        padding: 8
+    },
+
 }));
 
 
@@ -185,7 +194,16 @@ export default function ViewPlace() {
                 alignItems="center"
                 className={classes.table}
             >
-                <Button color="primary" variant="contained" component={Link} to={`/place/create/`}>Crear lugar</Button>
+                <Paper className={classes.paper} elevation={3}>
+                    <Box sx={{ width: 'auto' }} padding>
+                        <Typography variant="h6" align="center">¿Se necesita un nuevo lugar?</Typography>
+
+                    </Box>
+                    <Box textAlign='center'>
+                        <Button color="primary" variant="contained" component={Link} to={`/place/create/`}>Crear lugar</Button>
+                    </Box>
+                </Paper>
+                
             </Grid>
 
             <div className={classes.placeholderLoading} hidden={!loading}>
@@ -244,8 +262,10 @@ export default function ViewPlace() {
                                             direction="row"
                                             justifyContent="center"
                                             alignItems="center"
-                                        >                                        
-                                            <Button className={classes.button} variant="contained" style={{ marginRight: 10 }} component={Link} to={`/place/show/${place._id}`}>Más información</Button>
+                                        >
+                                            <Tooltip title="Información">                                        
+                                            <Button className={classes.button} variant="contained" style={{ marginRight: 10 }} component={Link} to={`/place/show/${place._id}`}><InfoIcon /></Button>
+                                            </Tooltip>
                                         </Grid>
                                     </TableCell>
                                 </TableRow>
