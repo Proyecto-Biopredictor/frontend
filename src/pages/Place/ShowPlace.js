@@ -13,6 +13,7 @@ import { useParams } from 'react-router-dom';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Fade from '@material-ui/core/Fade';
 import axios from "axios";
+import defaultImg from '../../assets/img/defaultImg.jpeg'
 
 const useStyles = makeStyles(theme => ({
     cardContainer: {
@@ -135,6 +136,7 @@ export default function ShowBioprocesses() {
                 icon={<InfoIcon fontSize="large"
                 />}
             />
+            <br/>
             <Grid
             container
             direction="row"
@@ -145,7 +147,7 @@ export default function ShowBioprocesses() {
 
               <CardMedia
                 className={classes.media}
-                image="https://material-ui.com/static/images/cards/contemplative-reptile.jpg"
+                image={image?image:defaultImg}
                 title="Contemplative Reptile"
               />
               <CardContent>

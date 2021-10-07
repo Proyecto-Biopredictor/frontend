@@ -26,9 +26,9 @@ export const addFactor = async (Factor) => {
     }
 }
 
-export const deleteFactor = async (id) => {
+export const deleteFactor = async (fid, bid) => {
     try {
-        return await axios.delete(`${FactorURL}/${id}`, config);
+        return await axios.delete(`${FactorURL}/${fid}/${bid}`, config);
     } catch (error) {
         return new TypeError("Authentication failed!");
     }

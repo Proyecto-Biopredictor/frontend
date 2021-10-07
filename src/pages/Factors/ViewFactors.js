@@ -147,7 +147,7 @@ export default function ViewFactors() {
     }, []);
 
     const deleteFactorData = async () => {
-        await deleteFactor(factorId);
+        await deleteFactor(factorId, id);
         getAllFactors();
     }
 

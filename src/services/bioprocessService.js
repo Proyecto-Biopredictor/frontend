@@ -28,9 +28,9 @@ export const addBioprocess = async (bioprocess) => {
 
 export const deleteBioprocess = async (id) => {
     try {
-        return await axios.delete(`${bioprocessURL}/${id}`, config);
+        return await axios.delete(`https://backend-ic7841.herokuapp.com/api/private/bioprocess/${id}`, config);
     } catch (error) {
-        return new TypeError("Authentication failed!");
+        throw Error(error?.response?.data?.error);
     }
 }
 

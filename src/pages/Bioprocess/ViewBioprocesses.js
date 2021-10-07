@@ -3,10 +3,6 @@ import { Table, TableHead, TableCell, Paper, TableRow, TableBody, Button, makeSt
 import { Link } from 'react-router-dom';
 import { deleteBioprocess } from '../../services/bioprocessService';
 import Controls from "../../components/controls/Controls";
-import { Alert, AlertTitle } from '@material-ui/lab/';
-import IconButton from '@material-ui/core/IconButton';
-import Collapse from '@material-ui/core/Collapse';
-import CloseIcon from '@material-ui/icons/Close';
 import DeleteIcon from '@material-ui/icons/Delete';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -25,6 +21,7 @@ import TablePagination from '@material-ui/core/TablePagination';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import axios from "axios";
+import AlertMessage from '../../components/AlertMessage';
 
 const useStyles = makeStyles((theme) => ({
     table: {
@@ -150,8 +147,19 @@ export default function ViewBioprocess() {
     }, []);
 
     const deleteBioprocessData = async () => {
-        await deleteBioprocess(bioprocessId);
-        getAllBioprocesses();
+        try {
+            let response = await deleteBioprocess(bioprocessId);
+            getAllBioprocesses();
+        } catch (error) {
+            setOpen(true);
+            setError(error.message);
+            setTimeout(function () {
+                setOpen(false);
+                setError("");
+            }, 3000);
+        }
+
+
     }
 
     return (
@@ -173,10 +181,10 @@ export default function ViewBioprocess() {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} color="primary">
-                        Rechazar
+                        Cancelar
                     </Button>
-                    <Button onClick={handleAccept} color="primary">
-                        Aceptar
+                    <Button onClick={handleAccept} color="secondary">
+                        Eliminar
                     </Button>
                 </DialogActions>
             </Dialog>
@@ -223,28 +231,9 @@ export default function ViewBioprocess() {
                 </Fade>
 
             </div>
-            <Collapse in={open}>
-                <Alert
 
-                    severity={error ? "error" : "success"}
-                    action={
-                        <IconButton
-                            aria-label="close"
-                            color="inherit"
-                            size="small"
-                            onClick={() => {
-                                setOpen(false);
-                            }}
-                        >
-                            <CloseIcon fontSize="inherit" />
-                        </IconButton>
-                    }
-                >
-                    <AlertTitle>{error ? error : "Success!"}</AlertTitle>
-                    {error}
-                </Alert>
-            </Collapse>
             <Paper className={classes.table}>
+                <AlertMessage errorMessage={error} successMessage={""} openMessage={open} />
                 <TableContainer >
                     <Table stickyHeader aria-label="sticky table" className={classes.container}>
                         <TableHead>

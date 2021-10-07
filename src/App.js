@@ -3,7 +3,6 @@ import './App.css';
 import Header from "./components/Header";
 import SideMenu from "./components/SideMenu";
 import { makeStyles, CssBaseline, createTheme, ThemeProvider, Box } from '@material-ui/core';
-import CreateBioprocess from './pages/Bioprocess/CreateBioprocess';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import Login from './components/User/Login';
 import Home from './pages/Home'
@@ -12,20 +11,20 @@ import Register from './components/User/Register'
 import AssignRole from './components/User/AssignRole';
 import ViewBioprocesses from './pages/Bioprocess/ViewBioprocesses'
 import ShowBioprocess from './pages/Bioprocess/ShowBioprocess';
-import UpdateBioprocess from './pages/Bioprocess/UpdateBioprocess';
 import UpdateFactor from './pages/Factors/UpdateFactor';
 import CreateFactor from './pages/Factors/CreateFactor';
 import ShowPlace from './pages/Place/ShowPlace';
 import ViewPlace from './pages/Place/ViewPlace';
-import CreatePlace from './pages/Place/CreatePlace';
+import PlaceForm from './pages/Place/PlaceForm';
 import CreateData from './pages/Data/CreateData';
 import ViewData from './pages/Data/ViewData';
 import { esES } from '@mui/material/locale';
+import BioprocessForm from './pages/Bioprocess/BioprocessForm';
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#33963a",
+      main: "#007E33",
       light: '#3c44b126'
     },
     secondary: {
@@ -82,7 +81,7 @@ function App() {
             <RequireAuth exact path='/bioprocess/create'>
               <Header />
               <SideMenu />
-              <CreateBioprocess />
+              <BioprocessForm />
             </RequireAuth>
 
             <RequireAuth exact path='/factor/create/:id'>
@@ -106,7 +105,7 @@ function App() {
             <RequireAuth exact path='/bioprocess/update/:id'>
               <Header />
               <SideMenu />
-              <UpdateBioprocess />
+              <BioprocessForm />
             </RequireAuth>
 
             <RequireAuth exact path='/register'>
@@ -136,7 +135,13 @@ function App() {
             <RequireAuth exact path='/place/create'>
               <Header />
               <SideMenu />
-              <CreatePlace />
+              <PlaceForm />
+            </RequireAuth>
+
+            <RequireAuth exact path='/place/update/:id'>
+              <Header />
+              <SideMenu />
+              <PlaceForm />
             </RequireAuth>
 
 

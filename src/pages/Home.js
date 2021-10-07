@@ -1,5 +1,4 @@
 import FileManager from '../components/FileManager';
-import Register from '../components/Register';
 import Grid from '@material-ui/core/Grid'
 import React from 'react'
 

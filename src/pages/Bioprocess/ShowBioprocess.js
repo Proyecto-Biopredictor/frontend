@@ -28,8 +28,8 @@ import TextField from '@material-ui/core/TextField';
 import Divider from '@material-ui/core/Divider';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
-import CreateFactor from '../Factors/CreateFactor';
 import ViewFactors from '../Factors/ViewFactors';
+import defaultImg from '../../assets/img/defaultImg.jpeg'
 
 const useStyles = makeStyles(theme => ({
   cardContainer: {
@@ -382,15 +382,15 @@ export default function ShowBioprocesses() {
 
           <CardMedia
             className={classes.media}
-            image="https://material-ui.com/static/images/cards/contemplative-reptile.jpg"
-            title="Contemplative Reptile"
+            image={image? image:defaultImg}
+            title=""
           />
           <CardContent>
             <Typography gutterBottom variant="h5" component="h2">
-              {name}
+              {name?name:'Nombre'}
             </Typography>
             <Typography variant="subtitle1" color="textSecondary" component="p">
-              {description}
+              {description?description:'Descripción'}
             </Typography>
           </CardContent>
 

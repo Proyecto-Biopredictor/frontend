@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Table, TableHead, TableCell, Paper, TableRow, TableBody, Button, makeStyles, CssBaseline, Grid } from '@material-ui/core'
 import { Link } from 'react-router-dom';
-import { deleteBioprocess } from '../../services/bioprocessService';
-import Controls from "../../components/controls/Controls";
 import { Alert, AlertTitle } from '@material-ui/lab/';
 import IconButton from '@material-ui/core/IconButton';
 import Collapse from '@material-ui/core/Collapse';
@@ -22,8 +20,10 @@ import InfoIcon from '@material-ui/icons/Info';
 import PageHeader from "../../components/PageHeader";
 import TableContainer from '@material-ui/core/TableContainer';
 import TablePagination from '@material-ui/core/TablePagination';
-import ButtonBase from '@material-ui/core/ButtonBase';
 import axios from "axios";
+import DeleteIcon from '@material-ui/icons/Delete';
+import ModeEditIcon from '@mui/icons-material/ModeEdit';
+import { deletePlace } from '../../services/placeService';
 
 const useStyles = makeStyles((theme) => ({
     table: {
@@ -147,8 +147,18 @@ export default function ViewPlace() {
     }, []);
 
     const deletePlaceData = async () => {
-        await deletePlaceData(placeId);
-        getAllPlaces();
+        try{
+            await deletePlace(placeId);
+            getAllPlaces();
+        }catch(error){
+            setOpen(true);
+            setError(error.message);
+            setTimeout(function () {
+                setOpen(false);
+                setError("");
+            }, 3000);
+        }
+        
     }
 
     return (
@@ -170,10 +180,10 @@ export default function ViewPlace() {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} color="primary">
-                        Rechazar
+                        Cancelar
                     </Button>
-                    <Button onClick={handleAccept} color="primary">
-                        Aceptar
+                    <Button onClick={handleAccept} color="secondary">
+                        Eliminar
                     </Button>
                 </DialogActions>
             </Dialog>
@@ -263,8 +273,16 @@ export default function ViewPlace() {
                                             justifyContent="center"
                                             alignItems="center"
                                         >
+                                            <Tooltip title="Editar">
+                                                <Button color="primary" variant="contained" style={{ marginRight: 10 }} component={Link} to={`/place/update/${place._id}`}><ModeEditIcon /></Button>
+                                            </Tooltip>
                                             <Tooltip title="Información">                                        
-                                            <Button className={classes.button} variant="contained" style={{ marginRight: 10 }} component={Link} to={`/place/show/${place._id}`}><InfoIcon /></Button>
+                                                <Button className={classes.button} variant="contained" style={{ marginRight: 10 }} component={Link} to={`/place/show/${place._id}`}><InfoIcon /></Button>
+                                            </Tooltip>
+                                            <Tooltip title="Eliminar">
+                                                <Button color="secondary" variant="contained" onClick={() => {
+                                                    setOpenDialog(true); setPlaceId(place._id);
+                                                }}><DeleteIcon /></Button>
                                             </Tooltip>
                                         </Grid>
                                     </TableCell>

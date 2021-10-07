@@ -27,11 +27,11 @@ export const addPlace = async (places) => {
     }
 }
 
-export const deletePlaces = async (id) => {
+export const deletePlace = async (id) => {
     try{
         return await axios.delete(`${placesURL}/${id}`, config);
     }catch(error){
-        return new TypeError("Authentication failed!");
+        throw Error(error?.response?.data?.error);
     }
 }
 
