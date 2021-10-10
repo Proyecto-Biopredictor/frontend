@@ -197,7 +197,8 @@ function CreateData() {
         <Container>
             <PageHeader
                 title="Añadir datos al lugar"
-                icon={<InfoIcon fontSize="small"
+                subTitle="Al crear los datos, se podrá realizar la predicción"
+                icon={<InfoIcon fontSize="Large"
                 />}
             />
             <div className={classes.placeholder} hidden={!loading}>

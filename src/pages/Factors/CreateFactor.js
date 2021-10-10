@@ -105,7 +105,8 @@ export default function CreateFactor() {
   return (
     <div>
       <PageHeader
-        title="Añadir nuevo factor"        
+        title="Añadir nuevo factor"   
+        subTitle="El factor creado va a estar ligado a este bioproceso"     
         icon={<EcoIcon fontSize="large" color="primary" />}
       />
       <div className={classes.placeholder} hidden={!loading}>

@@ -192,7 +192,7 @@ export default function ViewBioprocess() {
 
             <PageHeader
                 title="Información sobre los bioprocesos"
-
+                subTitle="Acá se muestran todos los bioprocesos en el sistema"
                 icon={<InfoIcon fontSize="large"
                 />}
             />

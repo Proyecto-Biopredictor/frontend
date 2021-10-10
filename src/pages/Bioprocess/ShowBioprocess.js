@@ -30,6 +30,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import ViewFactors from '../Factors/ViewFactors';
 import defaultImg from '../../assets/img/defaultImg.jpeg'
+import {ScrollToTop} from '../../components/ScrollToTop'
 
 const useStyles = makeStyles(theme => ({
   cardContainer: {
@@ -77,6 +78,13 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     textAlign: 'center'
   },
+  horizmenu:{
+    display: 'inline-block'
+  },
+  textLeft:{
+    marginLeft: '0',
+    paddingLeft: '0'
+  }
 }));
 
 const initialValue = {
@@ -147,6 +155,7 @@ export default function ShowBioprocesses() {
       Authorization: `Bearer ${localStorage.getItem("authToken")}`,
     },
   };
+  
 
   const getBioprocess = async () => {
     try {
@@ -345,6 +354,7 @@ export default function ShowBioprocesses() {
   return (
 
     <div className={classes.root}>
+      
       <div className={classes.placeholder} hidden={!loading}>
         <Fade
           in={loading}
@@ -365,13 +375,18 @@ export default function ShowBioprocesses() {
         </Snackbar>
       </div>
 
-
+      <Grid item>
+        <Controls.Button variant="text" text="Información de lugares" className={classes.textLeft} href="#lugares"/>
+        <Controls.Button variant="text" text="Asociar lugar" className={classes.textLeft} href="#asociar"/>
+        <Controls.Button variant="text" text="Información de factores" className={classes.textLeft} href="#factores"/>
+      </Grid>
       <PageHeader
         title="Información detallada sobre un bioproceso"
+        subTitle = "Se mostrará también los lugares y factores asociados"
         icon={<InfoIcon fontSize="large"
         />}
       />
-      <br />
+      <br id="lugares"/>
       <Grid
         container
         direction="row"
@@ -413,7 +428,9 @@ export default function ShowBioprocesses() {
       <br />
       <PageHeader
         title="Lugares asociados al bioproceso"
+        subTitle="Se muestran todos los lugares asociados a este bioproceso"
         icon={<PlaceIcon fontSize="large"
+        
         />}
       />
 
@@ -497,11 +514,11 @@ export default function ShowBioprocesses() {
           </Typography>
         </div>
       </div>
-      <br />
+      <br id="asociar"/>
       <br />
       <PageHeader
         title="Asociar lugar a bioproceso"
-        subTitle="Si el lugar no existe, rellene los campos para crear uno nuevo"
+        subTitle="Seleccione un lugar para asociarlo a este bioproceso"
         icon={<InfoIcon fontSize="large"
         />}
       />
@@ -549,7 +566,7 @@ export default function ShowBioprocesses() {
           />
 
         </Grid>
-        <div hidden={!isEmpty}>
+        {/* <div hidden={!isEmpty}>
 
           <Form onSubmit={handleSubmit}>
             <br />
@@ -622,7 +639,7 @@ export default function ShowBioprocesses() {
               </Grid>
             </Grid>
           </Form>
-        </div>
+        </div> */}
 
         <div hidden={isEmpty}>
           <br />
@@ -636,8 +653,8 @@ export default function ShowBioprocesses() {
 
               <CardMedia
                 className={classes.media}
-                image="https://material-ui.com/static/images/cards/contemplative-reptile.jpg"
-                title="Contemplative Reptile"
+                image={placeValue?placeValue.image?placeValue.image:defaultImg:defaultImg}
+                title=""
               />
               <CardContent>
                 <Typography gutterBottom variant="h5" component="h2">
@@ -689,7 +706,11 @@ export default function ShowBioprocesses() {
         </Fade>
         <br />
       </div>
-      <ViewFactors id={id} />
+      <div id='factores'>
+        <ViewFactors id={id} />
+      </div>
+      <ScrollToTop showBelow={150}/>
+        
       <br />
       <br />
       <br />

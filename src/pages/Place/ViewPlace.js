@@ -191,7 +191,7 @@ export default function ViewPlace() {
 
             <PageHeader
                 title="Información sobre los lugares"
-                
+                subTitle="Acá se mostrarán todos los lugares del sistema"
                 icon={<InfoIcon fontSize="large"
                 />}
             />

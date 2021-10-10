@@ -13,6 +13,7 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import AlertMessage from '../../components/AlertMessage';
 
+
 const predictionItems = [
     { id: 'regresion', title: 'Regresión lineal' },
     { id: 'clasificacion', title: 'Clasificación' },
@@ -58,7 +59,9 @@ export default function BioprocessForm() {
     const [progress, setProgress] = useState(0);
     const message = id ? "Se ha actualizado el bioproceso!" : "Se ha guardado el bioproceso!"
     const title = id ? "Actualizar Bioproceso" : "Añadir nuevo Bioproceso";
+    const type = id ? "actualizar" : "agregar";
     const validate = (fieldValues = values) => {
+        
         let temp = { ...errors }
         if ('name' in fieldValues)
             temp.name = fieldValues.name ? "" : "Este campo es obligatorio."
@@ -66,8 +69,7 @@ export default function BioprocessForm() {
             temp.description = fieldValues.description ? "" : "Este campo es obligatorio."
         setErrors({
             ...temp
-        })
-
+        })        
         if (fieldValues === values)
             return Object.values(temp).every(x => x === "")
     }
@@ -205,6 +207,7 @@ export default function BioprocessForm() {
         <div>
             <PageHeader
                 title={title}
+                subTitle={`Formulario para ${type} un bioproceso`}
                 icon={<EcoIcon fontSize="large" color='primary'
                 />}
             />
@@ -288,8 +291,9 @@ export default function BioprocessForm() {
                                 label="Es serie temporal"
                                 value={values.isTimeSeries}
                                 onChange={handleInputChange}
+                                title="Una serie temporal es una sucesión de datos medidos en determinados momentos y ordenados cronológicamente."
                             />
-
+                            
                         </Grid>
                         <Grid
                             container

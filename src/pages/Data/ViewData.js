@@ -137,7 +137,8 @@ function ViewData() {
         <Container>
             <PageHeader
                 title="Datos incluidos en el lugar"
-                icon={<InfoIcon fontSize="small"
+                subTitle="Se muestran todos los datos asociados a este lugar y bioproceso"
+                icon={<InfoIcon fontSize="Large"
                 />}
             />
             <div className={classes.placeholder} hidden={!loading}>

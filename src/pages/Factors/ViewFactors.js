@@ -170,10 +170,10 @@ export default function ViewFactors() {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={handleClose} color="primary">
-                        Rechazar
+                        Cancelar
                     </Button>
-                    <Button onClick={handleAccept} color="primary">
-                        Aceptar
+                    <Button onClick={handleAccept} color="secondary">
+                        Eliminar
                     </Button>
                 </DialogActions>
             </Dialog>
@@ -181,6 +181,7 @@ export default function ViewFactors() {
 
             <PageHeader
                 title="Información sobre los factores"
+                subTitle = "Factores asociados a este bioproceso, necesarios para la predicción"
                 icon={<InfoIcon fontSize="large"
                 />}
                 />

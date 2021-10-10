@@ -4,11 +4,26 @@ import "./Login.css";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Fade from '@material-ui/core/Fade';
 import { makeStyles } from '@material-ui/core';
+import { useForm, Form } from '../../components/useForm';
+import AlertMessage from '../../components/AlertMessage';
+import Grid from '@mui/material/Grid'
+import Controls from "../../components/controls/Controls";
+
+
+const initialValues = {
+  email: '',
+  password: '',
+}
+
 const useStyles = makeStyles(theme => ({
   pageContent: {
     margin: '50px 0 0 0',
     width: '90%',
     padding: theme.spacing(3)
+  },
+  inputField: {
+    width:"100%",
+    marginBottom: "20px"
   },
   placeholder: {
     height: 40,
@@ -22,6 +37,7 @@ const Login = ({ history }) => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = React.useState(false);
+  const [open, setOpen] = React.useState(false);
 
   useEffect(() => {
     if (localStorage.getItem("authToken")) {
@@ -38,18 +54,19 @@ const Login = ({ history }) => {
 
     try {
       const { data } = await axios.post(
-        "https://backend-ic7841.herokuapp.com/api/auth/login",
-        { email, password },
-        config
+        "https://backend-ic7841.herokuapp.com/api/auth/login",values,config
       );
 
       localStorage.setItem("authToken", data.token);
 
       history.push("/");
     } catch (error) {
+      setOpen(true);
+      console.log(error.response);
       setError(error.response.data.error);
       setTimeout(() => {
         setError("");
+        setOpen(false);
       }, 5000);
     }
   }
@@ -57,63 +74,78 @@ const Login = ({ history }) => {
   const loginHandler = async (e) => {
     e.preventDefault();
     setLoading(true);
-    await login();
+    if(validate())
+      await login();
     setLoading(false);
-
-
-
   };
+
+  const validate = (fieldValues = values) => {
+    let temp = { ...errors }
+    if ('email' in fieldValues)
+      temp.email = fieldValues.email ? "" : "Este campo es obligatorio."
+    if ('password' in fieldValues)
+      temp.password = fieldValues.password ? "" : "Este campo es obligatorio."
+    setErrors({
+      ...temp
+    })
+
+    if (fieldValues === values)
+      return Object.values(temp).every(x => x === "")
+  }
+
+  const {
+    values,
+    setValues,
+    errors,
+    setErrors,
+    handleInputChange,
+    resetForm
+  } = useForm(initialValues, true, validate);
 
   return (
     <div>
       <div className="login-screen">
 
-        <form onSubmit={loginHandler} className="login-screen__form">
-        <div className={classes.placeholder} hidden={!loading}>
-                    <Fade
-                        in={loading}
-                        style={{
-                            transitionDelay: '0m',
-                        }}
-                        unmountOnExit
-                    >
-                        <CircularProgress />
-                    </Fade>
-                    <br/>
-                </div>
+        {/* <form onSubmit={loginHandler} className="login-screen__form"> */}
+        <Form onSubmit={loginHandler} className="login-screen__form">
+          <div className={classes.placeholder} hidden={!loading}>
+            <Fade
+              in={loading}
+              style={{
+                transitionDelay: '0m',
+              }}
+              unmountOnExit
+            >
+              <CircularProgress />
+            </Fade>
+            <br />
+          </div>
           <h3 className="login-screen__title">Inicia Sesión</h3>
-          {error && <span className="error-message">{error}</span>}
-          <div className="form-group">
-            <label htmlFor="email">Correo:</label>
-            <input
+          <AlertMessage errorMessage={error} successMessage={""} openMessage={open}/>
+          <Grid item xs={12}>
+            <Controls.Input
+              name="email"
+              label="Email"
               type="email"
-              required
-              id="email"
-              placeholder="Correo"
-              onChange={(e) => setEmail(e.target.value)}
-              value={email}
-              tabIndex={1}
+              value={values.email}
+              onChange={handleInputChange}
+              className={classes.inputField}
+              error={errors.email}
             />
-          </div>
-          <div className="form-group">
-            <label htmlFor="password">
-              Contraseña:{" "}
-            </label>
-            <input
+            <Controls.Input
+              name="password"
+              label="Contraseña"
               type="password"
-              required
-              id="password"
-              autoComplete="true"
-              placeholder="Contraseña"
-              onChange={(e) => setPassword(e.target.value)}
-              value={password}
-              tabIndex={2}
+              value={values.password}
+              onChange={handleInputChange}
+              className={classes.inputField}
+              error={errors.password}
             />
-          </div>
+          </Grid>
           <button type="submit" className="btn btn-primary">
             Inicia Sesión
           </button>
-        </form>
+        </Form>
       </div>
     </div>
 

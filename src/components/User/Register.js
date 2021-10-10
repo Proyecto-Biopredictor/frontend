@@ -1,34 +1,46 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
 import "./Register.css";
-import { useHistory } from "react-router-dom";
 import Controls from "../../components/controls/Controls";
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import TextField from '@material-ui/core/TextField';
 import React from 'react'
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Fade from '@material-ui/core/Fade';
 import { makeStyles } from '@material-ui/core/styles';
-import Alert from '@material-ui/lab/Alert';
-import IconButton from '@material-ui/core/IconButton';
-import Collapse from '@material-ui/core/Collapse';
-import CloseIcon from '@material-ui/icons/Close';
+import HelpIcon from '@mui/icons-material/Help';
+import Grid from '@mui/material/Grid'
+import Tooltip from '@mui/material/Tooltip';
+import { useForm, Form } from '../../components/useForm';
+import AlertMessage from '../../components/AlertMessage';
+
+const initialValues = {
+  username: '',
+  email: '',
+  password: '',
+  confirmPassword: '',
+  type: 'user',
+  roles: [],
+}
+
+const useStyles = makeStyles(({
+  inputField: {
+    width:"100%",
+    marginBottom: "20px"
+  },
+  placeholder: {
+    height: 40,
+    textAlign: 'center'
+  }
+}))
+
 const Register = ({ }) => {
-  const history = useHistory();
-  const [loading, setLoading] = React.useState(true);
-  const [isUser, setUser] = React.useState(false);
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmpassword, setConfirmPassword] = useState("");
-  const [type, setType] = useState("user");
-  const [roleType, setRole] = useState("investigador");
+  const classes = useStyles();
+
+  const [loading, setLoading] = React.useState(false);
   const [error, setError] = useState("");
-  const [items, setItems] = React.useState([{ name: "" }]);
-  const [selected, setSelected] = React.useState(false);
   const [open, setOpen] = React.useState(false);
-  const [inputBioprocess, setInputBioprocess] = React.useState('');
+  // const [items, setItems] = React.useState([{ name: "" }]);
+  // const [selected, setSelected] = React.useState(false);  
+  // const [inputBioprocess, setInputBioprocess] = React.useState('');
 
   const config = {
     headers: {
@@ -36,124 +48,126 @@ const Register = ({ }) => {
       Authorization: `Bearer ${localStorage.getItem("authToken")}`,
     },
   };
-  function wrapValues(bioprocesses) {
-    setItems(bioprocesses);
-    setLoading(false);
+  // function wrapValues(bioprocesses) {
+  //   setItems(bioprocesses);
+  //   setLoading(false);
 
-  }
-
+  // }
   useEffect(() => {
     let unmounted = false;
-    async function getBio() {
-      try {
-        const bioprocesses = await axios.get(
-          "https://backend-ic7841.herokuapp.com/api/private/bioprocess",
-          config
-        );
-        wrapValues(bioprocesses.data.bioprocesses);
+    // async function getBio() {
+    //   try {
+    //     const bioprocesses = await axios.get(
+    //       "https://backend-ic7841.herokuapp.com/api/private/bioprocess",
+    //       config
+    //     );
+    //     wrapValues(bioprocesses.data.bioprocesses);
 
 
-      } catch (error) {
-        setTimeout(() => {
-          setError("");
-        }, 5000);
-        return setError("Authentication failed!");
-      }
-    }
-    getBio();
+    //   } catch (error) {
+    //     setTimeout(() => {
+    //       setError("");
+    //     }, 5000);
+    //     return setError("Authentication failed!");
+    //   }
+    // }
+    //getBio();
     return () => { unmounted = true; };
   }, []);
 
-  const [value, setValue] = React.useState(items[0]);
-  const [inputValue, setInputValue] = React.useState('');
+  // const [value, setValue] = React.useState(items[0]);
+  // const [inputValue, setInputValue] = React.useState('');
 
-  const roleItems = [
-    { id: 'investigador', title: 'Investigador' },
-    { id: 'asistente', title: 'Asistente' },
-  ]
+  // const roleItems = [
+  //   { id: 'investigador', title: 'Investigador' },
+  //   { id: 'asistente', title: 'Asistente' },
+  // ]
 
   const typeItems = [
     { id: 'user', title: 'Usuario' },
     { id: 'admin', title: 'Administrador' },
   ]
 
-  function cleanForm() {
-    setUser(false);
-    setRole("investigador");
-    setType("user");
-    setPassword("");
-    setConfirmPassword("");
-    setEmail("");
-    setUsername("");
-    setSelected(false);
-    setInputBioprocess("");
-
-  }
   const registerHandler = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    if (password !== confirmpassword) {
-      setPassword("");
-      setConfirmPassword("");
-      setTimeout(() => {
-        setError("");
-      }, 5000);
-      setLoading(false);
-      return setError("Las contraseñas no coinciden");
-    }
-    if (selected === false && type === 'user') {
-
-      setTimeout(() => {
-        setError("");
-      }, 5000);
-      setLoading(false);
-      return setError("Seleccione un bioproceso");
-    }
-
-
-    try {
-      const role = {
-        bioprocessId: value.id,
-        role: roleType
+    if(validate()){
+      setLoading(true);
+      if (values.password !== values.confirmPassword) {
+        setValues({...values, password: "", confirmPassword: ""});
+        setTimeout(() => {
+          setError("");
+        }, 5000);
+        setLoading(false);
+        return setError("Las contraseñas no coinciden");
       }
-      const { data } = await axios.post(
-        "https://backend-ic7841.herokuapp.com/api/private/register",
-        {
-          username,
-          email,
-          password,
-          type,
-          role
-        },
-        config
-      );
-      setLoading(false);
-      setOpen(true);
-      cleanForm();
-      setTimeout(function () {
-        setOpen(false);
-      }, 6000);
-    } catch (error) {
-      console.log(error);
-      setError(error.response.data.error);
-      setTimeout(() => {
-        setError("");
-      }, 5000);
-      setLoading(false);
+    // if (selected === false && type === 'user') {
+
+    //   setTimeout(() => {
+    //     setError("");
+    //   }, 5000);
+    //   setLoading(false);
+    //   return setError("Seleccione un bioproceso");
+    // }
+
+
+      try {
+        // const role = {
+        //   bioprocessId: value.id,
+        //   role: roleType
+        // }
+        console.log(values);
+        const { data } = await axios.post(
+          "https://backend-ic7841.herokuapp.com/api/private/register",values,config
+        );
+        setLoading(false);
+        setOpen(true);
+        resetForm({})
+        setTimeout(function () {
+          setOpen(false);
+        }, 6000);
+      } catch (error) {
+        console.log(error);
+        setError(error.response.data.error);
+        setTimeout(() => {
+          setError("");
+        }, 5000);
+        setLoading(false);
+      }
     }
+
   };
 
-  const useStyles = makeStyles(() => ({
-    placeholder: {
-      height: 40,
-      textAlign: 'center'
-    },
-  }));
-  const classes = useStyles();
+  const validate = (fieldValues = values) => {
+    let temp = { ...errors }
+    if ('username' in fieldValues)
+      temp.username = fieldValues.username ? "" : "Este campo es obligatorio."
+    if ('email' in fieldValues)
+      temp.email = fieldValues.email ? "" : "Este campo es obligatorio."
+    if ('password' in fieldValues)
+      temp.password = fieldValues.password ? "" : "Este campo es obligatorio."
+    if ('confirmPassword' in fieldValues)
+      temp.confirmPassword = fieldValues.confirmPassword ? "" : "Este campo es obligatorio."
+    setErrors({
+      ...temp
+    })
+
+    if (fieldValues === values)
+      return Object.values(temp).every(x => x === "")
+  }
+
+  const {
+    values,
+    setValues,
+    errors,
+    setErrors,
+    handleInputChange,
+    resetForm
+  } = useForm(initialValues, true, validate);
 
   return (
     <div className="register-screen">
-      <form onSubmit={registerHandler} className="register-screen__form">
+      {/* <form onSubmit={registerHandler} className="register-screen__form"> */}
+      <Form onSubmit={registerHandler} className="register-screen__form">
         <div className={classes.placeholder} hidden={!loading}>
           <Fade
             in={loading}
@@ -166,90 +180,72 @@ const Register = ({ }) => {
           </Fade>
           <br />
         </div>
-        <Collapse in={open}>
-          <Alert
-            severity={error ? "error" : "success"}
-            action={
-              <IconButton
-                aria-label="close"
-                color="inherit"
-                size="small"
-                onClick={() => {
-                  setOpen(false);
-                }}
-              >
-                <CloseIcon fontSize="inherit" />
-              </IconButton>
-            }
-          >
-            {error ? error : 'Se ha creado un nuevo usuario!'}
-          </Alert>
-        </Collapse>
+        <AlertMessage errorMessage={error} successMessage={"Se ha creado un nuevo usuario!"} openMessage={open}/>
         <h3 className="register-screen__title">Crear una cuenta</h3>
         {error && <span className="error-message">{error}</span>}
-        <div className="form-group">
-          <label htmlFor="name">Usuario:</label>
-          <input
+        <Grid item xs={12}>
+          <Controls.Input
+            name="username"
+            label="Usuario"
             type="text"
-            required
-            id="name"
-            placeholder="Nombre de usuario"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            value={values.username}
+            onChange={handleInputChange}
+            className={classes.inputField}
+            error={errors.username}
           />
-        </div>
-        <div className="form-group">
-          <label htmlFor="email">Correo:</label>
-          <input
+          <Controls.Input
+            name="email"
+            label="Email"
             type="email"
-            required
-            id="email"
-            placeholder="Correo"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={values.email}
+            onChange={handleInputChange}
+            className={classes.inputField}
+            error={errors.email}
           />
-        </div>
-        <div className="form-group">
-          <label htmlFor="password">Contraseña:</label>
-          <input
+          <Controls.Input
+            name="password"
+            label="Contraseña"
             type="password"
-            required
-            id="password"
-            autoComplete="true"
-            placeholder="Contraseña"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            
+            value={values.password}
+            onChange={handleInputChange}
+            className={classes.inputField}
+            error={errors.password}
           />
-        </div>
-        <div className="form-group">
-          <label htmlFor="confirmpassword">Confirmar Contraseña:</label>
-          <input
+          <Controls.Input
+            name="confirmPassword"
+            label="Confirmar Contraseña"
             type="password"
-            required
-            id="confirmpassword"
-            autoComplete="true"
-            placeholder="Confirmar contraseña"
-            value={confirmpassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            value={values.confirmPassword}
+            onChange={handleInputChange}
+            className={classes.inputField}
+            error={errors.confirmPassword}
           />
-        </div>
-        <Controls.RadioGroup
-          name="type"
-          label="Tipo de usuario"
-          value={type}
-          onChange={(e) => {
-            setType(e.target.value);
-            if (type === 'admin')
-              setUser(false);
-            else
-              setUser(true);
+        </Grid>
+        <Grid container>
+          <Grid item>
+            <Controls.RadioGroup
+              name="type"
+              label="Tipo de usuario"
+              value={values.type}
+              // onChange={(e) => {
+              //   setType(e.target.value);
+              //   if (type === 'admin')
+              //     setUser(false);
+              //   else
+              //     setUser(true);
+              // }}
+              onChange={handleInputChange}
+              items={typeItems}
+            />
+          </Grid>
+          <Grid item>
+            <Tooltip title="El administrador tiene acceso a todas las funcionalidades del sistema, mientras un usuario tiene acceso limitado asociado a un bioproceso.">
+              <HelpIcon color={"success"} />
+            </Tooltip>
 
-
-          }}
-          items={typeItems}
-        />
-        <br />
+          </Grid>
+        </Grid>
+        {/* <br />
         <div hidden={isUser}>
           <Autocomplete
             value={value}
@@ -281,12 +277,12 @@ const Register = ({ }) => {
             onChange={(e) => { setRole(e.target.value); }}
             items={roleItems}
           />
-        </div>
+        </div>*/}
         <br />
         <button type="submit" className="btn btn-primary">
           Registrar Cuenta
         </button>
-      </form>
+      </Form>
     </div>
   );
 };
