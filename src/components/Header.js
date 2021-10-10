@@ -57,6 +57,10 @@ export default function Header() {
     };
     const classes = useStyles();
 
+    const profileHandler = () =>{
+        history.push("/profile")
+    }
+
     const home= () =>{
         history.push("/")
     }
@@ -102,6 +106,7 @@ export default function Header() {
                             open={open}
                             onClose={handleClose}
                         >
+                            <MenuItem onClick={profileHandler}>Ver Perfil</MenuItem>
                             <MenuItem onClick={logoutHandler}>Salir</MenuItem>
                         </Menu>
                     </div>

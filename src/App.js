@@ -4,11 +4,11 @@ import Header from "./components/Header";
 import SideMenu from "./components/SideMenu";
 import { makeStyles, CssBaseline, createTheme, ThemeProvider, Box } from '@material-ui/core';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
-import Login from './components/User/Login';
+import Login from './pages/User/Login';
 import Home from './pages/Home'
 import RequireAuth from './components/routing/RequireAuth';
-import Register from './components/User/Register'
-import AssignRole from './components/User/AssignRole';
+import Register from './pages/User/Register'
+import AssignRole from './pages/User/AssignRole';
 import ViewBioprocesses from './pages/Bioprocess/ViewBioprocesses'
 import ShowBioprocess from './pages/Bioprocess/ShowBioprocess';
 import UpdateFactor from './pages/Factors/UpdateFactor';
@@ -20,6 +20,8 @@ import CreateData from './pages/Data/CreateData';
 import ViewData from './pages/Data/ViewData';
 import { esES } from '@mui/material/locale';
 import BioprocessForm from './pages/Bioprocess/BioprocessForm';
+import ViewUsers from './pages/User/ViewUsers';
+import Profile from './pages/User/Profile'
 
 const theme = createTheme({
   palette: {
@@ -118,6 +120,18 @@ function App() {
               <Header />
               <SideMenu />
               <AssignRole />
+            </RequireAuth>
+
+            <RequireAuth exact path='/users'>
+              <Header />
+              <SideMenu />
+              <ViewUsers />
+            </RequireAuth>
+
+            <RequireAuth exact path='/profile'>
+              <Header />
+              <SideMenu />
+              <Profile />
             </RequireAuth>
 
             <RequireAuth exact path='/factor/update/:id'>

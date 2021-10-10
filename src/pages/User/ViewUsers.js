@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Table, TableHead, TableCell, Paper, TableRow, TableBody, Button, makeStyles, CssBaseline, Grid } from '@material-ui/core'
 import { Link } from 'react-router-dom';
-import { deleteBioprocess } from '../../services/bioprocessService';
+import { deleteUser } from '../../services/userService';
 import Controls from "../../components/controls/Controls";
 import DeleteIcon from '@material-ui/icons/Delete';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
@@ -80,7 +80,7 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 
 
-export default function ViewBioprocess() {
+export default function ViewUsers() {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
 
@@ -92,17 +92,17 @@ export default function ViewBioprocess() {
         setRowsPerPage(+event.target.value);
         setPage(0);
     };
-    const [bioprocesses, setBioprocesses] = useState([]);
+    const [users, setUsers] = useState([]);
     const [open, setOpen] = React.useState(false);
     const [openDialog, setOpenDialog] = React.useState(false);
     const [error, setError] = useState('');
     const [loading, setLoading] = React.useState(true);
-    const [bioprocessId, setBioprocessId] = React.useState('');;
+    const [userId, setUserId] = React.useState('');;
 
     const classes = useStyles();
 
-    function wrapValues(bioprocesses) {
-        setBioprocesses(bioprocesses);
+    function wrapValues(users) {
+        setUsers(users);
         setLoading(false);
     }
 
@@ -111,7 +111,7 @@ export default function ViewBioprocess() {
     };
 
     const handleAccept = () => {
-        deleteBioprocessData()
+        deleteUserData()
         setOpenDialog(false);
     }
 
@@ -122,13 +122,13 @@ export default function ViewBioprocess() {
         },
     };
 
-    async function getAllBioprocesses() {
+    async function getAllUsers() {
         try {
-            const bioprocesses = await axios.get(
-                "https://backend-ic7841.herokuapp.com/api/private/bioprocess",
+            const users = await axios.get(
+                "https://backend-ic7841.herokuapp.com/api/private/allUsers",
                 config
             );
-            wrapValues(bioprocesses.data.bioprocesses);
+            wrapValues(users.data.users);
 
 
         } catch (error) {
@@ -142,14 +142,14 @@ export default function ViewBioprocess() {
     }
     useEffect(() => {
         let unmounted = false;
-        getAllBioprocesses();
+        getAllUsers();
         return () => { unmounted = true; };
     }, []);
 
-    const deleteBioprocessData = async () => {
+    const deleteUserData = async () => {
         try {
-            let response = await deleteBioprocess(bioprocessId);
-            getAllBioprocesses();
+            let response = await deleteUser(userId);
+            getAllUsers();
         } catch (error) {
             setOpen(true);
             setError(error.message);
@@ -173,7 +173,7 @@ export default function ViewBioprocess() {
                 aria-labelledby="alert-dialog-slide-title"
                 aria-describedby="alert-dialog-slide-description"
             >
-                <DialogTitle id="alert-dialog-slide-title">{"¿Desea borrar este bioproceso?"}</DialogTitle>
+                <DialogTitle id="alert-dialog-slide-title">{"¿Desea borrar este usuario?"}</DialogTitle>
                 <DialogContent>
                     <DialogContentText id="alert-dialog-slide-description">
                         Esta decisión no es reversible.
@@ -191,8 +191,8 @@ export default function ViewBioprocess() {
 
 
             <PageHeader
-                title="Información sobre los bioprocesos"
-                subTitle="Acá se muestran todos los bioprocesos en el sistema"
+                title="Información sobre los usuarios"
+                subTitle="Acá se muestran todos los usuarios en el sistema"
                 icon={<InfoIcon fontSize="large"
                 />}
             />
@@ -207,11 +207,11 @@ export default function ViewBioprocess() {
             >
                 <Paper className={classes.paper} elevation={3}>
                     <Box sx={{ width: 'auto' }} padding>
-                        <Typography variant="h6" align="center">¿Se necesita un nuevo bioproceso?</Typography>
+                        <Typography variant="h6" align="center">¿Se necesita un nuevo usuario?</Typography>
 
                     </Box>
                     <Box textAlign='center'>
-                        <Controls.Button color="primary" variant="contained" component={Link} to={`/bioprocess/create/`} text="Crear bioproceso"/>
+                        <Controls.Button color="primary" variant="contained" component={Link} to={`/register/`} text="Crear usuario"/>
                     </Box>
 
                 </Paper>
@@ -238,25 +238,18 @@ export default function ViewBioprocess() {
                     <Table stickyHeader aria-label="sticky table" className={classes.container}>
                         <TableHead>
                             <TableRow className={classes.thead}>
-                                <TableCell>Nombre</TableCell>
-                                <TableCell>¿Es serie temporal?</TableCell>
+                                <TableCell>Usuario</TableCell>
+                                <TableCell>Email</TableCell>
                                 <TableCell>Tipo</TableCell>
                                 <TableCell className={classes.placeholder}>Acciones</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {bioprocesses.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((bioprocess) => (
-                                <TableRow hover className={classes.row} key={bioprocess.id}>
-                                    <TableCell>{bioprocess.name}</TableCell>
-                                    <TableCell>
-                                        <Controls.Checkbox
-                                            name="isTimeSeries"
-                                            label=""
-                                            value={bioprocess.isTimeSeries}
-                                            disabled={true}
-                                        />
-                                    </TableCell>
-                                    <TableCell>{bioprocess.type === 'regresion' ? 'Regresión' : 'Clasificación'}</TableCell>
+                            {users.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user) => (
+                                <TableRow hover className={classes.row} key={user.id}>
+                                    <TableCell>{user.username}</TableCell>
+                                    <TableCell>{user.email}</TableCell>
+                                    <TableCell>{user.type === 'user' ? 'Usuario' : 'Administrador'}</TableCell>
                                     <TableCell>
                                         <Grid
                                             container
@@ -264,15 +257,12 @@ export default function ViewBioprocess() {
                                             justifyContent="center"
                                             alignItems="center"
                                         >
-                                            <Tooltip title="Editar">
-                                                <Button color="primary" variant="contained" style={{ marginRight: 10 }} component={Link} to={`/bioprocess/update/${bioprocess._id}`}><ModeEditIcon /></Button>
-                                            </Tooltip>
                                             <Tooltip title="Información">
-                                                <Button className={classes.button} variant="contained" style={{ marginRight: 10 }} component={Link} to={`/bioprocess/show/${bioprocess._id}`}><InfoIcon /></Button>
+                                                <Button className={classes.button} variant="contained" style={{ marginRight: 10 }} component={Link} to={`/profile/${user._id}`}><InfoIcon /></Button>
                                             </Tooltip>
                                             <Tooltip title="Eliminar">
                                                 <Button color="secondary" variant="contained" onClick={() => {
-                                                    setOpenDialog(true); setBioprocessId(bioprocess._id);
+                                                    setOpenDialog(true); setUserId(user._id);
                                                 }}><DeleteIcon /></Button>
                                             </Tooltip>
                                         </Grid>
@@ -285,7 +275,7 @@ export default function ViewBioprocess() {
                 <TablePagination
                     rowsPerPageOptions={[10, 25, 100]}
                     component="div"
-                    count={bioprocesses.length}
+                    count={users.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onPageChange={handleChangePage}

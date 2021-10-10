@@ -12,13 +12,13 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import EcoIcon from '@material-ui/icons/Eco';
 import HomeIcon from '@material-ui/icons/Home';
 import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 import { useHistory } from "react-router-dom";
+import PersonIcon from '@mui/icons-material/Person';
 
 const drawerWidth = 240;
 
@@ -106,6 +106,13 @@ export default function SideMenu() {
             <ListItem button key={'lugar'} onClick={() => moveRoute('/place')}>
               <ListItemIcon>{1 % 2 === 0 ? <InboxIcon /> : <LocationOnIcon />}</ListItemIcon>
               <ListItemText primary={'Lugares'}/>
+            </ListItem>
+          </List>
+          <Divider />
+          <List>
+            <ListItem button key={'usuarios'} onClick={() => moveRoute('/users')}>
+              <ListItemIcon>{1 % 2 === 0 ? <InboxIcon /> : <PersonIcon />}</ListItemIcon>
+              <ListItemText primary={'Usuarios'}/>
             </ListItem>
           </List>
           <Divider />

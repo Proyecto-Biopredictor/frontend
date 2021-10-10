@@ -355,7 +355,7 @@ export default function ShowBioprocesses() {
 
     <div className={classes.root}>
       
-      <div className={classes.placeholder} hidden={!loading}>
+      <div className={classes.placeholder} hidden={!loading} style={{width:"90%"}}>
         <Fade
           in={loading}
           style={{
@@ -392,6 +392,7 @@ export default function ShowBioprocesses() {
         direction="row"
         justifyContent="center"
         alignItems="center"
+        style={{width:"90%"}}
       >
         <Card className={classes.cardContainer}>
 

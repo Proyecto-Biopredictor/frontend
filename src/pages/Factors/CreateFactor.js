@@ -30,8 +30,9 @@ const initialValues = {
 
 const useStyles = makeStyles((theme) => ({
   pageContent: {
-    margin: theme.spacing(5),
-    padding: theme.spacing(3),
+    margin: '50px 0 0 0',
+    width: '90%',
+    padding: theme.spacing(3)
   },
   placeholder: {
     height: 40,
@@ -121,7 +122,7 @@ export default function CreateFactor() {
         </Fade>
         <br />
       </div>
-      <Paper className={classes.pageContent}>
+      <Paper className={classes.pageContent} >
         <Form onSubmit={handleSubmit}>
           <Collapse in={open}>
             <Alert

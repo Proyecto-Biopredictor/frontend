@@ -46,7 +46,8 @@ const useStyles = makeStyles(theme => ({
     },
     placeholder: {
         height: 40,
-        textAlign: 'center'
+        textAlign: 'center',
+        width: '90%'
     },
     button: {
         background: '#4287f5',
@@ -142,6 +143,7 @@ export default function ShowBioprocesses() {
             direction="row"
             justifyContent="center"
             alignItems="center"
+            style={{width:"90%"}}
           >
             <Card className={classes.cardContainer}>
 

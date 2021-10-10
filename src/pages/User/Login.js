@@ -58,7 +58,7 @@ const Login = ({ history }) => {
       );
 
       localStorage.setItem("authToken", data.token);
-
+      window.location.reload();
       history.push("/");
     } catch (error) {
       setOpen(true);

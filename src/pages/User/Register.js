@@ -165,7 +165,7 @@ const Register = ({ }) => {
   } = useForm(initialValues, true, validate);
 
   return (
-    <div className="register-screen">
+    <div className="register-screen" style={{width:'90%'}}>
       {/* <form onSubmit={registerHandler} className="register-screen__form"> */}
       <Form onSubmit={registerHandler} className="register-screen__form">
         <div className={classes.placeholder} hidden={!loading}>
