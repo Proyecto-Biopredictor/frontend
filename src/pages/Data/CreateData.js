@@ -18,6 +18,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
 import { green, red } from '@material-ui/core/colors';
 import { addData } from "../../services/dataService";
+import Tooltip from '@mui/material/Tooltip';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -55,6 +56,22 @@ function CreateData() {
     const [inputFields, setInputFields] = useState([]);
     const [page, setPage] = React.useState(0);
     const [count, setCount] = React.useState(0);
+
+    let date_ob = new Date();
+
+    let date = ("0" + date_ob.getDate()).slice(-2);
+
+    // current month
+    let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
+
+    // current year
+    let year = date_ob.getFullYear();
+
+    // current hours
+    let hours = date_ob.getHours();
+
+    // current minutes
+    let minutes = date_ob.getMinutes();
 
     const config = {
         headers: {
@@ -163,9 +180,11 @@ function CreateData() {
     }
 
     const handleAddFields = () => {
+
+
         let newColumn = Object.assign({}, factorsObj);
-        newColumn.fecha = '2021-09-08';
-        newColumn.hora = "00:00";
+        newColumn.fecha = year + "-" + month + "-" + date;
+        newColumn.hora = hours + ":" + minutes;
         newColumn.id = uuidv4(); //for (x in a){b[x] = 1}
 
         setInputFields([...inputFields, newColumn]);
@@ -276,7 +295,7 @@ function CreateData() {
                                 <TextField
                                     type='date'
                                     name="fecha"
-                                    defaultValue='2021-09-08'
+                                    defaultValue={ year + "-" + month + "-" + date}
                                     variant="outlined"
                                     size="small"
                                     onChange={event => handleChangeInput(inputField.id, event)}
@@ -289,7 +308,7 @@ function CreateData() {
                                 <TextField
                                     type='time'
                                     name="hora"
-                                    defaultValue='00:00'
+                                    defaultValue={hours + ":" + minutes}
                                     size="small"
                                     variant="outlined"
                                     onChange={event => handleChangeInput(inputField.id, event)}
@@ -311,11 +330,14 @@ function CreateData() {
                                 display: 'flex',
                                 justifyContent: 'center'
                             }}>
-                                <IconButton title="Remover columna" disabled={inputFields.length === 1} onClick={() => handleRemoveFields(inputField.id)}>
-                                    <Avatar className={classes.remove}>
-                                        <RemoveIcon />
-                                    </Avatar>
-                                </IconButton>
+                                
+                                <Tooltip title="Quitar columna">
+                                    <IconButton title="Remover columna" disabled={inputFields.length === 1} onClick={() => handleRemoveFields(inputField.id)}>
+                                        <Avatar className={classes.remove}>
+                                            <RemoveIcon />
+                                        </Avatar>
+                                    </IconButton>
+                                </Tooltip>
                             </Box>
                         </div>
                     ))}
@@ -324,13 +346,16 @@ function CreateData() {
                         alignItems: 'center'
                     }}
                     >
+                        <Tooltip title="Añadir nueva columna">
                         <IconButton style={{ position: "fixed" }} disabled={inputFields.length === 0} var
-                            onClick={handleAddFields} title="Añadir nueva columna"
+                            onClick={handleAddFields}
                         >
                             <Avatar className={classes.add}>
                                 <AddIcon />
                             </Avatar>
                         </IconButton>
+                          </Tooltip>
+                        
                     </Box>
                 </Box>
                 <Box>
