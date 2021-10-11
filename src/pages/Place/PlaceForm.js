@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Grid, Divider } from '@material-ui/core';
+import { Grid } from '@material-ui/core';
 import Controls from "../../components/controls/Controls";
 import { useForm, Form } from '../../components/useForm';
 import { Paper, makeStyles, Box } from '@material-ui/core';
@@ -9,9 +9,7 @@ import { useParams } from 'react-router-dom';
 import AlertMessage from '../../components/AlertMessage';
 import axios from 'axios';
 import CircularStatic from '../../components/CircularStatic'
-import Avatar from '@material-ui/core/Avatar';
-import defaultImg from '../../assets/img/defaultImg.jpeg'
-import { getBase64, checkFileValidations } from '../../services/getFileService';
+import ImageComponent from '../../components/ImageComponent';
 
 const initialValues = {
     name: '',
@@ -51,6 +49,7 @@ export default function PlaceForm() {
     const [error, setError] = useState('');
     const message = id ? "Se ha actualizado el lugar!" : "Se ha guardado el lugar!"
     const title = id ? "Actualizar Lugar" : "Añadir nuevo Lugar";
+    const description = id ? "Formulario para actualizar Lugar" : "Formulario para añadir Lugar";
     const [progress, setProgress] = useState(0);
     const validate = (fieldValues = values) => {
         let temp = { ...errors }
@@ -85,39 +84,6 @@ export default function PlaceForm() {
             //Set the progress value to show the progress bar
             setProgress(Math.round((100 * data.loaded) / data.total));
         },
-    };
-
-    const handleUploadFile = e => {
-        let file = e.target.files[0];
-        try {
-            checkFileValidations(e.target.files[0]);
-            getBase64(file)
-                .then(result => {
-                    file["base64"] = result;
-                    //verificar antes de cargar achivo                
-                    setValues({ ...values, image: result });
-                })
-                .catch(err => {
-                    console.log(err);
-                });
-        } catch (err) {
-            setOpen(true);
-            switch (err.message) {
-                case "LIMIT_FILE_SIZE":
-                    setError("El archivo seleccionado supera el límite de 15MB");
-                    break;
-                default:
-                    setError("Ha ocurrido un error, inténtelo más tarde");
-                    break;
-            }
-            setValues({ ...values, image: "" });
-            setTimeout(() => {
-                setOpen(false);
-                setTimeout(() => {
-                    setError("");
-                }, 1000);
-            }, 3000);
-        }
     };
 
     const getPlace = async () => {
@@ -162,8 +128,8 @@ export default function PlaceForm() {
         setOpen(true);
         setLoading(false);
         if (!id) {
-            resetForm({
-            })
+            console.log("create");
+            resetForm({});
         }
 
         setTimeout(function () {
@@ -204,56 +170,13 @@ export default function PlaceForm() {
         <div>
             <PageHeader
                 title={title}
+                subTitle={description}
                 icon={<EcoIcon fontSize="large" color='primary'
                 />}
             />
             <CircularStatic progress={progress} hidden={!loading} />
             <Paper className={classes.pageContent}>
-                <Grid
-                    container
-                    direction="row"
-                    justifyContent="center"
-                    alignItems="center"
-                >
-                    <div >
-                        <div>
-                            <Avatar
-                                src={values.image ? values.image : defaultImg}
-                                alt=""
-                                className={classes.sizeAvatar}
-                                style={{ margin: 'auto' }}>
-
-                            </Avatar>
-                        </div>
-                        <div className={classes.imageButton}>
-                            <input
-                                accept="image/*"
-                                className={classes.input}
-                                style={{ display: 'none' }}
-                                id="raised-button-file"
-                                type="file"
-                                hidden
-                                onChange={handleUploadFile}
-                            />
-                            <h6 style={{ margin: '4px' }}> Cambiar imagen</h6>
-                            <label htmlFor="raised-button-file">
-                                <Controls.InputButton
-                                    color="success" text="Cambiar" component="span">
-                                </Controls.InputButton>
-                            </label>
-
-                            <Controls.Button
-                                text="Quitar"
-                                color="inherit"
-                                onClick={e => setValues({ ...values, image: "" })} />
-
-                        </div>
-
-                    </div>
-
-                </Grid>
-                <Divider />
-                <br />
+            <ImageComponent initialValues={values} errorParam={error} openParam={open} onChange={handleInputChange}/>
                 <Form onSubmit={handleSubmit}>
                     <AlertMessage errorMessage={error} successMessage={message} openMessage={open} />
                     <Grid container

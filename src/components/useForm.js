@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { makeStyles } from "@material-ui/core";
+import { getBase64 } from '../services/getFileService';
 
 export function useForm(initialFValues, validateOnChange = false, validate) {
 
@@ -8,17 +9,34 @@ export function useForm(initialFValues, validateOnChange = false, validate) {
     const [errors, setErrors] = useState({});
 
     const handleInputChange = e => {
-        const { name, value } = e.target
-        setValues({
-            ...values,
-            [name]: value
-        })
+        const { name, value } = e.target 
+        switch (name) {
+            case "image":
+                getBase64(e.target.files[0])
+                .then(result => {                                                     
+                    setValues({ ...values, [name]: result});
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+                break;
+            case "clearImage":
+                setValues({ ...values, "image": ""});
+                break;
+            default:
+                setValues({
+                    ...values,
+                    [name]: value
+                })
+                break;
+        }     
         if (validateOnChange)
             validate({ [name]: value })
     }
 
     const resetForm = () => {
-        setValues(initialFValues);
+
+        setValues(initialFValues);        
         setErrors({})
     }
 
