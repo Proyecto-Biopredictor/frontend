@@ -176,7 +176,7 @@ export default function PlaceForm() {
             />
             <CircularStatic progress={progress} hidden={!loading} />
             <Paper className={classes.pageContent}>
-            <ImageComponent initialValues={values} errorParam={error} openParam={open} onChange={handleInputChange}/>
+            <ImageComponent initialValues={values} onChange={handleInputChange}/>
                 <Form onSubmit={handleSubmit}>
                     <AlertMessage errorMessage={error} successMessage={message} openMessage={open} />
                     <Grid container
@@ -206,14 +206,14 @@ export default function PlaceForm() {
                                 label="Latitud"
                                 value={values.latitude}
                                 onChange={handleInputChange}
-                                error={errors.name}
+                                error={errors.latitude}
                             />
                             <Controls.Input
                                 label="Longitud"
                                 name="longitude"
                                 value={values.longitude}
                                 onChange={handleInputChange}
-                                error={errors.description}
+                                error={errors.longitude}
                             />
                         </Grid>
 

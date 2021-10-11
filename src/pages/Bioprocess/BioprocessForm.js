@@ -176,7 +176,7 @@ export default function BioprocessForm() {
             />
             <CircularStatic progress={progress} hidden={!loading} />
             <Paper className={classes.pageContent}>                
-                <ImageComponent initialValues={values} errorParam={error} openParam={open} onChange={handleInputChange}/>
+                <ImageComponent initialValues={values} onChange={handleInputChange}/>
                 <Form onSubmit={handleSubmit}>
                     <AlertMessage errorMessage={error} successMessage={message} openMessage={open}/>
                     <Grid container>

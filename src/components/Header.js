@@ -8,6 +8,7 @@ import Menu from "@material-ui/core/Menu";
 import IconButton from "@material-ui/core/IconButton";
 import { useHistory } from "react-router-dom";
 import AccountCircle from "@material-ui/icons/AccountCircle";
+import Avatar from '@material-ui/core/Avatar';
 
 const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
@@ -42,7 +43,7 @@ export default function Header() {
     const history = useHistory();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
-
+    const image = localStorage.getItem("image");
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
     };
@@ -58,7 +59,8 @@ export default function Header() {
     const classes = useStyles();
 
     const profileHandler = () =>{
-        history.push("/profile")
+        const uid = localStorage.getItem("uid");
+        history.push(`/profile/${uid}`);
     }
 
     const home= () =>{
@@ -88,7 +90,12 @@ export default function Header() {
                             onClick={handleMenu}
                             color="inherit"
                         >
-                            <AccountCircle fontSize="large"/>
+                            <Avatar
+                            src={image? image: ""}
+                            alt=""                            
+                            >
+
+                            </Avatar>
                         </IconButton>
                         <Menu
                             id="menu-appbar"

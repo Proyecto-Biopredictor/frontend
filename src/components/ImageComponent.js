@@ -14,7 +14,7 @@ const useStyles = makeStyles(theme => ({
         width: "150px",
         marginBottom: "25px",
     },
-    imageButton: {
+    margin: {
         marginBottom: "25px"
     },
     right: {
@@ -24,7 +24,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 export default function ImageComponent(props) {
-    const { initialValues, errorParam, openParam, onChange, ...other } = props
+    const { initialValues, onChange, profile, ...other } = props
     const classes = useStyles();
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
@@ -44,11 +44,12 @@ export default function ImageComponent(props) {
                 direction="row"
                 justifyContent="center"
                 alignItems="center"
+                className={classes.margin}
             >
                 <div className={classes.right}>
                     <div>
                         <Avatar
-                            src={initialValues.image ? initialValues.image : defaultImg}
+                            src={initialValues.image ? initialValues.image : profile?"":defaultImg}
                             alt=""
                             className={classes.sizeAvatar}
                             style={{ margin: 'auto' }}>

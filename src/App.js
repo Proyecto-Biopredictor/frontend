@@ -128,9 +128,7 @@ function App() {
               <ViewUsers />
             </RequireAuth>
 
-            <RequireAuth exact path='/profile'>
-              <Header />
-              <SideMenu />
+            <RequireAuth exact path='/profile/:id'>
               <Profile />
             </RequireAuth>
 

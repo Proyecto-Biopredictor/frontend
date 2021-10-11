@@ -4,7 +4,7 @@ import Tooltip from '@mui/material/Tooltip';
 
 export default function Checkbox(props) {
 
-    const { name, label, value, onChange, disabled, title } = props;
+    const { name, label, value, onChange, disabled, title, ...other } = props;
 
 
     const convertToDefEventPara = (name, value) => ({
@@ -14,7 +14,7 @@ export default function Checkbox(props) {
     })
 
     return (
-        <FormControl>
+        <FormControl {...other}>
             <FormControlLabel
                 control={
                 <Tooltip title = {title?title:''}>

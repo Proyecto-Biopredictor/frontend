@@ -58,6 +58,8 @@ const Login = ({ history }) => {
       );
 
       localStorage.setItem("authToken", data.token);
+      localStorage.setItem("uid", data.id);
+      localStorage.setItem("image", data.image);
       window.location.reload();
       history.push("/");
     } catch (error) {

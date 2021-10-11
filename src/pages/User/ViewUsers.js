@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import { deleteUser } from '../../services/userService';
 import Controls from "../../components/controls/Controls";
 import DeleteIcon from '@material-ui/icons/Delete';
-import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Fade from '@material-ui/core/Fade';
 import Dialog from '@material-ui/core/Dialog';
