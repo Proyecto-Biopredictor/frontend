@@ -19,6 +19,11 @@ import Avatar from '@material-ui/core/Avatar';
 import { green, red } from '@material-ui/core/colors';
 import { addData } from "../../services/dataService";
 import Tooltip from '@mui/material/Tooltip';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Slide from '@material-ui/core/Slide';
+import Typography from '@mui/material/Typography';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -46,6 +51,10 @@ const useStyles = makeStyles((theme) => ({
     }
 }))
 
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
+
 function CreateData() {
     const { pid, bid } = useParams();
     const [factors, setFactors] = useState([]);
@@ -56,6 +65,7 @@ function CreateData() {
     const [inputFields, setInputFields] = useState([]);
     const [page, setPage] = React.useState(0);
     const [count, setCount] = React.useState(0);
+    const [openDialog, setOpenDialog] = useState(false);
 
     let date_ob = new Date();
 
@@ -66,12 +76,6 @@ function CreateData() {
 
     // current year
     let year = date_ob.getFullYear();
-
-    // current hours
-    let hours = date_ob.getHours();
-
-    // current minutes
-    let minutes = date_ob.getMinutes();
 
     const config = {
         headers: {
@@ -119,8 +123,9 @@ function CreateData() {
     }, []);
 
     const cleanData = (facObj) => {
+        setOpenDialog(false)
         let first = Object.assign({}, facObj);
-        first.fecha = '2021-09-08'
+        first.fecha = year + "-" + month + "-" + date;
         first.hora = "00:00"
         first.id = uuidv4();
         setInputFields([first])
@@ -184,7 +189,7 @@ function CreateData() {
 
         let newColumn = Object.assign({}, factorsObj);
         newColumn.fecha = year + "-" + month + "-" + date;
-        newColumn.hora = hours + ":" + minutes;
+        newColumn.hora = "00:00"
         newColumn.id = uuidv4(); //for (x in a){b[x] = 1}
 
         setInputFields([...inputFields, newColumn]);
@@ -232,57 +237,108 @@ function CreateData() {
                 </Fade>
                 <br />
             </div>
+            <Box
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                }}
+            >
+                <Pagination
+                    sx={{ mt: 1 }}
+                    size="large"
+                    variant="outlined"
+                    color="standard"
+                    count={count}
+                    siblingCount={0}
+                    boundaryCount={2}
+                    page={page}
+                    onChange={handleChangePage}
+                />
+            </Box>
             <form className={classes.root} onSubmit={handleSubmit}>
-                <Box
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                    }}
+                <Dialog
+                    open={openDialog}
+                    TransitionComponent={Transition}
+                    keepMounted
+                    onClose={() => setOpenDialog(false)}
+                    aria-labelledby="alert-dialog-slide-title"
+                    aria-describedby="alert-dialog-slide-description"
                 >
-                    <Pagination
-                        variant="outlined"
-                        color="standard"
-                        count={count}
-                        siblingCount={0}
-                        boundaryCount={2}
-                        page={page}
-                        onChange={handleChangePage}
-                    />
-                </Box>
+                    <DialogTitle id="alert-dialog-slide-title">¿Seguro que desea guardar la información?</DialogTitle>
+                    <DialogActions>
+                        <Button onClick={() => setOpenDialog(false)} color="standard">
+                            Cancelar
+                        </Button>
+                        <Button type="submit" onClick={handleSubmit} color="primary">
+                            Enviar
+                        </Button>
+                    </DialogActions>
+                </Dialog>
                 <Box
                     sx={{
                         display: 'flex',
-                        justifyContent: 'flex-start'
+                        justifyContent: 'flex-start',
+                        ml: "5%"
                     }}
                 >
                     <div>
-                        <Box>
-                            <TextField
-                                label="Fecha"
-                                variant="outlined"
-                                disabled
-                                size="small"
-                                className={classes.color}
-                            />
+                        <Box sx={{
+                            display: 'flex',
+                            justifyContent: 'center'
+                        }}>
+                            <Typography
+                                sx={{
+                                    m: "8px",
+                                    py: "6px",
+                                    px: "20px",
+                                    width: "100%",
+                                    borderRadius: 1
+                                }}
+                                align="center"
+                                variant="subtitle1"
+                                component="div"
+                                className={classes.color}>
+                                Fecha
+                            </Typography>
                         </Box>
-                        <Box>
-                            <TextField
-                                label="Hora"
-                                variant="outlined"
-                                disabled
-                                size="small"
-                                className={classes.color}
-                            />
+                        <Box sx={{
+                            display: 'flex',
+                            justifyContent: 'center'
+                        }}>
+                            <Typography
+                                sx={{
+                                    m: "8px",
+                                    py: "6px",
+                                    px: "20px",
+                                    width: "100%",
+                                    borderRadius: 1
+                                }}
+                                align="center"
+                                variant="subtitle1"
+                                component="div"
+                                className={classes.color}>
+                                Hora
+                            </Typography>
                         </Box>
                         {factors.map(factor => (
-                            <Box>
-                                <TextField
-                                    label={factor.name}
-                                    variant="outlined"
-                                    disabled
-                                    size="small"
-                                    className={classes.color}
-                                />
+                            <Box sx={{
+                                display: 'flex',
+                                justifyContent: 'center'
+                            }}>
+                                <Typography
+                                    sx={{
+                                        m: "8px",
+                                        py: "6px",
+                                        px: "20px",
+                                        width: "100%",
+                                        borderRadius: 1
+                                    }}
+                                    align="center"
+                                    variant="subtitle1"
+                                    component="div"
+                                    className={classes.color}>
+                                    {factor.name}
+                                </Typography>
                             </Box>
                         ))}
                     </div>
@@ -295,7 +351,8 @@ function CreateData() {
                                 <TextField
                                     type='date'
                                     name="fecha"
-                                    defaultValue={ year + "-" + month + "-" + date}
+                                    style = {{width: "100%"}}
+                                    defaultValue={year + "-" + month + "-" + date}
                                     variant="outlined"
                                     size="small"
                                     onChange={event => handleChangeInput(inputField.id, event)}
@@ -306,9 +363,10 @@ function CreateData() {
                                 justifyContent: 'center'
                             }}>
                                 <TextField
+                                    style = {{width: "100%"}}
                                     type='time'
                                     name="hora"
-                                    defaultValue={hours + ":" + minutes}
+                                    defaultValue={"00:00"}
                                     size="small"
                                     variant="outlined"
                                     onChange={event => handleChangeInput(inputField.id, event)}
@@ -330,7 +388,7 @@ function CreateData() {
                                 display: 'flex',
                                 justifyContent: 'center'
                             }}>
-                                
+
                                 <Tooltip title="Quitar columna">
                                     <IconButton title="Remover columna" disabled={inputFields.length === 1} onClick={() => handleRemoveFields(inputField.id)}>
                                         <Avatar className={classes.remove}>
@@ -347,24 +405,23 @@ function CreateData() {
                     }}
                     >
                         <Tooltip title="Añadir nueva columna">
-                        <IconButton style={{ position: "fixed" }} disabled={inputFields.length === 0} var
-                            onClick={handleAddFields}
-                        >
-                            <Avatar className={classes.add}>
-                                <AddIcon />
-                            </Avatar>
-                        </IconButton>
-                          </Tooltip>
-                        
+                            <IconButton style={{ position: "fixed" }} disabled={inputFields.length === 0} var
+                                onClick={handleAddFields}
+                            >
+                                <Avatar className={classes.add}>
+                                    <AddIcon />
+                                </Avatar>
+                            </IconButton>
+                        </Tooltip>
+
                     </Box>
                 </Box>
                 <Box>
-                    <Button style={{ position: "fixed" }}
+                    <Button style={{ position: "fixed", marginLeft: "4.5%" }}
                         className={classes.button}
                         variant="contained"
-                        type="submit"
                         color="primary"
-                        onClick={handleSubmit}
+                        onClick={() => setOpenDialog(true)}
                     >Guardar datos ingresados</Button>
                 </Box>
             </form>

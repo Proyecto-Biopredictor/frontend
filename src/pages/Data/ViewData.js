@@ -3,11 +3,6 @@ import { useParams } from 'react-router-dom';
 import Container from '@material-ui/core/Container';
 import TextField from '@material-ui/core/TextField';
 import Pagination from '@mui/material/Pagination';
-import Button from '@material-ui/core/Button';
-import IconButton from '@material-ui/core/IconButton';
-import RemoveIcon from '@material-ui/icons/Remove';
-import AddIcon from '@material-ui/icons/Add';
-import { v4 as uuidv4 } from 'uuid';
 import axios from "axios";
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Fade from '@material-ui/core/Fade';
@@ -15,10 +10,8 @@ import Box from '@material-ui/core/Box';
 import InfoIcon from '@material-ui/icons/Info';
 import PageHeader from "../../components/PageHeader";
 import { makeStyles } from '@material-ui/core/styles';
-import Avatar from '@material-ui/core/Avatar';
 import { green, red } from '@material-ui/core/colors';
-import { getData } from "../../services/dataService";
-import Paper from '@mui/material/Paper';
+import Typography from '@mui/material/Typography';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -87,7 +80,7 @@ function ViewData() {
                 `https://backend-ic7841.herokuapp.com/api/private/record/${bid}/${pid}`,
                 config
             );
-            
+
             let parse = parseData(response.data.records);
             setInputFields(parse);
 
@@ -103,7 +96,7 @@ function ViewData() {
             return setError("Authentication failed!");
         }
     }
-    
+
     useEffect(() => {
         let unmounted = false;
         getAllFactors().then(getAllData());
@@ -118,13 +111,13 @@ function ViewData() {
         let inputs = [];
         records.forEach(element => {
             let input = {};
-            
+
             input.id = element.id;
             let date = element.timestamp.split("T");
             input.fecha = date[0];
             input.hora = date[1];
-            
-            for (let value in element.values[0]){
+
+            for (let value in element.values[0]) {
                 input[value] = element.values[0][value];
             }
             inputs.push(input);
@@ -153,57 +146,90 @@ function ViewData() {
                 </Fade>
                 <br />
             </div>
+            <Box
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'center'
+                }}
+            >
+                <Pagination
+                    sx={{ mt: 1 }}
+                    size="large"
+                    variant="outlined"
+                    color="standard"
+                    count={count}
+                    siblingCount={0}
+                    boundaryCount={2}
+                    page={page}
+                    onChange={handleChangePage}
+                />
+            </Box>
             <form className={classes.root}>
                 <Box
                     sx={{
                         display: 'flex',
-                        justifyContent: 'center'
-                    }}
-                >
-                    <Pagination
-                        variant="outlined"
-                        color="standard"
-                        count={count}
-                        siblingCount={0}
-                        boundaryCount={2}
-                        page={page}
-                        onChange={handleChangePage}
-                    />
-                </Box>
-                <Box
-                    sx={{
-                        display: 'flex',
-                        justifyContent: 'flex-start'
+                        justifyContent: 'flex-start',
+                        ml: "5%"
                     }}
                 >
                     <div>
-                        <Box>
-                            <TextField
-                                label="Fecha"
-                                variant="outlined"
-                                disabled
-                                size="small"
-                                className={classes.color}
-                            />
+                        <Box sx={{
+                            display: 'flex',
+                            justifyContent: 'center'
+                        }}>
+                            <Typography
+                                sx={{
+                                    m: "8px",
+                                    py: "6px",
+                                    px: "20px",
+                                    width: "100%",
+                                    borderRadius: 1
+                                }}
+                                align="center"
+                                variant="subtitle1"
+                                component="div"
+                                className={classes.color}>
+                                Fecha
+                            </Typography>
                         </Box>
-                        <Box>
-                            <TextField
-                                label="Hora"
-                                variant="outlined"
-                                disabled
-                                size="small"
-                                className={classes.color}
-                            />
+                        <Box sx={{
+                            display: 'flex',
+                            justifyContent: 'center'
+                        }}>
+                            <Typography
+                                sx={{
+                                    m: "8px",
+                                    py: "6px",
+                                    px: "20px",
+                                    width: "100%",
+                                    borderRadius: 1
+                                }}
+                                align="center"
+                                variant="subtitle1"
+                                component="div"
+                                className={classes.color}>
+                                Hora
+                            </Typography>
                         </Box>
                         {factors.map(factor => (
-                            <Box>
-                                <TextField
-                                    label={factor.name}
-                                    variant="outlined"
-                                    disabled
-                                    size="small"
-                                    className={classes.color}
-                                />
+                            <Box sx={{
+                                display: 'flex',
+                                justifyContent: 'center'
+                            }}>
+                                <Typography
+                                    sx={{
+                                        m: "8px",
+                                        py: "6px",
+                                        px: "20px",
+                                        width: "100%",
+                                        borderRadius: 1
+                                    }}
+                                    align="center"
+                                    variant="subtitle1"
+                                    component="div"
+                                    className={classes.color}>
+                                    {factor.name}
+                                </Typography>
                             </Box>
                         ))}
                     </div>
@@ -214,10 +240,11 @@ function ViewData() {
                                 justifyContent: 'center'
                             }}>
                                 <TextField
+                                    style = {{width: "100%"}}
                                     type='date'
                                     name="fecha"
                                     disabled
-                                    value = {inputField.fecha}
+                                    value={inputField.fecha}
                                     variant="outlined"
                                     size="small"
                                 />
@@ -227,10 +254,11 @@ function ViewData() {
                                 justifyContent: 'center'
                             }}>
                                 <TextField
+                                    style = {{width: "100%"}}
                                     type='time'
                                     name="hora"
                                     disabled
-                                    value = {inputField.hora}
+                                    value={inputField.hora}
                                     size="small"
                                     variant="outlined"
                                 />
@@ -242,7 +270,7 @@ function ViewData() {
                                         name={factor.name}
                                         disabled
                                         label=""
-                                        value = {inputField[factor.name]}
+                                        value={inputField[factor.name]}
                                         size="small"
                                         variant="outlined"
                                     />
