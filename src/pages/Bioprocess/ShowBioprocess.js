@@ -138,6 +138,7 @@ export default function ShowBioprocesses() {
   const [filteredPlaces, setFilteredPlaces] = React.useState([{ name: "" }]);
   const [isPlacesBio, setIsPlacesBio] = React.useState(false);
   const [isEmpty, setIsEmpty] = React.useState(true);
+  const [placeImage, setImage] = React.useState("");
 
   const classes = useStyles();
   const { id } = useParams();
@@ -217,6 +218,19 @@ export default function ShowBioprocesses() {
       return setError("Authentication failed!");
 
 
+    }
+  }
+
+  const getPicturePlace = async (place) => {
+    try {
+      if(place){
+        let response = await axios.get(`https://backend-ic7841.herokuapp.com/api/private/placePicture/${place.id}`, config);
+        setImage(response.data.place.image);
+      }else{
+        setImage("");
+      }
+    } catch (error) {
+      console.log(error);
     }
   }
 
@@ -545,7 +559,9 @@ export default function ShowBioprocesses() {
           <Autocomplete
             value={placeValue}
             onChange={(event, newValue) => {
+              getPicturePlace(newValue);
               setPlaceValue(newValue);
+              
             }}
             className={classes.center}
             id="combo-box-places"
@@ -562,7 +578,7 @@ export default function ShowBioprocesses() {
                 setPlaceValue('');
               }
               else
-                setIsEmpty(false);
+                setIsEmpty(false);                
             }}
           />
 
@@ -654,7 +670,7 @@ export default function ShowBioprocesses() {
 
               <CardMedia
                 className={classes.media}
-                image={placeValue?placeValue.image?placeValue.image:defaultImg:defaultImg}
+                image={placeImage?placeImage:defaultImg}
                 title=""
               />
               <CardContent>

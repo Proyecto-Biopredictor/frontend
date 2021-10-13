@@ -72,6 +72,8 @@ const initialValues = {
 
 export default function Profile() {
     const { id } = useParams();
+    const uid = localStorage.getItem("uid");
+    const isUser = uid===id ? true:false;
     const classes = useStyles();
     const [loading, setLoading] = React.useState(false);
     const [open, setOpen] = React.useState(false);
@@ -91,6 +93,12 @@ export default function Profile() {
 
     const validate = (fieldValues = values) => {
         let temp = { ...errors }
+        var pattern = new RegExp(/^[0-9\b]+$/);
+        if ('phone' in fieldValues){
+            //temp.phone = fieldValues.phone.length === 8 ? "": "El número debe ser de 8 dígitos"            
+            if(fieldValues.phone)
+                temp.phone = !pattern.test(fieldValues.phone) ? "Por favor ingrese solo números": "";
+        }
         setErrors({
             ...temp
         })
@@ -119,7 +127,6 @@ export default function Profile() {
                     setProgress(Math.round((100 * data.loaded) / data.total));
                 },
             });
-            console.log(response.data.user);
             setValues(response.data.user);
             setLoading(false);
         } catch (error) {
@@ -180,8 +187,6 @@ export default function Profile() {
             }
 
         }        
-        // console.log("hola");
-        // console.log(localStorage.getItem("image"))
     }
 
 
@@ -200,25 +205,27 @@ export default function Profile() {
                 <Paper className={classes.pageContent}>
                     <Form onSubmit={handleSubmit}>
                         <AlertMessage errorMessage={error} successMessage={"Se ha actualizado el usuario!"} openMessage={open} />
-                        <Grid container
-                            direction="row"
-                            justifyContent="center"
-                            alignItems="center"
-                            style={{ textAlign: 'center' }}>    
-                            <Controls.Checkbox
-                                    name="edit"
-                                    label="Editar usuario"
-                                    value={edit}
-                                    style={{alignItems: "center"}}
-                                    onChange={handleChange}
-                            />
-                        </Grid>
+                        <div hidden={!isUser}>
+                            <Grid container
+                                direction="row"
+                                justifyContent="center"
+                                alignItems="center"
+                                style={{ textAlign: 'center' }}>    
+                                <Controls.Checkbox
+                                        name="edit"
+                                        label="Editar usuario"
+                                        value={edit}
+                                        style={{alignItems: "center"}}
+                                        onChange={handleChange}                                    
+                                />
+                            </Grid>
+                        </div>
                         <Grid container
                             direction="row"
                             justifyContent="center"
                             alignItems="center"
                             style={{ textAlign: 'center' }}>
-                            <Grid item xs={6} className={classes.gridContainer}>
+                            <Grid item xs={12} className={classes.gridContainer}>
                                 <Controls.Input
                                     name="name"
                                     label="Nombre"
@@ -228,7 +235,7 @@ export default function Profile() {
                                     disabled={!edit}
                                 />
                             </Grid>
-                            <Grid item xs={6} className={classes.gridContainer}>
+                            <Grid item xs={12} className={classes.gridContainer}>
                                 <Controls.Input
                                     label="Apellido"
                                     name="lastname"

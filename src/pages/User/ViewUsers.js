@@ -91,6 +91,7 @@ export default function ViewUsers() {
         setRowsPerPage(+event.target.value);
         setPage(0);
     };
+    const uid = localStorage.getItem("uid");
     const [users, setUsers] = useState([]);
     const [open, setOpen] = React.useState(false);
     const [openDialog, setOpenDialog] = React.useState(false);
@@ -124,7 +125,7 @@ export default function ViewUsers() {
     async function getAllUsers() {
         try {
             const users = await axios.get(
-                "https://backend-ic7841.herokuapp.com/api/private/allUsers",
+                `https://backend-ic7841.herokuapp.com/api/private/allUsers/${uid}`,
                 config
             );
             wrapValues(users.data.users);
