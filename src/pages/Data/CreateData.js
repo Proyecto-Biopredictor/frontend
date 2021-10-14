@@ -7,6 +7,7 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import RemoveIcon from '@material-ui/icons/Remove';
 import AddIcon from '@material-ui/icons/Add';
+import UploadFile from '@mui/icons-material/UploadFile';
 import { v4 as uuidv4 } from 'uuid';
 import axios from "axios";
 import CircularProgress from '@material-ui/core/CircularProgress';
@@ -16,7 +17,7 @@ import InfoIcon from '@material-ui/icons/Info';
 import PageHeader from "../../components/PageHeader";
 import { makeStyles } from '@material-ui/core/styles';
 import Avatar from '@material-ui/core/Avatar';
-import { green, red } from '@material-ui/core/colors';
+import { green, red, grey, blue } from '@material-ui/core/colors';
 import { addData } from "../../services/dataService";
 import Tooltip from '@mui/material/Tooltip';
 import Dialog from '@material-ui/core/Dialog';
@@ -24,6 +25,11 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
 import Typography from '@mui/material/Typography';
+import Card from '@mui/material/Card';
+import CardMedia from '@mui/material/CardMedia';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import ClearIcon from '@mui/icons-material/Clear';
+import { getBase64 } from '../../services/getFileService';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -41,13 +47,31 @@ const useStyles = makeStyles((theme) => ({
         margin: theme.spacing(1)
     },
     add: {
-        backgroundColor: green[600],
+        backgroundColor: green[600]
     },
     remove: {
         backgroundColor: red[400]
     },
     buttonFixed: {
         position: "fixed"
+    },
+    image: {
+        backgroundColor: grey.A100,
+        "&:hover": {
+            backgroundColor: blue[50]
+        }
+    },
+    showImg: {
+        backgroundColor: grey.A100,
+        "&:hover": {
+            backgroundColor: blue[50]
+        }
+    },
+    removeImg: {
+        backgroundColor: grey.A100,
+        "&:hover": {
+            backgroundColor: blue[50]
+        }
     }
 }))
 
@@ -66,6 +90,10 @@ function CreateData() {
     const [page, setPage] = React.useState(0);
     const [count, setCount] = React.useState(0);
     const [openDialog, setOpenDialog] = useState(false);
+    const [showCard, setShowCard] = useState(true);
+    const [image, setImage] = useState("");
+    const [cardPositionX, setCardPositionX] = useState(0);
+    const [cardPositionY, setCardPositionY] = useState(0);
 
     let date_ob = new Date();
 
@@ -135,31 +163,46 @@ function CreateData() {
         setPage(value);
     };
 
-    const parseInput = () => {
-        let data = {
-            "bioprocessID": bid,
-            "placeID": pid,
-            "values": []
-        };
+    const parseInput = async () => {
 
-        inputFields.forEach(inputField => {
-            let element = {};
-            element.timestamp = inputField.fecha + "T" + inputField.hora;
-            element.values = {};
-            factors.forEach(factor => {
-                element.values[factor.name] = inputField[factor.name];
-            });
+        return new Promise(resolve => {
+            let data = {
+                "bioprocessID": bid,
+                "placeID": pid,
+                "values": []
+            };
 
-            data.values.push(element);
+            const forEachLoop = async _ => {
+            for (let index = 0; index < inputFields.length; index++) {
+                let element = {};
+                element.timestamp = inputFields[index].fecha + "T" + inputFields[index].hora;
+                element.values = {};
+
+                
+                    for (let index_2 = 0; index_2 < factors.length; index_2++) {
+                        if (factors[index_2].type === "value" || inputFields[index][factors[index_2].name] === "") {
+                            element.values[factors[index_2].name] = inputFields[index][factors[index_2].name];
+                        } else {
+
+                            let file = inputFields[index][factors[index_2].name];
+
+                            element.values[factors[index_2].name] = await getBase64(file);
+                        }
+                    }
+
+                    data.values.push(element);
+                }
+            }
+            forEachLoop().then( () => {
+                resolve(data);}
+            );
         });
-
-        return data;
     }
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
-        let data = parseInput();
+        let data = await parseInput();
 
         try {
             addData(data).then(cleanData(factorsObj));
@@ -171,6 +214,7 @@ function CreateData() {
             }, 5000);
             return setError("Authentication failed!");
         }
+
     };
 
     const handleChangeInput = (id, event) => {
@@ -181,6 +225,17 @@ function CreateData() {
             return i;
         })
 
+        setInputFields(newInputFields);
+    }
+
+    const handleChangeImageInput = (id, event) => {
+        const newInputFields = inputFields.map(i => {
+            if (id === i.id) {
+
+                i[event.target.name] = event.target.files[0];
+            }
+            return i;
+        })
         setInputFields(newInputFields);
     }
 
@@ -215,6 +270,39 @@ function CreateData() {
             setCount(result);
             setPage(result);
         }
+    }
+
+    const removeImage = (id, factorName) => {
+        const newInputFields = inputFields.map(i => {
+            if (id === i.id) {
+
+                i[factorName] = "";
+            }
+            return i;
+        })
+        setInputFields(newInputFields);
+    }
+
+    const displayCard = (isCard, id, factorName, event) => {
+        setCardPositionX(event.clientX - event.clientX / 3);
+        setCardPositionY(event.clientY - 600);
+        let srcImage = ""
+
+
+        if (isCard !== "") {
+
+            inputFields.every(input => {
+
+                if (input.id === id) {
+                    srcImage = URL.createObjectURL(input[factorName]);
+                    return false;
+                }
+                return true;
+            });
+        }
+
+        setShowCard(isCard);
+        setImage(srcImage);
     }
 
     return (
@@ -297,6 +385,7 @@ function CreateData() {
                                 align="center"
                                 variant="subtitle1"
                                 component="div"
+                                hidden={factors.length === 0}
                                 className={classes.color}>
                                 Fecha
                             </Typography>
@@ -316,6 +405,7 @@ function CreateData() {
                                 align="center"
                                 variant="subtitle1"
                                 component="div"
+                                hidden={factors.length === 0}
                                 className={classes.color}>
                                 Hora
                             </Typography>
@@ -342,8 +432,8 @@ function CreateData() {
                             </Box>
                         ))}
                     </div>
-                    {inputFields.map(inputField => (
-                        <div key={inputField.id} hidden={3 * page - inputFields.indexOf(inputField) >= 1 && 3 * page - inputFields.indexOf(inputField) <= 3 ? false : true}>
+                    {inputFields.map((inputField, index) => (
+                        <div key={inputField.id} hidden={3 * page - index >= 1 && 3 * page - index <= 3 ? false : true}>
                             <Box sx={{
                                 display: 'flex',
                                 justifyContent: 'center'
@@ -351,7 +441,7 @@ function CreateData() {
                                 <TextField
                                     type='date'
                                     name="fecha"
-                                    style = {{width: "100%"}}
+                                    style={{ width: "100%" }}
                                     defaultValue={year + "-" + month + "-" + date}
                                     variant="outlined"
                                     size="small"
@@ -363,7 +453,7 @@ function CreateData() {
                                 justifyContent: 'center'
                             }}>
                                 <TextField
-                                    style = {{width: "100%"}}
+                                    style={{ width: "100%" }}
                                     type='time'
                                     name="hora"
                                     defaultValue={"00:00"}
@@ -373,15 +463,85 @@ function CreateData() {
                                 />
                             </Box>
                             {factors.map(factor => (
-                                <Box>
-                                    <TextField
-                                        type='number'
-                                        name={factor.name}
-                                        label=""
-                                        size="small"
-                                        variant="outlined"
-                                        onChange={event => handleChangeInput(inputField.id, event)}
-                                    />
+                                <Box sx={{
+                                    display: 'flex',
+                                    justifyContent: 'center'
+                                }}>
+                                    {factor.type === "value"
+                                        ? <TextField
+                                            type='number'
+                                            name={factor.name}
+                                            label=""
+                                            size="small"
+                                            variant="outlined"
+                                            onChange={event => handleChangeInput(inputField.id, event)}
+                                        />
+                                        : inputFields[index][factor.name] === ""
+                                            ? <Tooltip title="Subir imagen">
+                                                <Button
+                                                    style={{
+                                                        margin: "8px",
+                                                        width: "100%",
+                                                        paddingTop: "8px",
+                                                        paddingBottom: "8px",
+                                                        paddingLeft: "20px",
+                                                        paddingRight: "20px",
+                                                    }}
+                                                    variant="contained"
+                                                    component="label"
+                                                    className={classes.image}
+                                                >
+                                                    <UploadFile />
+                                                    <input
+                                                        name={factor.name}
+                                                        accept="image/*"
+                                                        id="raised-button-file"
+                                                        type="file"
+                                                        hidden
+                                                        onChange={event => handleChangeImageInput(inputField.id, event)}
+                                                    />
+                                                </Button>
+                                            </Tooltip>
+                                            : <>
+                                                <Tooltip title="Abrir imagen">
+                                                    <Button
+                                                        style={{
+                                                            margin: "8px",
+                                                            width: "75%",
+                                                            paddingTop: "8px",
+                                                            paddingBottom: "8px",
+                                                            paddingLeft: "20px",
+                                                            paddingRight: "20px",
+                                                        }}
+                                                        variant="contained"
+                                                        onMouseEnter={(event) => displayCard(false, inputField.id, factor.name, event)}
+                                                        onMouseLeave={(event) => displayCard(true, "", "", event)}
+                                                        onClick={() => window.open(image)}
+                                                        target="_blank"
+                                                        className={classes.showImg}
+                                                    >
+                                                        <VisibilityIcon />
+                                                    </Button>
+                                                </Tooltip>
+                                                <Tooltip title="Remover imagen">
+                                                    <Button
+                                                        style={{
+                                                            margin: "8px",
+                                                            width: "25%",
+                                                            paddingTop: "8px",
+                                                            paddingBottom: "8px",
+                                                            paddingLeft: "20px",
+                                                            paddingRight: "20px",
+                                                        }}
+                                                        variant="contained"
+                                                        className={classes.removeImg}
+                                                        onClick={() => removeImage(inputField.id, factor.name)}
+                                                    >
+                                                        <ClearIcon />
+                                                    </Button>
+                                                </Tooltip>
+                                            </>
+                                    }
                                 </Box>
                             ))}
                             <Box sx={{
@@ -424,7 +584,25 @@ function CreateData() {
                         onClick={() => setOpenDialog(true)}
                     >Guardar datos ingresados</Button>
                 </Box>
+
             </form>
+            <Card
+                sx={{
+                    maxWidth: 300,
+                    maxHeight: 300,
+                    position: "relative",
+                    top: cardPositionY,
+                    left: cardPositionX,
+                }}
+                hidden={showCard}
+            >
+                <CardMedia
+                    component="img"
+                    height="194"
+                    image={image}
+                    alt=""
+                />
+            </Card>
         </Container>
     );
 }

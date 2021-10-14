@@ -185,6 +185,7 @@ function ViewData() {
                                     width: "100%",
                                     borderRadius: 1
                                 }}
+                                hidden={factors.length === 0}
                                 align="center"
                                 variant="subtitle1"
                                 component="div"
@@ -204,6 +205,7 @@ function ViewData() {
                                     width: "100%",
                                     borderRadius: 1
                                 }}
+                                hidden={factors.length === 0}
                                 align="center"
                                 variant="subtitle1"
                                 component="div"
