@@ -22,6 +22,7 @@ import { esES } from '@mui/material/locale';
 import BioprocessForm from './pages/Bioprocess/BioprocessForm';
 import ViewUsers from './pages/User/ViewUsers';
 import Profile from './pages/User/Profile'
+import Predictor from './pages/Predictor/Predictor';
 
 const theme = createTheme({
   palette: {
@@ -173,6 +174,12 @@ function App() {
               <Header />
               <SideMenu />
               <ViewData />
+            </RequireAuth>
+
+            <RequireAuth exact path='/predictor/'>
+              <Header />
+              <SideMenu />
+              <Predictor />
             </RequireAuth>
 
             <Redirect to="/login" />

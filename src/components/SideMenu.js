@@ -19,6 +19,7 @@ import AssignmentIndIcon from '@material-ui/icons/AssignmentInd';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 import { useHistory } from "react-router-dom";
 import PersonIcon from '@mui/icons-material/Person';
+import BiotechIcon from '@mui/icons-material/Biotech';
 
 const drawerWidth = 240;
 
@@ -113,6 +114,13 @@ export default function SideMenu() {
             <ListItem button key={'usuarios'} onClick={() => moveRoute('/users')}>
               <ListItemIcon>{1 % 2 === 0 ? <InboxIcon /> : <PersonIcon />}</ListItemIcon>
               <ListItemText primary={'Usuarios'}/>
+            </ListItem>
+          </List>
+          <Divider />
+          <List>
+            <ListItem button key={'predictor'} onClick={() => moveRoute('/predictor')}>
+              <ListItemIcon>{1 % 2 === 0 ? <InboxIcon /> : <BiotechIcon />}</ListItemIcon>
+              <ListItemText primary={'Hacer predicción'}/>
             </ListItem>
           </List>
           <Divider />
