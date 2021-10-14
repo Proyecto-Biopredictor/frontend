@@ -29,7 +29,10 @@ import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import ClearIcon from '@mui/icons-material/Clear';
+import Collapse from '@mui/material/Collapse';
+import CloseIcon from '@mui/icons-material/Close';
 import { getBase64 } from '../../services/getFileService';
+import Alert from '@mui/material/Alert';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -83,7 +86,8 @@ function CreateData() {
     const { pid, bid } = useParams();
     const [factors, setFactors] = useState([]);
     const [factorsObj, setFactorsObj] = useState({});
-    const [error, setError] = useState('');
+    const [open, setOpen] = useState(false);
+    const [error, setError] = useState("");
     const [loading, setLoading] = React.useState(true);
     const classes = useStyles()
     const [inputFields, setInputFields] = useState([]);
@@ -94,6 +98,8 @@ function CreateData() {
     const [image, setImage] = useState("");
     const [cardPositionX, setCardPositionX] = useState(0);
     const [cardPositionY, setCardPositionY] = useState(0);
+
+    const message = "Se han registrado los datos!"
 
     let date_ob = new Date();
 
@@ -137,9 +143,11 @@ function CreateData() {
         } catch (error) {
             setTimeout(() => {
                 setTimeout(() => {
+                    setOpen(false)
                     setError("");
                 }, 2000);
             }, 5000);
+            setOpen(true)
             return setError("Authentication failed!");
         }
     }
@@ -173,12 +181,12 @@ function CreateData() {
             };
 
             const forEachLoop = async _ => {
-            for (let index = 0; index < inputFields.length; index++) {
-                let element = {};
-                element.timestamp = inputFields[index].fecha + "T" + inputFields[index].hora;
-                element.values = {};
+                for (let index = 0; index < inputFields.length; index++) {
+                    let element = {};
+                    element.timestamp = inputFields[index].fecha + "T" + inputFields[index].hora;
+                    element.values = {};
 
-                
+
                     for (let index_2 = 0; index_2 < factors.length; index_2++) {
                         if (factors[index_2].type === "value" || inputFields[index][factors[index_2].name] === "") {
                             element.values[factors[index_2].name] = inputFields[index][factors[index_2].name];
@@ -193,8 +201,9 @@ function CreateData() {
                     data.values.push(element);
                 }
             }
-            forEachLoop().then( () => {
-                resolve(data);}
+            forEachLoop().then(() => {
+                resolve(data);
+            }
             );
         });
     }
@@ -205,13 +214,18 @@ function CreateData() {
         let data = await parseInput();
 
         try {
-            addData(data).then(cleanData(factorsObj));
+            addData(data).then(() => {
+                setOpen(true)
+                cleanData(factorsObj);
+            });
         } catch (error) {
             setTimeout(() => {
                 setTimeout(() => {
+                    setOpen(false)
                     setError("");
                 }, 2000);
             }, 5000);
+            setOpen(true)
             return setError("Authentication failed!");
         }
 
@@ -343,6 +357,25 @@ function CreateData() {
                     onChange={handleChangePage}
                 />
             </Box>
+            <Collapse in={open}>
+                <Alert
+                    severity={error ? "error" : "success"}
+                    action={
+                        <IconButton
+                            aria-label="close"
+                            color="inherit"
+                            size="small"
+                            onClick={() => {
+                                setOpen(false);
+                            }}
+                        >
+                            <CloseIcon fontSize="inherit" />
+                        </IconButton>
+                    }
+                >
+                    {error ? error : message}
+                </Alert>
+            </Collapse>
             <form className={classes.root} onSubmit={handleSubmit}>
                 <Dialog
                     open={openDialog}

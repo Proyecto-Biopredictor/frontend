@@ -28,6 +28,9 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
+import Collapse from '@mui/material/Collapse';
+import CloseIcon from '@mui/icons-material/Close';
+import Alert from '@mui/material/Alert';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -95,6 +98,8 @@ function ViewData() {
     const [cardPositionY, setCardPositionY] = useState(0);
     const [openDialog, setOpenDialog] = useState(false);
     const [recordId, setRecordId] = useState("");
+    const [open, setOpen] = useState(false);
+    const message = "Se ha eliminado el registro!"
 
     const config = {
         headers: {
@@ -123,9 +128,11 @@ function ViewData() {
         } catch (error) {
             setTimeout(() => {
                 setTimeout(() => {
+                    setOpen(false)
                     setError("");
                 }, 2000);
             }, 5000);
+            setOpen(true)
             return setError("Authentication failed!");
         }
     }
@@ -146,9 +153,11 @@ function ViewData() {
         } catch (error) {
             setTimeout(() => {
                 setTimeout(() => {
+                    setOpen(false)
                     setError("");
                 }, 2000);
             }, 5000);
+            setOpen(true)
             return setError("Authentication failed!");
         }
     }
@@ -223,6 +232,7 @@ function ViewData() {
     const handleDelete = () => {
 
         deleteRecord(recordId).then(() => {
+            setOpen(true)
             setOpenDialog(false);
             const values = [...inputFields];
             values.splice(values.findIndex(value => value.id === recordId), 1);
@@ -235,8 +245,9 @@ function ViewData() {
                 setPage(result);
             }
         }).catch(error => {
+            setError(error)
+            setOpen(true)
             setOpenDialog(false);
-            console.log(error)
         });
     }
 
@@ -311,6 +322,25 @@ function ViewData() {
                     onChange={handleChangePage}
                 />
             </Box>
+            <Collapse in={open}>
+                <Alert
+                    severity={error ? "error" : "success"}
+                    action={
+                        <IconButton
+                            aria-label="close"
+                            color="inherit"
+                            size="small"
+                            onClick={() => {
+                                setOpen(false);
+                            }}
+                        >
+                            <CloseIcon fontSize="inherit" />
+                        </IconButton>
+                    }
+                >
+                    {error ? error : message}
+                </Alert>
+            </Collapse>
             <form className={classes.root}>
                 <Dialog
                     open={openDialog}
