@@ -7,6 +7,8 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import RemoveIcon from '@material-ui/icons/Remove';
 import AddIcon from '@material-ui/icons/Add';
+import Controls from "../../components/controls/Controls";
+import { Link } from 'react-router-dom';
 import UploadFile from '@mui/icons-material/UploadFile';
 import { v4 as uuidv4 } from 'uuid';
 import axios from "axios";
@@ -33,6 +35,8 @@ import Collapse from '@mui/material/Collapse';
 import CloseIcon from '@mui/icons-material/Close';
 import { getBase64 } from '../../services/getFileService';
 import Alert from '@mui/material/Alert';
+
+import FileManager from '../../components/FileManager';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -583,7 +587,7 @@ function CreateData() {
                             }}>
 
                                 <Tooltip title="Quitar columna">
-                                    <IconButton title="Remover columna" disabled={inputFields.length === 1} onClick={() => handleRemoveFields(inputField.id)}>
+                                    <IconButton disabled={inputFields.length === 1} onClick={() => handleRemoveFields(inputField.id)}>
                                         <Avatar className={classes.remove}>
                                             <RemoveIcon />
                                         </Avatar>
@@ -609,14 +613,23 @@ function CreateData() {
 
                     </Box>
                 </Box>
+                
                 <Box>
-                    <Button style={{ position: "fixed", marginLeft: "4.5%" }}
-                        className={classes.button}
+                    <Controls.Button style={{ position: "fixed", marginLeft: "4.5%" }}
                         variant="contained"
                         color="primary"
                         onClick={() => setOpenDialog(true)}
-                    >Guardar datos ingresados</Button>
+                        text="Guardar datos ingresados"
+                    />
                 </Box>
+                <br/>
+                <br/>
+                <br/>
+                <br/>
+                <Box style={{width : "90%"}}>
+                <FileManager />
+                </Box>
+                
 
             </form>
             <Card

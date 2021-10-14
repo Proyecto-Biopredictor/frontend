@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 
 import { CSVReader, jsonToCSV, readString } from 'react-papaparse'
 
+import Controls from './controls/Controls'
+
 const buttonRef = React.createRef()
 
 export default class FileManager extends Component {
@@ -64,8 +66,8 @@ export default class FileManager extends Component {
                 marginBottom: 10
               }}
             >
-              <button
-                type='button'
+              <Controls.Button
+                variant='contained'
                 onClick={this.handleOpenDialog}
                 style={{
                   borderRadius: 0,
@@ -75,9 +77,9 @@ export default class FileManager extends Component {
                   paddingLeft: 0,
                   paddingRight: 0
                 }}
-              >
-                Browse file
-              </button>
+                text="Elegir archivo"
+              />
+                
               <div
                 style={{
                   borderWidth: 1,
@@ -94,7 +96,8 @@ export default class FileManager extends Component {
               >
                 {file && file.name}
               </div>
-              <button
+              <Controls.Button
+              variant='contained'
                 style={{
                   borderRadius: 0,
                   marginLeft: 0,
@@ -103,9 +106,8 @@ export default class FileManager extends Component {
                   paddingRight: 20
                 }}
                 onClick={this.handleRemoveFile}
-              >
-                Remove
-              </button>
+                text="Eliminar"
+              />
             </aside>
           )}
         </CSVReader>

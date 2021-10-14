@@ -24,6 +24,7 @@ import axios from "axios";
 import DeleteIcon from '@material-ui/icons/Delete';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import { deletePlace } from '../../services/placeService';
+import Controls from "../../components/controls/Controls";
 
 const useStyles = makeStyles((theme) => ({
     table: {
@@ -210,7 +211,7 @@ export default function ViewPlace() {
 
                     </Box>
                     <Box textAlign='center'>
-                        <Button color="primary" variant="contained" component={Link} to={`/place/create/`}>Crear lugar</Button>
+                        <Controls.Button color="primary" variant="contained" component={Link} to={`/place/create/`} text="Crear lugar"/>
                     </Box>
                 </Paper>
                 

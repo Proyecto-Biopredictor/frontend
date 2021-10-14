@@ -23,6 +23,7 @@ import BioprocessForm from './pages/Bioprocess/BioprocessForm';
 import ViewUsers from './pages/User/ViewUsers';
 import Profile from './pages/User/Profile'
 import Predictor from './pages/Predictor/Predictor';
+import UploadCSV from './pages/Data/UploadCSV';
 
 const theme = createTheme({
   palette: {
@@ -180,6 +181,12 @@ function App() {
               <Header />
               <SideMenu />
               <Predictor />
+            </RequireAuth>
+
+            <RequireAuth exact path='/uploadCSV/'>
+              <Header />
+              <SideMenu />
+              <UploadCSV />
             </RequireAuth>
 
             <Redirect to="/login" />
