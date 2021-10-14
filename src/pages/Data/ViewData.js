@@ -20,6 +20,7 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import UploadFile from '@mui/icons-material/UploadFile';
+import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
 import Dialog from '@material-ui/core/Dialog';
@@ -52,6 +53,9 @@ const useStyles = makeStyles((theme) => ({
     },
     remove: {
         backgroundColor: red[400]
+    },
+    edit: {
+        backgroundColor: green[700]
     },
     buttonFixed: {
         position: "fixed"
@@ -553,9 +557,15 @@ function ViewData() {
                                 display: 'flex',
                                 justifyContent: 'center'
                             }}>
-
-                                <Tooltip title="Quitar columna">
-                                    <IconButton title="Eliminar dato" onClick={() => prepareDelete(inputField.id)}>
+                                <Tooltip title="Editar registro">
+                                    <IconButton title="Editar dato">
+                                        <Avatar className={classes.edit}>
+                                            <ModeEditIcon />
+                                        </Avatar>
+                                    </IconButton>
+                                </Tooltip>
+                                <Tooltip title="Eliminar registro">
+                                    <IconButton title="Eliminar registro" onClick={() => prepareDelete(inputField.id)}>
                                         <Avatar className={classes.remove}>
                                             <DeleteIcon />
                                         </Avatar>
