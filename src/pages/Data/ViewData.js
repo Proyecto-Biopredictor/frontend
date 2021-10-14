@@ -10,8 +10,24 @@ import Box from '@material-ui/core/Box';
 import InfoIcon from '@material-ui/icons/Info';
 import PageHeader from "../../components/PageHeader";
 import { makeStyles } from '@material-ui/core/styles';
-import { green, red } from '@material-ui/core/colors';
+import { green, red, grey, blue } from '@material-ui/core/colors';
 import Typography from '@mui/material/Typography';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import ClearIcon from '@mui/icons-material/Clear';
+import Tooltip from '@mui/material/Tooltip';
+import Avatar from '@material-ui/core/Avatar';
+import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import DeleteIcon from '@material-ui/icons/Delete';
+import UploadFile from '@mui/icons-material/UploadFile';
+import Card from '@mui/material/Card';
+import CardMedia from '@mui/material/CardMedia';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Slide from '@material-ui/core/Slide';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -27,8 +43,42 @@ const useStyles = makeStyles((theme) => ({
     },
     button: {
         margin: theme.spacing(1)
+    },
+    add: {
+        backgroundColor: green[600]
+    },
+    remove: {
+        backgroundColor: red[400]
+    },
+    buttonFixed: {
+        position: "fixed"
+    },
+    image: {
+        backgroundColor: grey.A100,
+        "&:hover": {
+            backgroundColor: blue[50]
+        }
+    },
+    showImg: {
+        backgroundColor: grey.A100,
+        "&:hover": {
+            backgroundColor: blue[50]
+        }
+    },
+    removeImg: {
+        backgroundColor: grey.A100,
+        "&:hover": {
+            backgroundColor: blue[50]
+        },
+        "&:disabled": {
+            backgroundColor: blue[50]
+        }
     }
 }))
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+});
 
 function ViewData() {
     const { pid, bid } = useParams();
@@ -39,6 +89,12 @@ function ViewData() {
     const [inputFields, setInputFields] = useState([]);
     const [page, setPage] = React.useState(0);
     const [count, setCount] = React.useState(0);
+    const [showCard, setShowCard] = useState(true);
+    const [image, setImage] = useState("");
+    const [cardPositionX, setCardPositionX] = useState(0);
+    const [cardPositionY, setCardPositionY] = useState(0);
+    const [openDialog, setOpenDialog] = useState(false);
+    const [recordId, setRecordId] = useState("");
 
     const config = {
         headers: {
@@ -97,6 +153,14 @@ function ViewData() {
         }
     }
 
+    const deleteRecord = async rid => {
+        try {
+            return await axios.delete(`https://backend-ic7841.herokuapp.com/api/private/record/${rid}`, config);
+        } catch (error) {
+            throw Error(error?.response?.data?.error);
+        }
+    }
+
     useEffect(() => {
         let unmounted = false;
         getAllFactors().then(getAllData());
@@ -124,6 +188,89 @@ function ViewData() {
         });
 
         return inputs;
+    }
+
+    const openImage = () => {
+        const base64ImageData = image;
+        const contentType = image.match("data:(.+);")[1];
+
+        const byteCharacters = atob(base64ImageData.substr(`data:${contentType};base64,`.length));
+        const byteArrays = [];
+
+        for (let offset = 0; offset < byteCharacters.length; offset += 1024) {
+            const slice = byteCharacters.slice(offset, offset + 1024);
+
+            const byteNumbers = new Array(slice.length);
+            for (let i = 0; i < slice.length; i++) {
+                byteNumbers[i] = slice.charCodeAt(i);
+            }
+
+            const byteArray = new Uint8Array(byteNumbers);
+
+            byteArrays.push(byteArray);
+        }
+        const blob = new Blob(byteArrays, { type: contentType });
+        const blobUrl = URL.createObjectURL(blob);
+
+        window.open(blobUrl, '_blank');
+    }
+
+    const prepareDelete = id => {
+        setRecordId(id);
+        setOpenDialog(true);
+    }
+
+    const handleDelete = () => {
+
+        deleteRecord(recordId).then(() => {
+            setOpenDialog(false);
+            const values = [...inputFields];
+            values.splice(values.findIndex(value => value.id === recordId), 1);
+            setInputFields(values);
+
+            let con = inputFields.length - 1;
+            let result = con % 3 === 0 ? parseInt(con / 3) : 1 + parseInt(con / 3);
+            if (result < count) {
+                setCount(result);
+                setPage(result);
+            }
+        }).catch(error => {
+            setOpenDialog(false);
+            console.log(error)
+        });
+    }
+
+    const removeImage = (id, factorName) => {
+        const newInputFields = inputFields.map(i => {
+            if (id === i.id) {
+
+                i[factorName] = "";
+            }
+            return i;
+        })
+        setInputFields(newInputFields);
+    }
+
+    const displayCard = (isCard, id, factorName, event) => {
+        setCardPositionX(event.clientX - 250);
+        setCardPositionY(event.clientY - 600);
+        let srcImage = ""
+
+
+        if (isCard !== "") {
+
+            inputFields.every(input => {
+
+                if (input.id === id) {
+                    srcImage = input[factorName];
+                    return false;
+                }
+                return true;
+            });
+        }
+
+        setShowCard(isCard);
+        setImage(srcImage);
     }
 
     return (
@@ -165,6 +312,29 @@ function ViewData() {
                 />
             </Box>
             <form className={classes.root}>
+                <Dialog
+                    open={openDialog}
+                    TransitionComponent={Transition}
+                    keepMounted
+                    onClose={() => setOpenDialog(false)}
+                    aria-labelledby="alert-dialog-slide-title"
+                    aria-describedby="alert-dialog-slide-description"
+                >
+                    <DialogTitle id="alert-dialog-slide-title">¿Desea eliminar este registro?</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText id="alert-dialog-slide-description">
+                            Esta decisión no es reversible.
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => setOpenDialog(false)} color="primary">
+                            Cancelar
+                        </Button>
+                        <Button onClick={handleDelete} color="secondary">
+                            Eliminar
+                        </Button>
+                    </DialogActions>
+                </Dialog>
                 <Box
                     sx={{
                         display: 'flex',
@@ -235,14 +405,14 @@ function ViewData() {
                             </Box>
                         ))}
                     </div>
-                    {inputFields.map(inputField => (
-                        <div key={inputField.id} hidden={3 * page - inputFields.indexOf(inputField) >= 1 && 3 * page - inputFields.indexOf(inputField) <= 3 ? false : true}>
+                    {inputFields.map((inputField, index) => (
+                        <div key={inputField.id} hidden={3 * page - index >= 1 && 3 * page - index <= 3 ? false : true}>
                             <Box sx={{
                                 display: 'flex',
                                 justifyContent: 'center'
                             }}>
                                 <TextField
-                                    style = {{width: "100%"}}
+                                    style={{ width: "100%" }}
                                     type='date'
                                     name="fecha"
                                     disabled
@@ -256,7 +426,7 @@ function ViewData() {
                                 justifyContent: 'center'
                             }}>
                                 <TextField
-                                    style = {{width: "100%"}}
+                                    style={{ width: "100%" }}
                                     type='time'
                                     name="hora"
                                     disabled
@@ -266,22 +436,123 @@ function ViewData() {
                                 />
                             </Box>
                             {factors.map(factor => (
-                                <Box>
-                                    <TextField
-                                        type='number'
-                                        name={factor.name}
-                                        disabled
-                                        label=""
-                                        value={inputField[factor.name]}
-                                        size="small"
-                                        variant="outlined"
-                                    />
+                                <Box sx={{
+                                    display: 'flex',
+                                    justifyContent: 'center'
+                                }}>
+                                    {factor.type === "value"
+                                        ? <TextField
+                                            type='number'
+                                            name={factor.name}
+                                            value={inputField[factor.name]}
+                                            label=""
+                                            disabled
+                                            size="small"
+                                            variant="outlined"
+                                        />
+                                        : inputFields[index][factor.name] === ""
+                                            ? <Tooltip title="Subir imagen">
+                                                <Button
+                                                    style={{
+                                                        margin: "8px",
+                                                        width: "100%",
+                                                        paddingTop: "8px",
+                                                        paddingBottom: "8px",
+                                                        paddingLeft: "20px",
+                                                        paddingRight: "20px",
+                                                    }}
+                                                    disabled
+                                                    variant="contained"
+                                                    component="label"
+                                                    className={classes.image}
+                                                >
+                                                    <UploadFile />
+                                                    <input
+                                                        name={factor.name}
+                                                        accept="image/*"
+                                                        id="raised-button-file"
+                                                        type="file"
+                                                        hidden
+
+                                                    />
+                                                </Button>
+                                            </Tooltip>
+                                            : <>
+                                                <Tooltip title="Abrir imagen">
+                                                    <Button
+                                                        style={{
+                                                            margin: "8px",
+                                                            width: "75%",
+                                                            paddingTop: "8px",
+                                                            paddingBottom: "8px",
+                                                            paddingLeft: "20px",
+                                                            paddingRight: "20px",
+                                                        }}
+                                                        variant="contained"
+                                                        onMouseEnter={(event) => displayCard(false, inputField.id, factor.name, event)}
+                                                        onMouseLeave={(event) => displayCard(true, "", "", event)}
+                                                        onClick={() => openImage()}
+                                                        className={classes.showImg}
+                                                    >
+                                                        <VisibilityIcon />
+                                                    </Button>
+                                                </Tooltip>
+                                                <Tooltip title="Remover imagen">
+                                                    <Button
+                                                        style={{
+                                                            margin: "8px",
+                                                            width: "25%",
+                                                            paddingTop: "8px",
+                                                            paddingBottom: "8px",
+                                                            paddingLeft: "20px",
+                                                            paddingRight: "20px",
+                                                        }}
+                                                        disabled
+                                                        variant="contained"
+                                                        className={classes.removeImg}
+                                                        onClick={() => removeImage(inputField.id, factor.name)}
+                                                    >
+                                                        <ClearIcon />
+                                                    </Button>
+                                                </Tooltip>
+                                            </>
+                                    }
                                 </Box>
                             ))}
+                            <Box sx={{
+                                display: 'flex',
+                                justifyContent: 'center'
+                            }}>
+
+                                <Tooltip title="Quitar columna">
+                                    <IconButton title="Eliminar dato" onClick={() => prepareDelete(inputField.id)}>
+                                        <Avatar className={classes.remove}>
+                                            <DeleteIcon />
+                                        </Avatar>
+                                    </IconButton>
+                                </Tooltip>
+                            </Box>
                         </div>
                     ))}
                 </Box>
             </form>
+            <Card
+                sx={{
+                    maxWidth: 300,
+                    maxHeight: 300,
+                    position: "relative",
+                    top: cardPositionY,
+                    left: cardPositionX,
+                }}
+                hidden={showCard}
+            >
+                <CardMedia
+                    component="img"
+                    height="194"
+                    image={image}
+                    alt=""
+                />
+            </Card>
         </Container>
     );
 }

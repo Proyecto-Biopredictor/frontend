@@ -284,7 +284,7 @@ function CreateData() {
     }
 
     const displayCard = (isCard, id, factorName, event) => {
-        setCardPositionX(event.clientX - event.clientX / 3);
+        setCardPositionX(event.clientX - 250);
         setCardPositionY(event.clientY - 600);
         let srcImage = ""
 
