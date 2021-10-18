@@ -21,6 +21,7 @@ import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
 import UploadFile from '@mui/icons-material/UploadFile';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
+import Check from '@mui/icons-material/Check';
 import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
 import Dialog from '@material-ui/core/Dialog';
@@ -56,6 +57,9 @@ const useStyles = makeStyles((theme) => ({
     },
     edit: {
         backgroundColor: green[700]
+    },
+    save: {
+        backgroundColor: blue[700]
     },
     buttonFixed: {
         position: "fixed"
@@ -103,6 +107,7 @@ function ViewData() {
     const [openDialog, setOpenDialog] = useState(false);
     const [recordId, setRecordId] = useState("");
     const [open, setOpen] = useState(false);
+    const [editId, setEditId] = useState("");
     const message = "Se ha eliminado el registro!"
 
     const config = {
@@ -557,15 +562,25 @@ function ViewData() {
                                 display: 'flex',
                                 justifyContent: 'center'
                             }}>
-                                <Tooltip title="Editar registro">
-                                    <IconButton title="Editar dato">
-                                        <Avatar className={classes.edit}>
-                                            <ModeEditIcon />
-                                        </Avatar>
-                                    </IconButton>
-                                </Tooltip>
+
+                                {editId !== inputField.id
+                                    ? <Tooltip title="Editar registro">
+                                        <IconButton onClick={() => setEditId(inputField.id)}>
+                                            <Avatar className={classes.edit}>
+                                                <ModeEditIcon />
+                                            </Avatar>
+                                        </IconButton>
+                                    </Tooltip>
+                                    : <Tooltip title="Guardar datos">
+                                        <IconButton>
+                                            <Avatar className={classes.save}>
+                                                <Check />
+                                            </Avatar>
+                                        </IconButton>
+                                    </Tooltip>
+                                }
                                 <Tooltip title="Eliminar registro">
-                                    <IconButton title="Eliminar registro" onClick={() => prepareDelete(inputField.id)}>
+                                    <IconButton onClick={() => prepareDelete(inputField.id)}>
                                         <Avatar className={classes.remove}>
                                             <DeleteIcon />
                                         </Avatar>
