@@ -184,13 +184,6 @@ export default function Updatefactor() {
               />
             </Grid>
             <Grid item xs={6}>
-              <Controls.RadioGroup
-                name="type"
-                label="Tipo"
-                value={values.type}
-                onChange={handleInputChange}
-                items={typeItems}
-              />
               <Controls.Checkbox
                 name="isDependent"
                 label="Es dependiente"
