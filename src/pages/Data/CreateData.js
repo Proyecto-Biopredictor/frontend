@@ -303,7 +303,7 @@ function CreateData() {
 
     const displayCard = (isCard, id, factorName, event) => {
         setCardPositionX(event.clientX - 250);
-        setCardPositionY(event.clientY - 600);
+        setCardPositionY(event.clientY - 750);
         let srcImage = ""
 
 

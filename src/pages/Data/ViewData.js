@@ -352,7 +352,7 @@ function ViewData() {
     const handleChangeImageInput = (id, event) => {
         let inputs = []
         const forEachLoop = async _ => {
-            
+
             for (let index = 0; index < inputFields.length; index++) {
                 if (id === inputFields[index].id) {
 
@@ -367,146 +367,187 @@ function ViewData() {
         });
     }
 
-        const isEditing = (id, edit) => {
-            const newInputFields = inputFields.map(i => {
-                if (id === i.id) {
+    const isEditing = (id, edit) => {
+        const newInputFields = inputFields.map(i => {
+            if (id === i.id) {
 
-                    i["edit"] = edit;
-                }
-                return i;
-            })
-            setInputFields(newInputFields);
-        }
-
-        const removeImage = (id, factorName) => {
-            const newInputFields = inputFields.map(i => {
-                if (id === i.id) {
-
-                    i[factorName] = "";
-                }
-                return i;
-            })
-            setInputFields(newInputFields);
-        }
-
-        const displayCard = (isCard, id, factorName, event) => {
-            setCardPositionX(event.clientX - 250);
-            setCardPositionY(event.clientY - 600);
-            let srcImage = ""
-
-
-            if (isCard !== "") {
-
-                inputFields.every(input => {
-
-                    if (input.id === id) {
-                        srcImage = input[factorName];
-                        return false;
-                    }
-                    return true;
-                });
+                i["edit"] = edit;
             }
+            return i;
+        })
+        setInputFields(newInputFields);
+    }
 
-            setShowCard(isCard);
-            setImage(srcImage);
-        }
+    const removeImage = (id, factorName) => {
+        const newInputFields = inputFields.map(i => {
+            if (id === i.id) {
 
-        const closeDialog = () => {
-            setOpenDialog(false);
-            if (isEdit) {
-                isEditing(inputEdit.id, false);
+                i[factorName] = "";
             }
+            return i;
+        })
+        setInputFields(newInputFields);
+    }
+
+    const displayCard = (isCard, id, factorName, event) => {
+        setCardPositionX(event.clientX - 250);
+        setCardPositionY(event.clientY - 600);
+        let srcImage = ""
+
+
+        if (isCard !== "") {
+
+            inputFields.every(input => {
+
+                if (input.id === id) {
+                    srcImage = input[factorName];
+                    return false;
+                }
+                return true;
+            });
         }
 
-        return (
-            <Container>
-                <PageHeader
-                    title="Datos incluidos en el lugar"
-                    subTitle="Se muestran todos los datos asociados a este lugar y bioproceso"
-                    icon={<InfoIcon fontSize="Large"
-                    />}
+        setShowCard(isCard);
+        setImage(srcImage);
+    }
+
+    const closeDialog = () => {
+        setOpenDialog(false);
+        if (isEdit) {
+            isEditing(inputEdit.id, false);
+        }
+    }
+
+    return (
+        <Container>
+            <PageHeader
+                title="Datos incluidos en el lugar"
+                subTitle="Se muestran todos los datos asociados a este lugar y bioproceso"
+                icon={<InfoIcon fontSize="Large"
+                />}
+            />
+            <div className={classes.placeholder} hidden={!loading}>
+                <Fade
+                    in={loading}
+                    style={{
+                        transitionDelay: '0m',
+                    }}
+                    unmountOnExit
+                >
+                    <CircularProgress />
+                </Fade>
+                <br />
+            </div>
+            <Box
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'center'
+                }}
+            >
+                <Pagination
+                    sx={{ mt: 1 }}
+                    size="large"
+                    variant="outlined"
+                    color="standard"
+                    count={count}
+                    siblingCount={0}
+                    boundaryCount={2}
+                    page={page}
+                    onChange={handleChangePage}
                 />
-                <div className={classes.placeholder} hidden={!loading}>
-                    <Fade
-                        in={loading}
-                        style={{
-                            transitionDelay: '0m',
-                        }}
-                        unmountOnExit
-                    >
-                        <CircularProgress />
-                    </Fade>
-                    <br />
-                </div>
+            </Box>
+            <Collapse in={open}>
+                <Alert
+                    severity={error ? "error" : "success"}
+                    action={
+                        <IconButton
+                            aria-label="close"
+                            color="inherit"
+                            size="small"
+                            onClick={() => {
+                                setOpen(false);
+                            }}
+                        >
+                            <CloseIcon fontSize="inherit" />
+                        </IconButton>
+                    }
+                >
+                    {error ? error : isEdit ? editSuccess : deleteSuccess}
+                </Alert>
+            </Collapse>
+            <form className={classes.root}>
+                <Dialog
+                    open={openDialog}
+                    TransitionComponent={Transition}
+                    keepMounted
+                    onClose={() => setOpenDialog(false)}
+                    aria-labelledby="alert-dialog-slide-title"
+                    aria-describedby="alert-dialog-slide-description"
+                >
+                    <DialogTitle id="alert-dialog-slide-title">{isEdit ? editMessage : deleteMessage}</DialogTitle>
+                    <DialogContent>
+                        <DialogContentText id="alert-dialog-slide-description">
+                            {isEdit ? editMessage_2 : deleteMessage_2}
+                        </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={() => closeDialog()} color={!isEdit ? "primary" : "secondary"}>
+                            Cancelar
+                        </Button>
+                        <Button onClick={isEdit ? handleUpdate : handleDelete} color={isEdit ? "primary" : "secondary"}>
+                            {isEdit ? "Actualizar" : "Eliminar"}
+                        </Button>
+                    </DialogActions>
+                </Dialog>
                 <Box
                     sx={{
                         display: 'flex',
-                        justifyContent: 'center'
+                        justifyContent: 'flex-start',
+                        ml: "5%"
                     }}
                 >
-                    <Pagination
-                        sx={{ mt: 1 }}
-                        size="large"
-                        variant="outlined"
-                        color="standard"
-                        count={count}
-                        siblingCount={0}
-                        boundaryCount={2}
-                        page={page}
-                        onChange={handleChangePage}
-                    />
-                </Box>
-                <Collapse in={open}>
-                    <Alert
-                        severity={error ? "error" : "success"}
-                        action={
-                            <IconButton
-                                aria-label="close"
-                                color="inherit"
-                                size="small"
-                                onClick={() => {
-                                    setOpen(false);
-                                }}
-                            >
-                                <CloseIcon fontSize="inherit" />
-                            </IconButton>
-                        }
-                    >
-                        {error ? error : isEdit ? editSuccess : deleteSuccess}
-                    </Alert>
-                </Collapse>
-                <form className={classes.root}>
-                    <Dialog
-                        open={openDialog}
-                        TransitionComponent={Transition}
-                        keepMounted
-                        onClose={() => setOpenDialog(false)}
-                        aria-labelledby="alert-dialog-slide-title"
-                        aria-describedby="alert-dialog-slide-description"
-                    >
-                        <DialogTitle id="alert-dialog-slide-title">{isEdit ? editMessage : deleteMessage}</DialogTitle>
-                        <DialogContent>
-                            <DialogContentText id="alert-dialog-slide-description">
-                                {isEdit ? editMessage_2 : deleteMessage_2}
-                            </DialogContentText>
-                        </DialogContent>
-                        <DialogActions>
-                            <Button onClick={() => closeDialog()} color={!isEdit ? "primary" : "secondary"}>
-                                Cancelar
-                            </Button>
-                            <Button onClick={isEdit ? handleUpdate : handleDelete} color={isEdit ? "primary" : "secondary"}>
-                                {isEdit ? "Actualizar" : "Eliminar"}
-                            </Button>
-                        </DialogActions>
-                    </Dialog>
-                    <Box
-                        sx={{
+                    <div>
+                        <Box sx={{
                             display: 'flex',
-                            justifyContent: 'flex-start',
-                            ml: "5%"
-                        }}
-                    >
-                        <div>
+                            justifyContent: 'center'
+                        }}>
+                            <Typography
+                                sx={{
+                                    m: "8px",
+                                    py: "6px",
+                                    px: "20px",
+                                    width: "100%",
+                                    borderRadius: 1
+                                }}
+                                hidden={factors.length === 0}
+                                align="center"
+                                variant="subtitle1"
+                                component="div"
+                                className={classes.color}>
+                                Fecha
+                            </Typography>
+                        </Box>
+                        <Box sx={{
+                            display: 'flex',
+                            justifyContent: 'center'
+                        }}>
+                            <Typography
+                                sx={{
+                                    m: "8px",
+                                    py: "6px",
+                                    px: "20px",
+                                    width: "100%",
+                                    borderRadius: 1
+                                }}
+                                hidden={factors.length === 0}
+                                align="center"
+                                variant="subtitle1"
+                                component="div"
+                                className={classes.color}>
+                                Hora
+                            </Typography>
+                        </Box>
+                        {factors.map(factor => (
                             <Box sx={{
                                 display: 'flex',
                                 justifyContent: 'center'
@@ -519,242 +560,201 @@ function ViewData() {
                                         width: "100%",
                                         borderRadius: 1
                                     }}
-                                    hidden={factors.length === 0}
                                     align="center"
                                     variant="subtitle1"
                                     component="div"
                                     className={classes.color}>
-                                    Fecha
+                                    {factor.name}
                                 </Typography>
+                            </Box>
+                        ))}
+                    </div>
+                    {inputFields.map((inputField, index) => (
+                        <div key={inputField.id} hidden={3 * page - index >= 1 && 3 * page - index <= 3 ? false : true}>
+                            <Box sx={{
+                                display: 'flex',
+                                justifyContent: 'center'
+                            }}>
+                                <TextField
+                                    className={inputFields[index]["edit"] ? classes.inputEdit : classes.normal}
+                                    disabled={!inputFields[index]["edit"]}
+                                    style={{ width: "100%" }}
+                                    type='date'
+                                    name="fecha"
+                                    value={inputField.fecha}
+                                    variant="outlined"
+                                    size="small"
+                                    onChange={event => handleChangeInput(inputField.id, event)}
+                                />
                             </Box>
                             <Box sx={{
                                 display: 'flex',
                                 justifyContent: 'center'
                             }}>
-                                <Typography
-                                    sx={{
-                                        m: "8px",
-                                        py: "6px",
-                                        px: "20px",
-                                        width: "100%",
-                                        borderRadius: 1
-                                    }}
-                                    hidden={factors.length === 0}
-                                    align="center"
-                                    variant="subtitle1"
-                                    component="div"
-                                    className={classes.color}>
-                                    Hora
-                                </Typography>
+                                <TextField
+                                    className={inputFields[index]["edit"] ? classes.inputEdit : classes.normal}
+                                    disabled={!inputFields[index]["edit"]}
+                                    style={{ width: "100%" }}
+                                    type='time'
+                                    name="hora"
+                                    value={inputField.hora}
+                                    size="small"
+                                    variant="outlined"
+                                    onChange={event => handleChangeInput(inputField.id, event)}
+                                />
                             </Box>
                             {factors.map(factor => (
                                 <Box sx={{
                                     display: 'flex',
                                     justifyContent: 'center'
                                 }}>
-                                    <Typography
-                                        sx={{
-                                            m: "8px",
-                                            py: "6px",
-                                            px: "20px",
-                                            width: "100%",
-                                            borderRadius: 1
-                                        }}
-                                        align="center"
-                                        variant="subtitle1"
-                                        component="div"
-                                        className={classes.color}>
-                                        {factor.name}
-                                    </Typography>
-                                </Box>
-                            ))}
-                        </div>
-                        {inputFields.map((inputField, index) => (
-                            <div key={inputField.id} hidden={3 * page - index >= 1 && 3 * page - index <= 3 ? false : true}>
-                                <Box sx={{
-                                    display: 'flex',
-                                    justifyContent: 'center'
-                                }}>
-                                    <TextField
-                                        className={inputFields[index]["edit"] ? classes.inputEdit : classes.normal}
-                                        disabled={!inputFields[index]["edit"]}
-                                        style={{ width: "100%" }}
-                                        type='date'
-                                        name="fecha"
-                                        value={inputField.fecha}
-                                        variant="outlined"
-                                        size="small"
-                                        onChange={event => handleChangeInput(inputField.id, event)}
-                                    />
-                                </Box>
-                                <Box sx={{
-                                    display: 'flex',
-                                    justifyContent: 'center'
-                                }}>
-                                    <TextField
-                                        className={inputFields[index]["edit"] ? classes.inputEdit : classes.normal}
-                                        disabled={!inputFields[index]["edit"]}
-                                        style={{ width: "100%" }}
-                                        type='time'
-                                        name="hora"
-                                        value={inputField.hora}
-                                        size="small"
-                                        variant="outlined"
-                                        onChange={event => handleChangeInput(inputField.id, event)}
-                                    />
-                                </Box>
-                                {factors.map(factor => (
-                                    <Box sx={{
-                                        display: 'flex',
-                                        justifyContent: 'center'
-                                    }}>
-                                        {factor.type === "value"
-                                            ? <TextField
-                                                className={inputFields[index]["edit"] ? classes.inputEdit : classes.normal}
-                                                disabled={!inputFields[index]["edit"]}
-                                                type='number'
-                                                name={factor.name}
-                                                value={inputField[factor.name]}
-                                                label=""
-                                                color="primary"
-                                                size="small"
-                                                variant="outlined"
-                                                onChange={event => handleChangeInput(inputField.id, event)}
-                                            />
-                                            : inputFields[index][factor.name] === ""
-                                                ? <Tooltip title="Subir imagen">
+                                    {factor.type === "value"
+                                        ? <TextField
+                                            className={inputFields[index]["edit"] ? classes.inputEdit : classes.normal}
+                                            disabled={!inputFields[index]["edit"]}
+                                            type='number'
+                                            name={factor.name}
+                                            value={inputField[factor.name]}
+                                            label=""
+                                            color="primary"
+                                            size="small"
+                                            variant="outlined"
+                                            onChange={event => handleChangeInput(inputField.id, event)}
+                                        />
+                                        : inputFields[index][factor.name] === ""
+                                            ? <Tooltip title="Subir imagen">
+                                                <Button
+                                                    style={{
+                                                        margin: "8px",
+                                                        width: "100%",
+                                                        paddingTop: "8px",
+                                                        paddingBottom: "8px",
+                                                        paddingLeft: "20px",
+                                                        paddingRight: "20px",
+                                                    }}
+                                                    disabled={!inputFields[index]["edit"]}
+                                                    variant="contained"
+                                                    component="label"
+                                                    className={classes.image}
+                                                >
+                                                    <UploadFile />
+                                                    <input
+                                                        name={factor.name}
+                                                        accept="image/*"
+                                                        id="raised-button-file"
+                                                        type="file"
+                                                        hidden
+                                                        onChange={event => handleChangeImageInput(inputField.id, event)}
+                                                    />
+                                                </Button>
+                                            </Tooltip>
+                                            : <>
+                                                <Tooltip title="Abrir imagen">
                                                     <Button
                                                         style={{
                                                             margin: "8px",
-                                                            width: "100%",
+                                                            width: inputFields[index]["edit"] ? "100%" : "75%",
                                                             paddingTop: "8px",
                                                             paddingBottom: "8px",
                                                             paddingLeft: "20px",
                                                             paddingRight: "20px",
                                                         }}
-                                                        disabled={!inputFields[index]["edit"]}
                                                         variant="contained"
-                                                        component="label"
-                                                        className={classes.image}
+                                                        onMouseEnter={(event) => displayCard(false, inputField.id, factor.name, event)}
+                                                        onMouseLeave={(event) => displayCard(true, "", "", event)}
+                                                        onClick={() => openImage()}
+                                                        className={classes.showImg}
                                                     >
-                                                        <UploadFile />
-                                                        <input
-                                                            name={factor.name}
-                                                            accept="image/*"
-                                                            id="raised-button-file"
-                                                            type="file"
-                                                            hidden
-                                                            onChange={event => handleChangeImageInput(inputField.id, event)}
+                                                        <Box
+                                                            component="img"
+                                                            sx={{
+                                                                height: 25,
+                                                                width: 25,
+                                                                maxHeight: { xs: 25, md: 25 },
+                                                                maxWidth: { xs: 25, md: 25 },
+                                                            }}
+                                                            alt=""
+                                                            src={inputFields[index][factor.name]}
                                                         />
                                                     </Button>
                                                 </Tooltip>
-                                                : <>
-                                                    <Tooltip title="Abrir imagen">
+                                                {
+                                                    inputFields[index]["edit"] &&
+                                                    <Tooltip title="Remover imagen">
                                                         <Button
                                                             style={{
                                                                 margin: "8px",
-                                                                width: inputFields[index]["edit"] ? "100%" : "75%",
+                                                                width: "25%",
                                                                 paddingTop: "8px",
                                                                 paddingBottom: "8px",
                                                                 paddingLeft: "20px",
                                                                 paddingRight: "20px",
                                                             }}
+                                                            disabled={!inputFields[index]["edit"]}
                                                             variant="contained"
-                                                            onMouseEnter={(event) => displayCard(false, inputField.id, factor.name, event)}
-                                                            onMouseLeave={(event) => displayCard(true, "", "", event)}
-                                                            onClick={() => openImage()}
-                                                            className={classes.showImg}
+                                                            className={classes.removeImg}
+                                                            onClick={() => removeImage(inputField.id, factor.name)}
                                                         >
-                                                            <Box
-                                                                component="img"
-                                                                sx={{
-                                                                    height: 25,
-                                                                    width: 25,
-                                                                    maxHeight: { xs: 25, md: 25 },
-                                                                    maxWidth: { xs: 25, md: 25 },
-                                                                }}
-                                                                alt=""
-                                                                src={inputFields[index][factor.name]}
-                                                            />
+                                                            <ClearIcon />
                                                         </Button>
                                                     </Tooltip>
-                                                    {
-                                                        inputFields[index]["edit"] &&
-                                                        <Tooltip title="Remover imagen">
-                                                            <Button
-                                                                style={{
-                                                                    margin: "8px",
-                                                                    width: "25%",
-                                                                    paddingTop: "8px",
-                                                                    paddingBottom: "8px",
-                                                                    paddingLeft: "20px",
-                                                                    paddingRight: "20px",
-                                                                }}
-                                                                disabled={!inputFields[index]["edit"]}
-                                                                variant="contained"
-                                                                className={classes.removeImg}
-                                                                onClick={() => removeImage(inputField.id, factor.name)}
-                                                            >
-                                                                <ClearIcon />
-                                                            </Button>
-                                                        </Tooltip>
-                                                    }
-                                                </>
-                                        }
-                                    </Box>
-                                ))}
-                                <Box sx={{
-                                    display: 'flex',
-                                    justifyContent: 'center'
-                                }}>
-
-                                    {!inputFields[index]["edit"]
-                                        ? <Tooltip title="Editar registro">
-                                            <IconButton onClick={() => isEditing(inputField.id, true)}>
-                                                <Avatar className={classes.edit}>
-                                                    <ModeEditIcon />
-                                                </Avatar>
-                                            </IconButton>
-                                        </Tooltip>
-                                        : <Tooltip title="Guardar datos">
-                                            <IconButton onClick={() => prepareEdit(inputField)}>
-                                                <Avatar className={classes.save}>
-                                                    <Check />
-                                                </Avatar>
-                                            </IconButton>
-                                        </Tooltip>
+                                                }
+                                            </>
                                     }
-                                    <Tooltip title="Eliminar registro">
-                                        <IconButton onClick={() => prepareDelete(inputField.id)}>
-                                            <Avatar className={classes.remove}>
-                                                <DeleteIcon />
+                                </Box>
+                            ))}
+                            <Box sx={{
+                                display: 'flex',
+                                justifyContent: 'center'
+                            }}>
+
+                                {!inputFields[index]["edit"]
+                                    ? <Tooltip title="Editar registro">
+                                        <IconButton onClick={() => isEditing(inputField.id, true)}>
+                                            <Avatar className={classes.edit}>
+                                                <ModeEditIcon />
                                             </Avatar>
                                         </IconButton>
                                     </Tooltip>
-                                </Box>
-                            </div>
-                        ))}
-                    </Box>
-                </form>
-                <Card
-                    sx={{
-                        maxWidth: 300,
-                        maxHeight: 300,
-                        position: "relative",
-                        top: cardPositionY,
-                        left: cardPositionX,
-                    }}
-                    hidden={showCard}
-                >
-                    <CardMedia
-                        component="img"
-                        height="194"
-                        image={image}
-                        alt=""
-                    />
-                </Card>
-            </Container>
-        );
-    }
+                                    : <Tooltip title="Guardar datos">
+                                        <IconButton onClick={() => prepareEdit(inputField)}>
+                                            <Avatar className={classes.save}>
+                                                <Check />
+                                            </Avatar>
+                                        </IconButton>
+                                    </Tooltip>
+                                }
+                                <Tooltip title="Eliminar registro">
+                                    <IconButton onClick={() => prepareDelete(inputField.id)}>
+                                        <Avatar className={classes.remove}>
+                                            <DeleteIcon />
+                                        </Avatar>
+                                    </IconButton>
+                                </Tooltip>
+                            </Box>
+                        </div>
+                    ))}
+                </Box>
+            </form>
+            <Card
+                sx={{
+                    maxWidth: 300,
+                    maxHeight: 300,
+                    position: "relative",
+                    top: cardPositionY,
+                    left: cardPositionX,
+                }}
+                hidden={showCard}
+            >
+                <CardMedia
+                    component="img"
+                    height="194"
+                    image={image}
+                    alt=""
+                />
+            </Card>
+        </Container>
+    );
+}
 
-    export default ViewData;
+export default ViewData;
