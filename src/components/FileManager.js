@@ -6,16 +6,20 @@ import Controls from './controls/Controls'
 
 const buttonRef = React.createRef()
 
-export default class FileManager extends Component {
-    handleOpenDialog = (e) => {
-      // Note that the ref is set async, so it might be null at some point
-      if (buttonRef.current) {
-        buttonRef.current.open(e)
-      }
+
+export default function FileManager() {
+
+  const handleOpenDialog = (e) => {
+    // Note that the ref is set async, so it might be null at some point
+    if (buttonRef.current) {
+      buttonRef.current.open(e)
     }
-  
-    handleOnFileLoad = (data) => {
-        console.log('---------------------------')
+  }
+
+  const handleOnFileLoad = (data) => {
+    // Note that the ref is set async, so it might be null at some point
+    if (buttonRef.current) {
+      console.log('---------------------------')
         console.log(data)
         let info=[];
         for(const a of data ){
@@ -29,33 +33,34 @@ export default class FileManager extends Component {
         console.log(info);
         console.log('---------------------------')
     }
-  
-    handleOnError = (err, file, inputElem, reason) => {
-      console.log(err)
+  }
+
+  const handleOnError = (err, file, inputElem, reason) => {
+    console.log(err)
+  }
+
+  const handleOnRemoveFile = (data) => {
+    console.log('---------------------------')
+    console.log(data)
+    console.log('---------------------------')
+  }
+
+  const handleRemoveFile = (e) => {
+    // Note that the ref is set async, so it might be null at some point
+    if (buttonRef.current) {
+      buttonRef.current.removeFile(e)
     }
-  
-    handleOnRemoveFile = (data) => {
-      console.log('---------------------------')
-      console.log(data)
-      console.log('---------------------------')
-    }
-  
-    handleRemoveFile = (e) => {
-      // Note that the ref is set async, so it might be null at some point
-      if (buttonRef.current) {
-        buttonRef.current.removeFile(e)
-      }
-    }
-  
-    render() {
-      return (
-        <CSVReader
+  }
+
+  return (
+    <div>
+      <CSVReader
           ref={buttonRef}
-          onFileLoad={this.handleOnFileLoad}
-          onError={this.handleOnError}
+          onFileLoad={handleOnFileLoad}
+          onError={handleOnError}
           noClick
           noDrag
-          onRemoveFile={this.handleOnRemoveFile}
+          onRemoveFile={handleOnRemoveFile}
           config={{header:true, quoteChar:'`'}}
         >
           {({ file }) => (
@@ -68,7 +73,7 @@ export default class FileManager extends Component {
             >
               <Controls.Button
                 variant='contained'
-                onClick={this.handleOpenDialog}
+                onClick={handleOpenDialog}
                 style={{
                   borderRadius: 0,
                   marginLeft: 0,
@@ -105,12 +110,12 @@ export default class FileManager extends Component {
                   paddingLeft: 20,
                   paddingRight: 20
                 }}
-                onClick={this.handleRemoveFile}
+                onClick={handleRemoveFile}
                 text="Eliminar"
               />
             </aside>
           )}
         </CSVReader>
-      )
-    }
-  }
+    </div>
+  )
+}
