@@ -15,9 +15,6 @@ describe("Counter testing", () =>{
   test('renders learn react link', () => {
     
     expect(wrapper.find('h1').text()).toContain("Hola");
-    // const {getByText} = render(<Link />);
-    // const linkElement = getByText("This is counter app");
-    // expect(linkElement).toBeInTheDocument();
   });
 
   test("render a button with text of 'increment'",() => {

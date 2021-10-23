@@ -22,6 +22,10 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import axios from "axios";
 import AlertMessage from '../../components/AlertMessage';
+import { CSVLink } from "react-csv"
+import { jsonToCSV, CSVDownloader } from 'react-papaparse'
+import DownloadIcon from '@mui/icons-material/Download';
+import Download from '@mui/icons-material/Download';
 
 const useStyles = makeStyles((theme) => ({
     table: {
@@ -45,6 +49,9 @@ const useStyles = makeStyles((theme) => ({
         '& > *': {
             fontSize: 18
         }
+    },
+    cell: {
+        paddingTop: 0
     },
     buttonheader: {
         display: 'flex'
@@ -70,6 +77,15 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: 'white',
         padding: 8
     },
+    csvContainer: {
+        fontSize: 20,
+        background: '#8ade8f',
+
+    },
+    iconContainer: {
+        color: 'white',
+        textDecoration: 'none',
+    }
 
 }));
 
@@ -113,6 +129,19 @@ export default function ViewBioprocess() {
     const handleAccept = () => {
         deleteBioprocessData()
         setOpenDialog(false);
+    }
+
+    const headers = [
+        { label: 'id', key: 'id' },
+        { label: 'Descripción', key: 'description' },
+        { label: 'Nombre', key: 'name' },
+        { label: 'Tipo', key: 'type' },
+    ]
+
+    const csvReport = {
+        filename: 'Bioprocesses.csv',
+        headers: headers,
+        data: bioprocesses
     }
 
     const config = {
@@ -211,7 +240,7 @@ export default function ViewBioprocess() {
 
                     </Box>
                     <Box textAlign='center'>
-                        <Controls.Button color="primary" variant="contained" component={Link} to={`/bioprocess/create/`} text="Crear bioproceso"/>
+                        <Controls.Button color="primary" variant="contained" component={Link} to={`/bioprocess/create/`} text="Crear bioproceso" />
                     </Box>
 
                 </Paper>
@@ -235,13 +264,34 @@ export default function ViewBioprocess() {
             <Paper className={classes.table}>
                 <AlertMessage errorMessage={error} successMessage={""} openMessage={open} />
                 <TableContainer >
+                    {/* <div className={classes.test}>
+                    <CSVDownloader
+                        data= {bioprocesses}
+                        filename={'bioprocesses'}
+                        config={{}}
+                    > Download</CSVDownloader>
+                    </div> */}
+                    <Grid
+                        container
+                        direction="row"
+                        className={classes.csvContainer}
+                    >
+                        <Tooltip title="Exportar bioproceso">
+                            <div className={classes.iconContainer}>
+                                <CSVLink {...csvReport} style={{color:'white', marginLeft: '10px'}}> 
+                                    <DownloadIcon fontSize={'large'} />
+                                </CSVLink>
+                            </div>
+                        </Tooltip>
+                    </Grid>
                     <Table stickyHeader aria-label="sticky table" className={classes.container}>
+
                         <TableHead>
                             <TableRow className={classes.thead}>
-                                <TableCell>Nombre</TableCell>
-                                <TableCell>¿Es serie temporal?</TableCell>
-                                <TableCell>Tipo</TableCell>
-                                <TableCell className={classes.placeholder}>Acciones</TableCell>
+                                <TableCell className={classes.cell}>Nombre</TableCell>
+                                <TableCell className={classes.cell}>¿Es serie temporal?</TableCell>
+                                <TableCell className={classes.cell}>Tipo</TableCell>
+                                <TableCell className={classes.placeholder} style={{paddingTop: '0px'}}>Acciones</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
