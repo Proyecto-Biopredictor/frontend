@@ -31,6 +31,7 @@ import Card from '@mui/material/Card';
 import CardMedia from '@mui/material/CardMedia';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import ClearIcon from '@mui/icons-material/Clear';
+import FileUploadIcon from '@mui/icons-material/FileUpload';
 import Collapse from '@mui/material/Collapse';
 import CloseIcon from '@mui/icons-material/Close';
 import { getBase64 } from '../../services/getFileService';
@@ -102,6 +103,7 @@ function CreateData() {
     const [image, setImage] = useState("");
     const [cardPositionX, setCardPositionX] = useState(0);
     const [cardPositionY, setCardPositionY] = useState(0);
+    const [CSVData, setCSVData] = useState("");
 
     const message = "Se han registrado los datos!"
 
@@ -174,6 +176,45 @@ function CreateData() {
     const handleChangePage = (event, value) => {
         setPage(value);
     };
+
+    const handleAddDataFromCSV = (e, value) => {
+        e.preventDefault();
+        let data = {
+            "bioprocessID": bid,
+            "placeID": pid,
+            "values": []
+        };
+
+        for (let i = 0; i < CSVData.length; i++){
+            let element = {};
+            element.timestamp = "1111";
+            element.values = CSVData[i];
+            data.values.push(element)
+        }
+
+        
+        
+        console.log(data);
+
+        try {
+            addData(data).then(() => {
+                setOpen(true)
+                cleanData(factorsObj);
+            });
+        } catch (error) {
+            setTimeout(() => {
+                setTimeout(() => {
+                    setOpen(false)
+                    setError("");
+                }, 2000);
+            }, 5000);
+            setOpen(true)
+            return setError("Authentication failed!");
+        }
+
+        
+    };
+
 
     const parseInput = async () => {
 
@@ -613,25 +654,39 @@ function CreateData() {
 
                     </Box>
                 </Box>
-                
+
                 <Box>
-                    <Controls.Button style={{ position: "fixed", marginLeft: "4.5%" }}
+                    <Controls.Button style={{ marginLeft: "4.5%" }}
                         variant="contained"
                         color="primary"
                         onClick={() => setOpenDialog(true)}
                         text="Guardar datos ingresados"
                     />
                 </Box>
-                <br/>
-                <br/>
-                <br/>
-                <br/>
-                <Box style={{width : "90%"}}>
-                <FileManager />
+                <br />
+                <br />
+                <br />
+                <br />
+                <PageHeader
+                        title={"Subir archivo CSV"}
+                        subTitle={"Ingresar información a la base de datos con un archivo CSV."}
+                        icon={<FileUploadIcon fontSize="large" color='primary'
+                        />}
+                    />
+                <Box style={{ width: "90%" }}>
+
+                    <FileManager setCSVData={setCSVData} />
+                    <Controls.Button
+                        text="Enviar datos"
+                        color="primary"
+                        onClick={handleAddDataFromCSV}
+                    />
                 </Box>
                 
-
+                
             </form>
+            
+
             <Card
                 sx={{
                     maxWidth: 300,
@@ -648,6 +703,7 @@ function CreateData() {
                     image={image}
                     alt=""
                 />
+                
             </Card>
         </Container>
     );
