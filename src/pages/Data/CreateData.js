@@ -117,6 +117,8 @@ function CreateData() {
     // current year
     let year = date_ob.getFullYear();
 
+    let t_time = date_ob.getHours() + ":" + date_ob.getMinutes();
+
     const config = {
         headers: {
             "Content-Type": "application/json",
@@ -187,7 +189,7 @@ function CreateData() {
 
         for (let i = 0; i < CSVData.length; i++){
             let element = {};
-            element.timestamp = "1111";
+            element.timestamp = year + "-" + month + "-" + date + "T" + t_time;
             element.values = CSVData[i];
             data.values.push(element)
         }
