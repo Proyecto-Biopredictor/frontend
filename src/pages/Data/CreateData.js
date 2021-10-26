@@ -103,6 +103,7 @@ function CreateData() {
     const [image, setImage] = useState("");
     const [cardPositionX, setCardPositionX] = useState(0);
     const [cardPositionY, setCardPositionY] = useState(0);
+    const [CSVData, setCSVData] = useState("");
 
     const message = "Se han registrado los datos!"
 
@@ -175,6 +176,45 @@ function CreateData() {
     const handleChangePage = (event, value) => {
         setPage(value);
     };
+
+    const handleAddDataFromCSV = (e, value) => {
+        e.preventDefault();
+        let data = {
+            "bioprocessID": bid,
+            "placeID": pid,
+            "values": []
+        };
+
+        for (let i = 0; i < CSVData.length; i++){
+            let element = {};
+            element.timestamp = "1111";
+            element.values = CSVData[i];
+            data.values.push(element)
+        }
+
+        
+        
+        console.log(data);
+
+        try {
+            addData(data).then(() => {
+                setOpen(true)
+                cleanData(factorsObj);
+            });
+        } catch (error) {
+            setTimeout(() => {
+                setTimeout(() => {
+                    setOpen(false)
+                    setError("");
+                }, 2000);
+            }, 5000);
+            setOpen(true)
+            return setError("Authentication failed!");
+        }
+
+        
+    };
+
 
     const parseInput = async () => {
 
@@ -635,11 +675,17 @@ function CreateData() {
                     />
                 <Box style={{ width: "90%" }}>
 
-                    
-                    <FileManager />
+                    <FileManager setCSVData={setCSVData} />
+                    <Controls.Button
+                        text="Enviar datos"
+                        color="primary"
+                        onClick={handleAddDataFromCSV}
+                    />
                 </Box>
-
+                
+                
             </form>
+            
 
             <Card
                 sx={{
@@ -657,6 +703,7 @@ function CreateData() {
                     image={image}
                     alt=""
                 />
+                
             </Card>
         </Container>
     );
