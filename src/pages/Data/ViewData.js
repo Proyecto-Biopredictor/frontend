@@ -570,7 +570,8 @@ function ViewData() {
                         ))}
                     </div>
                     {inputFields.map((inputField, index) => (
-                        <div key={inputField.id} hidden={3 * page - index >= 1 && 3 * page - index <= 3 ? false : true}>
+                        3 * page - index >= 1 && 3 * page - index <= 3 &&
+                        <div key={inputField.id}>
                             <Box sx={{
                                 display: 'flex',
                                 justifyContent: 'center'

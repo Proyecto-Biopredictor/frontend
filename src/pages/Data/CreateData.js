@@ -117,6 +117,8 @@ function CreateData() {
     // current year
     let year = date_ob.getFullYear();
 
+    let t_time = date_ob.getHours() + ":" + date_ob.getMinutes();
+
     const config = {
         headers: {
             "Content-Type": "application/json",
@@ -179,40 +181,58 @@ function CreateData() {
 
     const handleAddDataFromCSV = (e, value) => {
         e.preventDefault();
-        let data = {
-            "bioprocessID": bid,
-            "placeID": pid,
-            "values": []
-        };
 
-        for (let i = 0; i < CSVData.length; i++){
-            let element = {};
-            element.timestamp = "1111";
-            element.values = CSVData[i];
-            data.values.push(element)
+        let csvKeys = Object.keys(CSVData[0]);
+        let realKeys = [];
+
+        for (let i = 0; i < factors.length; i++) {
+            realKeys.push(factors[i].name);
+        }
+        let canProceed = true;
+
+        for (let i = 0; i < csvKeys.length; i++) {
+            if (!csvKeys.includes(realKeys[i])) {
+                canProceed = false;
+            }
+
         }
 
-        
-        
-        console.log(data);
+        if (canProceed) {
+            let data = {
+                "bioprocessID": bid,
+                "placeID": pid,
+                "values": []
+            };
 
-        try {
-            addData(data).then(() => {
-                setOpen(true)
-                cleanData(factorsObj);
-            });
-        } catch (error) {
-            setTimeout(() => {
+            for (let i = 0; i < CSVData.length; i++) {
+                let element = {};
+                element.timestamp = year + "-" + month + "-" + date + "T" + t_time;
+                element.values = CSVData[i];
+                data.values.push(element)
+            }
+
+            try {
+                addData(data).then(() => {
+                    setOpen(true)
+                    cleanData(factorsObj);
+                });
+            } catch (error) {
                 setTimeout(() => {
-                    setOpen(false)
-                    setError("");
-                }, 2000);
-            }, 5000);
-            setOpen(true)
-            return setError("Authentication failed!");
+                    setTimeout(() => {
+                        setOpen(false)
+                        setError("");
+                    }, 2000);
+                }, 5000);
+                setOpen(true)
+                return setError("Authentication failed!");
+            }
+        } else {
+            console.log("Cant upload")
         }
 
-        
+
+
+
     };
 
 
@@ -283,7 +303,7 @@ function CreateData() {
             }
             return i;
         })
-
+        console.log(newInputFields);
         setInputFields(newInputFields);
     }
 
@@ -511,7 +531,8 @@ function CreateData() {
                         ))}
                     </div>
                     {inputFields.map((inputField, index) => (
-                        <div key={inputField.id} hidden={3 * page - index >= 1 && 3 * page - index <= 3 ? false : true}>
+                        3 * page - index >= 1 && 3 * page - index <= 3 &&
+                        <div key={inputField.id}>
                             <Box sx={{
                                 display: 'flex',
                                 justifyContent: 'center'
@@ -523,6 +544,7 @@ function CreateData() {
                                     defaultValue={year + "-" + month + "-" + date}
                                     variant="outlined"
                                     size="small"
+                                    value={inputField.fecha}
                                     onChange={event => handleChangeInput(inputField.id, event)}
                                 />
                             </Box>
@@ -537,6 +559,7 @@ function CreateData() {
                                     defaultValue={"00:00"}
                                     size="small"
                                     variant="outlined"
+                                    value={inputField.hora}
                                     onChange={event => handleChangeInput(inputField.id, event)}
                                 />
                             </Box>
@@ -552,6 +575,7 @@ function CreateData() {
                                             label=""
                                             size="small"
                                             variant="outlined"
+                                            value={inputField[factor.name]}
                                             onChange={event => handleChangeInput(inputField.id, event)}
                                         />
                                         : inputFields[index][factor.name] === ""
@@ -668,11 +692,11 @@ function CreateData() {
                 <br />
                 <br />
                 <PageHeader
-                        title={"Subir archivo CSV"}
-                        subTitle={"Ingresar información a la base de datos con un archivo CSV."}
-                        icon={<FileUploadIcon fontSize="large" color='primary'
-                        />}
-                    />
+                    title={"Subir archivo CSV"}
+                    subTitle={"Ingresar información a la base de datos con un archivo CSV."}
+                    icon={<FileUploadIcon fontSize="large" color='primary'
+                    />}
+                />
                 <Box style={{ width: "90%" }}>
 
                     <FileManager setCSVData={setCSVData} />
@@ -682,11 +706,7 @@ function CreateData() {
                         onClick={handleAddDataFromCSV}
                     />
                 </Box>
-                
-                
             </form>
-            
-
             <Card
                 sx={{
                     maxWidth: 300,
@@ -703,7 +723,6 @@ function CreateData() {
                     image={image}
                     alt=""
                 />
-                
             </Card>
         </Container>
     );
