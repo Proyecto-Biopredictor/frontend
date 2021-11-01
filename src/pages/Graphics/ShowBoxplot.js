@@ -5,7 +5,7 @@ import { BoxPlotChart } from '@sgratzl/chartjs-chart-boxplot';
 
 export default function ShowBoxplot() {
 
-    let json = require('../../test.json');
+    let json = {humedad: [], temperatura: []}//require('../../test.json');
 
     const data = {
         // define label tree
