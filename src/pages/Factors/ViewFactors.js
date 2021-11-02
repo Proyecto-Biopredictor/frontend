@@ -27,6 +27,8 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import ButtonBase from '@material-ui/core/ButtonBase';
 import axios from "axios";
+import { CSVLink } from "react-csv"
+import DownloadIcon from '@mui/icons-material/Download';
 
 const useStyles = makeStyles((theme) => ({
     table: {
@@ -70,6 +72,15 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: 'white',
         padding: 8
     },
+    csvContainer: {
+        fontSize: 20,
+        background: '#8ade8f',
+
+    },
+    iconContainer: {
+        color: 'white',
+        textDecoration: 'none',
+    }
 }));
 
 
@@ -151,6 +162,19 @@ export default function ViewFactors() {
         getAllFactors();
     }
 
+    const headers = [
+        { label: 'id', key: 'id' },
+        { label: 'Nombre', key: 'name' },
+        { label: 'Dependiente', key: 'isDependent' },        
+        { label: 'Tipo', key: 'type' },
+    ]
+
+    const csvReport = {
+        filename: 'Factors.csv',
+        headers: headers,
+        data: factors
+    }
+
     return (
         <div className={classes.root}>
             <CssBaseline />
@@ -181,11 +205,11 @@ export default function ViewFactors() {
 
             <PageHeader
                 title="Información sobre los factores"
-                subTitle = "Factores asociados a este bioproceso, necesarios para la predicción"
+                subTitle="Factores asociados a este bioproceso, necesarios para la predicción"
                 icon={<InfoIcon fontSize="large"
                 />}
-                />
-            
+            />
+
             <Grid
                 container
                 direction="row"
@@ -238,6 +262,19 @@ export default function ViewFactors() {
             </Collapse>
             <Paper className={classes.table}>
                 <TableContainer >
+                    <Grid
+                        container
+                        direction="row"
+                        className={classes.csvContainer}
+                    >
+                        <Tooltip title="Exportar bioprocesos">
+                            <div className={classes.iconContainer}>
+                                <CSVLink {...csvReport} style={{ color: 'white', marginLeft: '10px' }}>
+                                    <DownloadIcon fontSize={'large'} />
+                                </CSVLink>
+                            </div>
+                        </Tooltip>
+                    </Grid>
                     <Table stickyHeader aria-label="sticky table" className={classes.container}>
                         <TableHead>
                             <TableRow className={classes.thead}>
@@ -271,9 +308,9 @@ export default function ViewFactors() {
                                                 <Button color="primary" variant="contained" style={{ marginRight: 10 }} component={Link} to={`/factor/update/${factor._id}`}><ModeEditIcon /></Button>
                                             </Tooltip>
                                             <Tooltip title="Eliminar">
-                                            <Button color="secondary" variant="contained" onClick={() => {
-                                                setOpenDialog(true); setFactorId(factor._id); console.log(factor._id);
-                                            }}><DeleteIcon /></Button>
+                                                <Button color="secondary" variant="contained" onClick={() => {
+                                                    setOpenDialog(true); setFactorId(factor._id); console.log(factor._id);
+                                                }}><DeleteIcon /></Button>
                                             </Tooltip>
                                         </Grid>
                                     </TableCell>

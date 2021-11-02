@@ -25,6 +25,8 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import { deletePlace } from '../../services/placeService';
 import Controls from "../../components/controls/Controls";
+import { CSVLink } from "react-csv"
+import DownloadIcon from '@mui/icons-material/Download';
 
 const useStyles = makeStyles((theme) => ({
     table: {
@@ -73,6 +75,15 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: 'white',
         padding: 8
     },
+    csvContainer: {
+        fontSize: 20,
+        background: '#8ade8f',
+
+    },
+    iconContainer: {
+        color: 'white',
+        textDecoration: 'none',
+    }
 
 }));
 
@@ -118,6 +129,19 @@ export default function ViewPlace() {
         setOpenDialog(false);
     }
 
+    const headers = [
+        { label: 'id', key: 'id' },
+        { label: 'Nombre', key: 'name' },
+        { label: 'Latitud', key: 'latitude' },
+        { label: 'Longitud', key: 'longitude' },
+    ]
+
+    const csvReport = {
+        filename: 'Places.csv',
+        headers: headers,
+        data: places
+    }
+
     const config = {
         headers: {
             "Content-Type": "application/json",
@@ -130,7 +154,7 @@ export default function ViewPlace() {
             const places = await axios.get(
                 "https://backend-ic7841.herokuapp.com/api/private/place",
                 config
-            );            
+            );
             wrapValues(places.data.places);
         } catch (error) {
             setTimeout(() => {
@@ -148,10 +172,10 @@ export default function ViewPlace() {
     }, []);
 
     const deletePlaceData = async () => {
-        try{
+        try {
             await deletePlace(placeId);
             getAllPlaces();
-        }catch(error){
+        } catch (error) {
             setOpen(true);
             setError(error.message);
             setTimeout(function () {
@@ -159,7 +183,7 @@ export default function ViewPlace() {
                 setError("");
             }, 3000);
         }
-        
+
     }
 
     return (
@@ -196,7 +220,7 @@ export default function ViewPlace() {
                 icon={<InfoIcon fontSize="large"
                 />}
             />
-           
+
 
             <Grid
                 container
@@ -211,10 +235,10 @@ export default function ViewPlace() {
 
                     </Box>
                     <Box textAlign='center'>
-                        <Controls.Button color="primary" variant="contained" component={Link} to={`/place/create/`} text="Crear lugar"/>
+                        <Controls.Button color="primary" variant="contained" component={Link} to={`/place/create/`} text="Crear lugar" />
                     </Box>
                 </Paper>
-                
+
             </Grid>
 
             <div className={classes.placeholderLoading} hidden={!loading}>
@@ -227,7 +251,7 @@ export default function ViewPlace() {
                 >
                     <CircularProgress />
                 </Fade>
-                
+
             </div>
             <Collapse in={open}>
                 <Alert
@@ -252,6 +276,19 @@ export default function ViewPlace() {
             </Collapse>
             <Paper className={classes.table}>
                 <TableContainer >
+                    <Grid
+                        container
+                        direction="row"
+                        className={classes.csvContainer}
+                    >
+                        <Tooltip title="Exportar lugares">
+                            <div className={classes.iconContainer}>
+                                <CSVLink {...csvReport} style={{ color: 'white', marginLeft: '10px' }}>
+                                    <DownloadIcon fontSize={'large'} />
+                                </CSVLink>
+                            </div>
+                        </Tooltip>
+                    </Grid>
                     <Table stickyHeader aria-label="sticky table" className={classes.container}>
                         <TableHead>
                             <TableRow className={classes.thead}>
@@ -277,7 +314,7 @@ export default function ViewPlace() {
                                             <Tooltip title="Editar">
                                                 <Button color="primary" variant="contained" style={{ marginRight: 10 }} component={Link} to={`/place/update/${place._id}`}><ModeEditIcon /></Button>
                                             </Tooltip>
-                                            <Tooltip title="Información">                                        
+                                            <Tooltip title="Información">
                                                 <Button className={classes.button} variant="contained" style={{ marginRight: 10 }} component={Link} to={`/place/show/${place._id}`}><InfoIcon /></Button>
                                             </Tooltip>
                                             <Tooltip title="Eliminar">

@@ -23,9 +23,9 @@ import Typography from '@mui/material/Typography';
 import axios from "axios";
 import AlertMessage from '../../components/AlertMessage';
 import { CSVLink } from "react-csv"
-import { jsonToCSV, CSVDownloader } from 'react-papaparse'
 import DownloadIcon from '@mui/icons-material/Download';
 import Download from '@mui/icons-material/Download';
+import { jsonToCSV, CSVDownloader } from 'react-papaparse'
 
 const useStyles = makeStyles((theme) => ({
     table: {
@@ -276,7 +276,7 @@ export default function ViewBioprocess() {
                         direction="row"
                         className={classes.csvContainer}
                     >
-                        <Tooltip title="Exportar bioproceso">
+                        <Tooltip title="Exportar bioprocesos">
                             <div className={classes.iconContainer}>
                                 <CSVLink {...csvReport} style={{color:'white', marginLeft: '10px'}}> 
                                     <DownloadIcon fontSize={'large'} />

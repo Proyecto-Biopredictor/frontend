@@ -30,7 +30,9 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import ViewFactors from '../Factors/ViewFactors';
 import defaultImg from '../../assets/img/defaultImg.jpeg'
-import {ScrollToTop} from '../../components/ScrollToTop'
+import { ScrollToTop } from '../../components/ScrollToTop'
+import { CSVDownloader } from 'react-papaparse'
+import DownloadIcon from '@mui/icons-material/Download';
 
 const useStyles = makeStyles(theme => ({
   cardContainer: {
@@ -78,10 +80,10 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     textAlign: 'center'
   },
-  horizmenu:{
+  horizmenu: {
     display: 'inline-block'
   },
-  textLeft:{
+  textLeft: {
     marginLeft: '0',
     paddingLeft: '0'
   }
@@ -119,6 +121,7 @@ const cleanPlace = {
 export default function ShowBioprocesses() {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [toExport, setExport] = useState([]);
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -156,13 +159,23 @@ export default function ShowBioprocesses() {
       Authorization: `Bearer ${localStorage.getItem("authToken")}`,
     },
   };
-  
+
 
   const getBioprocess = async () => {
     try {
       setLoading(true);
       let response = await axios.get(`https://backend-ic7841.herokuapp.com/api/private/bioprocess/${id}`, config);
       setBioprocess(response.data.bioprocess);
+      let data = response.data.bioprocess
+      setExport([
+        {id: data.id,
+        name: data.name,
+        description: data.description,
+        isTimeSeries: data.isTimeSeries,
+        type: data.type,
+        places: data.places.length?data.places:"N/A",
+        factors: data.factors.length?data.factors:"N/A",
+    }])
       setLoading(false);
     } catch (error) {
       setTimeout(() => {
@@ -223,10 +236,10 @@ export default function ShowBioprocesses() {
 
   const getPicturePlace = async (place) => {
     try {
-      if(place){
+      if (place) {
         let response = await axios.get(`https://backend-ic7841.herokuapp.com/api/private/placePicture/${place.id}`, config);
         setImage(response.data.place.image);
-      }else{
+      } else {
         setImage("");
       }
     } catch (error) {
@@ -368,8 +381,8 @@ export default function ShowBioprocesses() {
   return (
 
     <div className={classes.root}>
-      
-      <div className={classes.placeholder} hidden={!loading} style={{width:"90%"}}>
+
+      <div className={classes.placeholder} hidden={!loading} style={{ width: "90%" }}>
         <Fade
           in={loading}
           style={{
@@ -390,37 +403,53 @@ export default function ShowBioprocesses() {
       </div>
 
       <Grid item>
-        <Controls.Button variant="text" text="Información de lugares" className={classes.textLeft} href="#lugares"/>
-        <Controls.Button variant="text" text="Asociar lugar" className={classes.textLeft} href="#asociar"/>
-        <Controls.Button variant="text" text="Información de factores" className={classes.textLeft} href="#factores"/>
+        <Controls.Button variant="text" text="Información de lugares" className={classes.textLeft} href="#lugares" />
+        <Controls.Button variant="text" text="Asociar lugar" className={classes.textLeft} href="#asociar" />
+        <Controls.Button variant="text" text="Información de factores" className={classes.textLeft} href="#factores" />
+      </Grid>
+      <Grid
+        container
+        direction="row"
+      >
+        <Tooltip title="Exportar bioproceso">
+          <div className={classes.iconContainer}>
+            <CSVDownloader
+              data={toExport}
+              filename={'bioprocess'}
+              config={{}}
+            >
+              <DownloadIcon fontSize={'medium'} color={'success'} />
+            </CSVDownloader>
+          </div>
+        </Tooltip>
       </Grid>
       <PageHeader
         title="Información detallada sobre un bioproceso"
-        subTitle = "Se mostrará también los lugares y factores asociados"
+        subTitle="Se mostrará también los lugares y factores asociados"
         icon={<InfoIcon fontSize="large"
         />}
       />
-      <br id="lugares"/>
+      <br id="lugares" />
       <Grid
         container
         direction="row"
         justifyContent="center"
         alignItems="center"
-        style={{width:"90%"}}
+        style={{ width: "90%" }}
       >
         <Card className={classes.cardContainer}>
 
           <CardMedia
             className={classes.media}
-            image={image? image:defaultImg}
+            image={image ? image : defaultImg}
             title=""
           />
           <CardContent>
             <Typography gutterBottom variant="h5" component="h2">
-              {name?name:'Nombre'}
+              {name ? name : 'Nombre'}
             </Typography>
             <Typography variant="subtitle1" color="textSecondary" component="p">
-              {description?description:'Descripción'}
+              {description ? description : 'Descripción'}
             </Typography>
           </CardContent>
 
@@ -445,7 +474,7 @@ export default function ShowBioprocesses() {
         title="Lugares asociados al bioproceso"
         subTitle="Se muestran todos los lugares asociados a este bioproceso"
         icon={<PlaceIcon fontSize="large"
-        
+
         />}
       />
 
@@ -499,11 +528,11 @@ export default function ShowBioprocesses() {
                             </Button>
                           </Tooltip>
                           <Tooltip title="Agregar datos">
-                          <Button color="primary" variant="contained" style={{ marginRight: 10 }} component={Link} to={`/data/add/${id}/${place._id}`}>
-                            <AddIcon />
-                          </Button>
+                            <Button color="primary" variant="contained" style={{ marginRight: 10 }} component={Link} to={`/data/add/${id}/${place._id}`}>
+                              <AddIcon />
+                            </Button>
                           </Tooltip>
-                          
+
                         </Grid>
                       </TableCell>
                     </TableRow>
@@ -529,7 +558,7 @@ export default function ShowBioprocesses() {
           </Typography>
         </div>
       </div>
-      <br id="asociar"/>
+      <br id="asociar" />
       <br />
       <PageHeader
         title="Asociar lugar a bioproceso"
@@ -561,7 +590,7 @@ export default function ShowBioprocesses() {
             onChange={(event, newValue) => {
               getPicturePlace(newValue);
               setPlaceValue(newValue);
-              
+
             }}
             className={classes.center}
             id="combo-box-places"
@@ -578,7 +607,7 @@ export default function ShowBioprocesses() {
                 setPlaceValue('');
               }
               else
-                setIsEmpty(false);                
+                setIsEmpty(false);
             }}
           />
 
@@ -670,7 +699,7 @@ export default function ShowBioprocesses() {
 
               <CardMedia
                 className={classes.media}
-                image={placeImage?placeImage:defaultImg}
+                image={placeImage ? placeImage : defaultImg}
                 title=""
               />
               <CardContent>
@@ -726,8 +755,8 @@ export default function ShowBioprocesses() {
       <div id='factores'>
         <ViewFactors id={id} />
       </div>
-      <ScrollToTop showBelow={150}/>
-        
+      <ScrollToTop showBelow={150} />
+
       <br />
       <br />
       <br />
