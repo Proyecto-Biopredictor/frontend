@@ -24,7 +24,7 @@ import ViewUsers from './pages/User/ViewUsers';
 import Profile from './pages/User/Profile'
 import Predictor from './pages/Predictor/Predictor';
 import UploadCSV from './pages/Data/UploadCSV';
-import ShowBoxplot from './pages/Graphics/ShowBoxplot';
+import ShowGraphics from './pages/Graphics/ShowGraphics';
 
 const theme = createTheme({
   palette: {
@@ -193,7 +193,7 @@ function App() {
             <RequireAuth exact path='/boxplot/'>
               <Header />
               <SideMenu />
-              <ShowBoxplot />
+              <ShowGraphics />
             </RequireAuth>
 
             <Redirect to="/login" />
