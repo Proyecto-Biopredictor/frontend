@@ -34,6 +34,9 @@ import Collapse from '@mui/material/Collapse';
 import CloseIcon from '@mui/icons-material/Close';
 import Alert from '@mui/material/Alert';
 import { getBase64 } from '../../services/getFileService';
+import { CSVDownloader } from 'react-papaparse'
+import DownloadIcon from '@mui/icons-material/Download';
+import Grid from '@material-ui/core/Grid'
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -133,6 +136,7 @@ function ViewData() {
     const [open, setOpen] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
     const [inputEdit, setInputEdit] = useState({});
+    const [toExport, setExport] = useState([]);
     const editMessage = "¿Desea actualizar este registro?";
     const deleteMessage = "¿Desea eliminar este registro?";
     const editMessage_2 = "";
@@ -175,6 +179,16 @@ function ViewData() {
         }
     }
 
+    function beautifyCSV(data) {
+        let dataExport = {};
+        for (const singleData in data) {
+            delete data[singleData].edit;
+            dataExport[`data${singleData}`] = Object.entries(data[singleData]);
+        }
+        console.log(dataExport);
+        setExport([dataExport]);
+    }
+
     async function getAllData() {
         try {
             const response = await axios.get(
@@ -183,6 +197,7 @@ function ViewData() {
             );
 
             let parse = parseData(response.data.records);
+            beautifyCSV(parse);
             setInputFields(parse);
 
             let con = parse.length;
@@ -225,6 +240,8 @@ function ViewData() {
             );
         })
     };
+
+
 
     const updateRecord = async _ => {
         let data = await getEditor();
@@ -426,6 +443,22 @@ function ViewData() {
                 icon={<InfoIcon fontSize="Large"
                 />}
             />
+            <Grid
+                container
+                direction="row"
+            >
+                <Tooltip title="Exportar datos">
+                    <div className={classes.iconContainer}>
+                        <CSVDownloader
+                            data={toExport}
+                            filename={'data'}
+                            config={{}}
+                        >
+                            <DownloadIcon fontSize={'medium'} color={'success'} />
+                        </CSVDownloader>
+                    </div>
+                </Tooltip>
+            </Grid>
             <div className={classes.placeholder} hidden={!loading}>
                 <Fade
                     in={loading}

@@ -145,11 +145,14 @@ export default function ShowBioprocesses() {
 
   const classes = useStyles();
   const { id } = useParams();
-  useEffect(() => {
+  useEffect( async() => {
     let unmounted = false;
-    getBioprocess();
-    getPlacesBio();
-    getFilteredPlaces();
+    setLoading(true);
+    await getBioprocess();
+    await getPlacesBio();
+    await getFilteredPlaces();
+    await beautifyCSV();
+    setLoading(false);
     return () => { unmounted = true; };
   }, []);
 
@@ -160,23 +163,53 @@ export default function ShowBioprocesses() {
     },
   };
 
+  async function beautifyFactors(){
+    const response = await axios.get(
+      `https://backend-ic7841.herokuapp.com/api/private/factorbioprocess/${id}`,
+      config
+    );
+    let factorsExport = {};
+    const factors = response.data.factors;
+    for (const factor in factors){
+      delete factors[factor]._id;
+      delete factors[factor].__v;
+      delete factors[factor].bioprocessID;
+      factorsExport[`factor${factor}`] = Object.entries(factors[factor]);
+    }
+    return factorsExport;
+  }
+
+  function beautifyPlaces(){
+    let placesExport = {};
+    for (const place in placesBio) {
+      delete placesBio[place]._id;
+      delete placesBio[place].__v;
+      delete placesBio[place].bioprocesses;
+      placesExport[`place${place}`] = Object.entries(placesBio[place]);
+    }
+    return placesExport;
+  }
+
+  async function beautifyCSV(){
+    const factors = await beautifyFactors();
+    const places = beautifyPlaces();
+    let toExport = {
+      id: bioprocess.id,
+      name: bioprocess.name,
+      description: bioprocess.description,
+      isTimeSeries: bioprocess.isTimeSeries,
+      type: bioprocess.type,
+    }
+    toExport = Object.assign(toExport,places);
+    toExport = Object.assign(toExport,factors);
+    setExport([toExport]);
+  }
 
   const getBioprocess = async () => {
     try {
-      setLoading(true);
+      
       let response = await axios.get(`https://backend-ic7841.herokuapp.com/api/private/bioprocess/${id}`, config);
       setBioprocess(response.data.bioprocess);
-      let data = response.data.bioprocess
-      setExport([
-        {id: data.id,
-        name: data.name,
-        description: data.description,
-        isTimeSeries: data.isTimeSeries,
-        type: data.type,
-        places: data.places.length?data.places:"N/A",
-        factors: data.factors.length?data.factors:"N/A",
-    }])
-      setLoading(false);
     } catch (error) {
       setTimeout(() => {
         setOpen(false);
@@ -186,14 +219,12 @@ export default function ShowBioprocesses() {
 
       }, 5000);
       setOpen(true);
-      setLoading(false);
       return setError("Authentication failed!");
     }
   }
 
   const getPlacesBio = async () => {
     try {
-      setLoading(true);
       let response = await axios.get(`https://backend-ic7841.herokuapp.com/api/private/placebioprocess/${id}`, config);
       setPlacesBio(response.data.places);
       setLoading(false);
@@ -208,14 +239,12 @@ export default function ShowBioprocesses() {
 
       }, 5000);
       setOpen(true);
-      setLoading(false);
       return setError("Authentication failed!");
     }
   }
 
   const getFilteredPlaces = async () => {
     try {
-      setLoading(true);
       let response = await axios.get(`https://backend-ic7841.herokuapp.com/api/private/filteredplace/${id}`, config);
       setFilteredPlaces(response.data.places);
     } catch (error) {
@@ -227,7 +256,6 @@ export default function ShowBioprocesses() {
 
       }, 5000);
       setOpen(true);
-      setLoading(false);
       return setError("Authentication failed!");
 
 
@@ -340,6 +368,8 @@ export default function ShowBioprocesses() {
     await getPlacesBio();
     confirmPost();
   }
+
+
 
   const {
     values,
