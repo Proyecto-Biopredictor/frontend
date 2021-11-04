@@ -4,9 +4,9 @@ import Container from '@material-ui/core/Container';
 import ShowBoxplot from './ShowBoxplot';
 import ShowHistogram from './ShowHistogram';
 
-export default function ShowGraphics() {
-    const { error, setError } = useState("");
-    const { data, setData } = useState({});
+function ShowGraphics() {
+    const [error, setError] = useState('');
+    const [data, setData] = useState({});
     const config = {
         headers: {
             "Content-Type": "application/json",
@@ -24,27 +24,26 @@ export default function ShowGraphics() {
         } catch (error) {
             setTimeout(() => {
                 setTimeout(() => {
-                    //setError("");
+                    setError("");
                 }, 2000);
             }, 5000);
-            //return setError("Authentication failed!");
+            return setError("Authentication failed!");
         }
     }
 
     let boxplot;
     useEffect(() => {
         let unmounted = false;
-        getData().then();
+        getData();
         return () => { unmounted = true; };
     }, []);
 
     return (
         <Container>
-            {data !== {} && <div>
-                <ShowHistogram data={data} />
-                <ShowBoxplot data={data} />
-            </div>
-            }
+            <ShowHistogram data={data} />
+            <ShowBoxplot data={data} />
         </Container>
     )
 }
+
+export default ShowGraphics;
