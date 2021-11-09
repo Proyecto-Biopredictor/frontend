@@ -6,7 +6,7 @@ import ShowHistogram from './ShowHistogram';
 
 function ShowGraphics() {
     const [error, setError] = useState('');
-    const [data, setData] = useState({});
+    const [data, setData] = useState({"isFull": false});
     const config = {
         headers: {
             "Content-Type": "application/json",
@@ -20,6 +20,7 @@ function ShowGraphics() {
                 `https://backend-ic7841.herokuapp.com/api/private/record/num/${"61493deaf82f050016417dd6"}/${"61493ee9f82f050016417e0c"}`,
                 config
             );
+            result.data.isFull = true;
             setData(result.data);
         } catch (error) {
             setTimeout(() => {
@@ -42,7 +43,7 @@ function ShowGraphics() {
         <Container>
 
             <ShowHistogram data={data} />
-            {data && <div>
+            {data.isFull && <div>
                 <ShowBoxplot data={data} />
             </div>}
         </Container>
