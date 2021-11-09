@@ -40,8 +40,11 @@ function ShowGraphics() {
 
     return (
         <Container>
+
             <ShowHistogram data={data} />
-            <ShowBoxplot data={data} />
+            {data && <div>
+                <ShowBoxplot data={data} />
+            </div>}
         </Container>
     )
 }

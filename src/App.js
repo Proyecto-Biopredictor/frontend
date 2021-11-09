@@ -190,7 +190,7 @@ function App() {
               <UploadCSV />
             </RequireAuth>
 
-            <RequireAuth exact path='/boxplot/'>
+            <RequireAuth exact path='/graphics/'>
               <Header />
               <SideMenu />
               <ShowGraphics />

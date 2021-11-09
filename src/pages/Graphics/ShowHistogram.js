@@ -4,6 +4,8 @@ import { Bar } from 'react-chartjs-2'
 export default function ShowHistogram(props){
     const {data} = props;
 
+    const info = {"variable": "", "data": []};
+
     const options = {
         scales: {
             x: {
@@ -19,7 +21,7 @@ export default function ShowHistogram(props){
     const config = {
         labels: labels,
         datasets: [{
-            label: 'My First Dataset',
+            label: 'Humedad',
             data: [
                 { x: 1, y: 10 },
                 { x: 3, y: 20 },

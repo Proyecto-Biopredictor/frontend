@@ -8,7 +8,7 @@ const useCanvas = data => {
         // define label tree
         labels: ["Variables"],
         datasets: [{
-            label: 'Humedad 1',
+            label: 'Humedad',
             backgroundColor: 'rgba(255,0,0,0.5)',
             borderColor: 'red',
             borderWidth: 1,
