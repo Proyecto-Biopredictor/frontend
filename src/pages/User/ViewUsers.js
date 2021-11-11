@@ -24,6 +24,7 @@ import AlertMessage from '../../components/AlertMessage';
 import ModeEditIcon from '@mui/icons-material/ModeEdit';
 import Modal from '@mui/material/Modal';
 import AssignPermission from './AssignPermission';
+import Test from './Test';
 
 const useStyles = makeStyles((theme) => ({
     table: {
@@ -203,14 +204,8 @@ export default function ViewUsers() {
                 />}
             />
 
-            <Modal
-                open={openUser}
-                onClose={handleCloseUser}
-                aria-labelledby="modal-modal-title"
-                aria-describedby="modal-modal-description"
-            >
-                <AssignPermission userId = {userId}/>
-            </Modal>
+            <AssignPermission userId = {userId} openM={openUser}
+            onClose={handleCloseUser}/>
 
 
             <Grid

@@ -1,42 +1,72 @@
-import React, {useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import { Grid, } from '@material-ui/core';
 import Controls from "../../components/controls/Controls";
 import { useForm, Form } from '../../components/useForm';
 import { Paper, makeStyles, Box } from '@material-ui/core';
 import AlertMessage from '../../components/AlertMessage';
 import { getUsers } from '../../services/userService';
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import TextField from '@material-ui/core/TextField';
+import Modal from '@mui/material/Modal';
 
 const useStyles = makeStyles(theme => ({
-    root: {
-        '& .MuiFormControl-root': {
-            width: '80%',
-            margin: theme.spacing(1)
-        }
-    }
+    pageContent: {
+        margin: '50px 0 0 0',
+        width: '90%',
+        padding: theme.spacing(3)
+    },
+    divContent: {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        minWidth: 400,
+    },
+    placeholder: {
+        height: 40,
+        textAlign: 'center',
+        width: '90%'
+    },
+    sizeAvatar: {
+        height: "150px",
+        width: "150px",
+        marginBottom: "25px",
+    },
+    imageButton: {
+        marginBottom: "25px"
+    },
+    center: {
+        display: 'flex',
+        textAlign: 'center'
+      },
 }))
 
 const initialValues = {
-    roles: ''
+    roles: "",
 }
 
 export default function AssignPermission(props) {
+    const inputRef = React.createRef();
     const classes = useStyles();
     const [loading, setLoading] = React.useState(false);
     const [open, setOpen] = React.useState(false);
     const [error, setError] = useState('');
-    const {userId, ...other} = props;
+    const [isEmpty, setIsEmpty] = React.useState(true);
+    const { userId, openM, onClose, ...other } = props;
     const validate = (fieldValues = values) => {
-        console.log("e");
     }
-
     useEffect(async () => {
         let unmounted = false;
-        if (userId){
+        if (userId && openM) {
             let response = await getUsers(userId);
             setValues(response.data.user.roles);
+        }else{
+            setIsEmpty(true);
+            setRoleValue(undefined);
+            setInputValue('');
         }
         return () => { unmounted = true; };
-    }, []);
+    }, [userId, openM]);
 
     const {
         values,
@@ -47,9 +77,139 @@ export default function AssignPermission(props) {
         resetForm
     } = useForm(initialValues, false, validate);
 
+    const handleSubmit = e => {
+        setOpen(true);
+        try{
+            if(isEmpty){
+                throw new Error("Por favor seleccione un bioproceso");
+            }else{
+
+            }
+        }catch(error){
+            setTimeout(() => {
+                setOpen(false);
+                setTimeout(() => {
+                    setError("");
+                }, 2000);
+
+            }, 5000);
+            setLoading(false);
+            return setError(error.message);
+        }
+
+        
+    }
+
+    const [roleValue, setRoleValue] = React.useState(values[0]);
+    const [inputValue, setInputValue] = React.useState('');
+
     return (
-        <div>
-            
-        </div>
+        <Modal
+        open={openM}
+        onClose={onClose}            
+        >
+            <div className={classes.divContent}>
+                <Paper className={classes.pageContent}>
+                <AlertMessage errorMessage={error} successMessage={"Se ha asignado los permisos!"} openMessage={open} />
+                    <Form >
+
+
+                        <Grid
+                            container
+                            direction="row"
+                            justifyContent="center"
+                            alignItems="center"
+                            style={{ marginTop: '20px' }}
+                        >
+                            
+                            <Autocomplete
+                                value={roleValue}
+                                onChange={(event, newValue) => {
+                                    if(newValue){
+                                        setRoleValue(newValue);
+                                    }
+                                }}
+                                className={classes.center}
+                                id="combo-box-places"
+                                options={values}
+                                getOptionLabel={(option) => option.bioprocessName}
+                                style={{ width: 300, justifyContent: "center" }}
+                                renderInput={(params) => <TextField {...params} label="Bioprocesos" variant="outlined" />}
+                                inputValue={inputValue}
+                                onInputChange={(event, newInputValue) => {
+                                    setInputValue(newInputValue);
+                                    if (newInputValue === '') {
+                                        setIsEmpty(true);
+                                    }
+                                    else
+                                        setIsEmpty(false);
+                                }}
+                            />
+                            
+                        </Grid>
+                        
+                        <Grid
+                            container
+                            direction="row"
+                            justifyContent="center"
+                            alignItems="center"
+                        >
+                            <Controls.Checkbox
+                                    name="export"
+                                    label="Exportar CSV"
+                                    value={roleValue? roleValue.export:false}
+                                    onChange={handleInputChange}
+                                    
+                            />
+                        </Grid>
+
+                        <Grid
+                            container
+                            direction="row"
+                            justifyContent="center"
+                            alignItems="center"
+                        >
+                            <Controls.Checkbox
+                                    name="export"
+                                    label="Editar factores"
+                                    value={roleValue? roleValue.editFactor:false}
+                                    onChange={handleInputChange}
+                                    
+                            />
+                        </Grid>
+
+                        <Grid
+                            container
+                            direction="row"
+                            justifyContent="center"
+                            alignItems="center"
+                        >
+                            <Controls.Checkbox
+                                    name="export"
+                                    label="Editar datos"
+                                    value={roleValue? roleValue.editData:false}
+                                    onChange={handleInputChange}
+                                    
+                            />
+                        </Grid>
+
+                        <Grid
+                            container
+                            direction="row"
+                            justifyContent="center"
+                            alignItems="center"
+                            style={{ marginTop: '20px' }}
+                        >
+                            <div>
+                                <Controls.Button
+                                    text="Guardar"
+                                    onClick = {handleSubmit}
+                                />
+                            </div>
+                        </Grid>
+                    </Form>
+                </Paper>
+            </div>
+        </Modal>
     )
 }

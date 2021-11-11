@@ -6,7 +6,7 @@ import CloseIcon from '@mui/icons-material/Close';
 
 
 export default function AlertMessage(props) {
-    const {errorMessage, successMessage, openMessage } = props;
+    let {errorMessage, successMessage, openMessage } = props;
     return (
         <Collapse in={openMessage}>
         <Alert
