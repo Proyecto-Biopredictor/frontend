@@ -37,6 +37,7 @@ import { getBase64 } from '../../services/getFileService';
 import { CSVDownloader } from 'react-papaparse'
 import DownloadIcon from '@mui/icons-material/Download';
 import Grid from '@material-ui/core/Grid'
+import { getPermissions } from '../../services/userService';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -137,6 +138,8 @@ function ViewData() {
     const [isEdit, setIsEdit] = useState(false);
     const [inputEdit, setInputEdit] = useState({});
     const [toExport, setExport] = useState([]);
+    const userType = localStorage.getItem("type");
+    const [role, setRole] = useState([]);
     const editMessage = "¿Desea actualizar este registro?";
     const deleteMessage = "¿Desea eliminar este registro?";
     const editMessage_2 = "";
@@ -241,8 +244,12 @@ function ViewData() {
         }
     }
 
-    useEffect(() => {
+    useEffect(async () => {
         let unmounted = false;
+        if(userType === "user"){
+            const response = await getPermissions(localStorage.getItem("uid"), bid);
+            setRole(response?.data?.role);
+        }
         getAllFactors().then(getAllData());
         return () => { unmounted = true; };
     }, []);
@@ -432,22 +439,24 @@ function ViewData() {
                 icon={<InfoIcon fontSize="Large"
                 />}
             />
-            <Grid
-                container
-                direction="row"
-            >
-                <Tooltip title="Exportar datos">
-                    <div className={classes.iconContainer}>
-                        <CSVDownloader
-                            data={inputFields}
-                            filename={'data'}
-                            config={{}}
-                        >
-                            <DownloadIcon fontSize={'medium'} color={'success'} />
-                        </CSVDownloader>
-                    </div>
-                </Tooltip>
-            </Grid>
+            <div hidden={role? !role.export : false}>
+                <Grid
+                    container
+                    direction="row"
+                >
+                    <Tooltip title="Exportar datos">
+                        <div className={classes.iconContainer}>
+                            <CSVDownloader
+                                data={inputFields}
+                                filename={'data'}
+                                config={{}}
+                            >
+                                <DownloadIcon fontSize={'medium'} color={'success'} />
+                            </CSVDownloader>
+                        </div>
+                    </Tooltip>
+                </Grid>
+            </div>
             <div className={classes.placeholder} hidden={!loading}>
                 <Fade
                     in={loading}
@@ -726,35 +735,38 @@ function ViewData() {
                                     }
                                 </Box>
                             ))}
-                            <Box sx={{
-                                display: 'flex',
-                                justifyContent: 'center'
-                            }}>
+                            <div hidden={role?!role.editData:false}>
+                                <Box
+                                    sx={{
+                                    display: 'flex',
+                                    justifyContent: 'center'
+                                }}>
 
-                                {!inputFields[index]["edit"]
-                                    ? <Tooltip title="Editar registro">
-                                        <IconButton onClick={() => isEditing(inputField.id, true)}>
-                                            <Avatar className={classes.edit}>
-                                                <ModeEditIcon />
+                                    {!inputFields[index]["edit"]
+                                        ? <Tooltip title="Editar registro">
+                                            <IconButton onClick={() => isEditing(inputField.id, true)}>
+                                                <Avatar className={classes.edit}>
+                                                    <ModeEditIcon />
+                                                </Avatar>
+                                            </IconButton>
+                                        </Tooltip>
+                                        : <Tooltip title="Guardar datos">
+                                            <IconButton onClick={() => prepareEdit(inputField)}>
+                                                <Avatar className={classes.save}>
+                                                    <Check />
+                                                </Avatar>
+                                            </IconButton>
+                                        </Tooltip>
+                                    }
+                                    <Tooltip title="Eliminar registro">
+                                        <IconButton onClick={() => prepareDelete(inputField.id)}>
+                                            <Avatar className={classes.remove}>
+                                                <DeleteIcon />
                                             </Avatar>
                                         </IconButton>
                                     </Tooltip>
-                                    : <Tooltip title="Guardar datos">
-                                        <IconButton onClick={() => prepareEdit(inputField)}>
-                                            <Avatar className={classes.save}>
-                                                <Check />
-                                            </Avatar>
-                                        </IconButton>
-                                    </Tooltip>
-                                }
-                                <Tooltip title="Eliminar registro">
-                                    <IconButton onClick={() => prepareDelete(inputField.id)}>
-                                        <Avatar className={classes.remove}>
-                                            <DeleteIcon />
-                                        </Avatar>
-                                    </IconButton>
-                                </Tooltip>
-                            </Box>
+                                </Box>
+                            </div>
                         </div>
                     ))}
                 </Box>

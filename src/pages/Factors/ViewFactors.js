@@ -90,10 +90,11 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 
 
 
-export default function ViewFactors() {
+export default function ViewFactors(props) {
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
     const { id } = useParams();
+    const {role, ...other} = props;
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -155,7 +156,7 @@ export default function ViewFactors() {
         let unmounted = false;
         getAllFactors();
         return () => { unmounted = true; };
-    }, []);
+    }, [role]);
 
     const deleteFactorData = async () => {
         await deleteFactor(factorId, id);
@@ -262,19 +263,21 @@ export default function ViewFactors() {
             </Collapse>
             <Paper className={classes.table}>
                 <TableContainer >
-                    <Grid
-                        container
-                        direction="row"
-                        className={classes.csvContainer}
-                    >
-                        <Tooltip title="Exportar bioprocesos">
-                            <div className={classes.iconContainer}>
-                                <CSVLink {...csvReport} style={{ color: 'white', marginLeft: '10px' }}>
-                                    <DownloadIcon fontSize={'large'} />
-                                </CSVLink>
-                            </div>
-                        </Tooltip>
-                    </Grid>
+                    <div hidden={role? !role.export : false}>
+                        <Grid
+                            container
+                            direction="row"
+                            className={classes.csvContainer}
+                        >
+                            <Tooltip title="Exportar factores">
+                                <div className={classes.iconContainer}>
+                                    <CSVLink {...csvReport} style={{ color: 'white', marginLeft: '10px' }}>
+                                        <DownloadIcon fontSize={'large'} />
+                                    </CSVLink>
+                                </div>
+                            </Tooltip>
+                        </Grid>
+                    </div>
                     <Table stickyHeader aria-label="sticky table" className={classes.container}>
                         <TableHead>
                             <TableRow className={classes.thead}>
@@ -297,22 +300,24 @@ export default function ViewFactors() {
                                         />
                                     </TableCell>
                                     <TableCell>{factor.type === 'value' ? 'Valor' : 'Imagen'}</TableCell>
-                                    <TableCell>
-                                        <Grid
-                                            container
-                                            direction="row"
-                                            justifyContent="center"
-                                            alignItems="center"
-                                        >
-                                            <Tooltip title="Editar">
-                                                <Button color="primary" variant="contained" style={{ marginRight: 10 }} component={Link} to={`/factor/update/${factor._id}`}><ModeEditIcon /></Button>
-                                            </Tooltip>
-                                            <Tooltip title="Eliminar">
-                                                <Button color="secondary" variant="contained" onClick={() => {
-                                                    setOpenDialog(true); setFactorId(factor._id); console.log(factor._id);
-                                                }}><DeleteIcon /></Button>
-                                            </Tooltip>
-                                        </Grid>
+                                    <TableCell >
+                                        <div hidden={role? !role.export : false}>
+                                            <Grid
+                                                container
+                                                direction="row"
+                                                justifyContent="center"
+                                                alignItems="center"
+                                            >
+                                                <Tooltip title="Editar">
+                                                    <Button color="primary" variant="contained" style={{ marginRight: 10 }} component={Link} to={`/factor/update/${factor._id}`}><ModeEditIcon /></Button>
+                                                </Tooltip>
+                                                <Tooltip title="Eliminar">
+                                                    <Button color="secondary" variant="contained" onClick={() => {
+                                                        setOpenDialog(true); setFactorId(factor._id); console.log(factor._id);
+                                                    }}><DeleteIcon /></Button>
+                                                </Tooltip>
+                                            </Grid>
+                                        </div>
                                     </TableCell>
                                 </TableRow>
                             ))}

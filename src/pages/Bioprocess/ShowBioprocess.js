@@ -33,6 +33,7 @@ import defaultImg from '../../assets/img/defaultImg.jpeg'
 import { ScrollToTop } from '../../components/ScrollToTop'
 import { CSVDownloader } from 'react-papaparse'
 import DownloadIcon from '@mui/icons-material/Download';
+import { getPermissions } from '../../services/userService';
 
 const useStyles = makeStyles(theme => ({
   cardContainer: {
@@ -142,13 +143,19 @@ export default function ShowBioprocesses() {
   const [isPlacesBio, setIsPlacesBio] = React.useState(false);
   const [isEmpty, setIsEmpty] = React.useState(true);
   const [placeImage, setImage] = React.useState("");
-
+  const userType = localStorage.getItem("type");
+  const [role, setRole] = useState();
   const classes = useStyles();
   const { id } = useParams();
   useEffect( async() => {
+
     let unmounted = false;
     setLoading(true);
-    
+    if(userType === "user"){
+      const response = await getPermissions(localStorage.getItem("uid"), id);
+      console.log(response?.data?.role);
+      setRole(response?.data?.role);
+    }
     await getPlacesBio();
     await getFilteredPlaces();
     await getBioprocess();
@@ -446,7 +453,7 @@ export default function ShowBioprocesses() {
         direction="row"
       >
         <Tooltip title="Exportar bioproceso">
-          <div className={classes.iconContainer}>
+          <div className={classes.iconContainer} hidden={role? !role.export : false}>
             <CSVDownloader
               data={toExport}
               filename={name}
@@ -792,7 +799,7 @@ export default function ShowBioprocesses() {
         <br />
       </div>
       <div id='factores'>
-        <ViewFactors id={id} />
+        <ViewFactors id={id} role={role}/>
       </div>
       <ScrollToTop showBelow={150} />
 

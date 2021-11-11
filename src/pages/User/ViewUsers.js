@@ -267,9 +267,11 @@ export default function ViewUsers() {
                                             justifyContent="center"
                                             alignItems="center"
                                         >
-                                            {/* <Tooltip title="Asignar permiso">
-                                                <Button color="primary" variant="contained" style={{ marginRight: 10 }} onClick={() => {setUserId(user._id); handleOpenUser()}}><ModeEditIcon /></Button>
-                                            </Tooltip> */}
+                                            <div hidden = {user.type === 'admin' ? true : false}>
+                                                <Tooltip title="Asignar permiso">
+                                                    <Button color="primary" variant="contained" style={{ marginRight: 10 }} onClick={() => {setUserId(user._id); handleOpenUser()}}><ModeEditIcon /></Button>
+                                                </Tooltip>
+                                            </div>
                                             <Tooltip title="Información">
                                                 <Button className={classes.button} variant="contained" style={{ marginRight: 10 }} component={Link} to={`/profile/${user._id}`}><InfoIcon /></Button>
                                             </Tooltip>

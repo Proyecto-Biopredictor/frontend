@@ -8,6 +8,7 @@ import { getUsers } from '../../services/userService';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
 import Modal from '@mui/material/Modal';
+import axios from "axios";
 
 const useStyles = makeStyles(theme => ({
     pageContent: {
@@ -77,15 +78,42 @@ export default function AssignPermission(props) {
         resetForm
     } = useForm(initialValues, false, validate);
 
-    const handleSubmit = e => {
-        setOpen(true);
+    function fixRoles (role){
+        for (const roleIndex in values) {
+            if (values[roleIndex].bioprocessId === role.bioprocessId){
+                let temp = values;
+                temp[roleIndex] = role;   
+                return temp;             
+            }
+        }
+    }
+
+    const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+        },
+      };
+
+    const handleSubmit = async (e) => {
+        
         try{
             if(isEmpty){
                 throw new Error("Por favor seleccione un bioproceso");
             }else{
-
+                setOpen(true);
+                const newRoles = fixRoles(roleValue);
+                const response = await axios.post(
+                    `https://backend-ic7841.herokuapp.com/api/private/userRole/${userId}`, {roles: newRoles}, config
+                );
+                let responseGet = await getUsers(userId);
+                setValues(responseGet.data.user.roles);
+                setTimeout(() =>{
+                    setOpen(false);
+                }, 2000)
             }
         }catch(error){
+            setOpen(true);
             setTimeout(() => {
                 setOpen(false);
                 setTimeout(() => {
@@ -99,6 +127,8 @@ export default function AssignPermission(props) {
 
         
     }
+
+
 
     const [roleValue, setRoleValue] = React.useState(values[0]);
     const [inputValue, setInputValue] = React.useState('');
@@ -140,6 +170,7 @@ export default function AssignPermission(props) {
                                     setInputValue(newInputValue);
                                     if (newInputValue === '') {
                                         setIsEmpty(true);
+                                        setRoleValue(undefined);
                                     }
                                     else
                                         setIsEmpty(false);
@@ -158,7 +189,9 @@ export default function AssignPermission(props) {
                                     name="export"
                                     label="Exportar CSV"
                                     value={roleValue? roleValue.export:false}
-                                    onChange={handleInputChange}
+                                    onChange={() => {
+                                        if (roleValue) setRoleValue({...roleValue, ["export"]: !roleValue.export})}
+                                    }
                                     
                             />
                         </Grid>
@@ -170,10 +203,12 @@ export default function AssignPermission(props) {
                             alignItems="center"
                         >
                             <Controls.Checkbox
-                                    name="export"
+                                    name="editFactor"
                                     label="Editar factores"
                                     value={roleValue? roleValue.editFactor:false}
-                                    onChange={handleInputChange}
+                                    onChange={() => {
+                                        if (roleValue) setRoleValue({...roleValue, ["editFactor"]: !roleValue.editFactor})}
+                                    }
                                     
                             />
                         </Grid>
@@ -185,10 +220,12 @@ export default function AssignPermission(props) {
                             alignItems="center"
                         >
                             <Controls.Checkbox
-                                    name="export"
+                                    name="editData"
                                     label="Editar datos"
                                     value={roleValue? roleValue.editData:false}
-                                    onChange={handleInputChange}
+                                    onChange={() => {
+                                        if (roleValue) setRoleValue({...roleValue, ["editData"]: !roleValue.editData})}
+                                    }
                                     
                             />
                         </Grid>

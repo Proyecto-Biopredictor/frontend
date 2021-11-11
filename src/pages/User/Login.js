@@ -60,6 +60,7 @@ const Login = ({ history }) => {
       localStorage.setItem("authToken", data.token);
       localStorage.setItem("uid", data.id);
       localStorage.setItem("image", data.image);
+      localStorage.setItem("type", data.type);
       window.location.reload();
       history.push("/");
     } catch (error) {
