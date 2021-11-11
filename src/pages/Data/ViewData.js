@@ -179,16 +179,6 @@ function ViewData() {
         }
     }
 
-    function beautifyCSV(data) {
-        let dataExport = {};
-        for (const singleData in data) {
-            delete data[singleData].edit;
-            dataExport[`data${singleData}`] = Object.entries(data[singleData]);
-        }
-        console.log(dataExport);
-        setExport([dataExport]);
-    }
-
     async function getAllData() {
         try {
             const response = await axios.get(
@@ -197,7 +187,6 @@ function ViewData() {
             );
 
             let parse = parseData(response.data.records);
-            beautifyCSV(parse);
             setInputFields(parse);
 
             let con = parse.length;
@@ -450,7 +439,7 @@ function ViewData() {
                 <Tooltip title="Exportar datos">
                     <div className={classes.iconContainer}>
                         <CSVDownloader
-                            data={toExport}
+                            data={inputFields}
                             filename={'data'}
                             config={{}}
                         >
