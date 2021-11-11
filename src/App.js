@@ -190,7 +190,7 @@ function App() {
               <UploadCSV />
             </RequireAuth>
 
-            <RequireAuth exact path='/graphics/'>
+            <RequireAuth exact path='/graphics/:bid/:pid'>
               <Header />
               <SideMenu />
               <ShowGraphics />

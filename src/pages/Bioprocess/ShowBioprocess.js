@@ -16,6 +16,7 @@ import Controls from "../../components/controls/Controls";
 import axios from "axios";
 import AddIcon from '@mui/icons-material/Add';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import BarChartIcon from '@mui/icons-material/BarChart';
 import PlaceIcon from '@material-ui/icons/Place';
 import { Link } from 'react-router-dom';
 import TableContainer from '@material-ui/core/TableContainer';
@@ -25,7 +26,6 @@ import { useForm, Form } from '../../components/useForm';
 import Tooltip from '@mui/material/Tooltip';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import TextField from '@material-ui/core/TextField';
-import Divider from '@material-ui/core/Divider';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import ViewFactors from '../Factors/ViewFactors';
@@ -554,6 +554,11 @@ export default function ShowBioprocesses() {
                           <Tooltip title="Información">
                             <Button className={classes.button} variant="contained" style={{ marginRight: 10 }} component={Link} to={`/place/show/${place._id}`}>
                               <InfoIcon />
+                            </Button>
+                          </Tooltip>
+                          <Tooltip title="Graficar datos">
+                            <Button color="secondary" variant="contained" style={{ marginRight: 10 }} component={Link} to={`/graphics/${id}/${place._id}`}>
+                              <BarChartIcon />
                             </Button>
                           </Tooltip>
                           <Tooltip title="Mostrar datos">
