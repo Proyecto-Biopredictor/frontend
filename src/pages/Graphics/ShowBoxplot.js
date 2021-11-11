@@ -33,7 +33,7 @@ const useCanvas = data => {
         const canvas = canvasRef.current;
         const context = canvas.getContext('2d');
         let boxplot = new BoxPlotChart(context, { data: config });
-        console.log(canvasRef);
+
     }, []);
 
     return canvasRef;

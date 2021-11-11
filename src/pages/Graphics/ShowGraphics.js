@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom';
 import axios from "axios";
 import Container from '@material-ui/core/Container';
 import ShowBoxplot from './ShowBoxplot';
 import ShowHistogram from './ShowHistogram';
 
 function ShowGraphics() {
+    const { pid, bid } = useParams();
     const [error, setError] = useState('');
     const [data, setData] = useState({"isFull": false});
     const config = {
@@ -17,7 +19,7 @@ function ShowGraphics() {
     async function getData() {
         try {
             const result = await axios.get(
-                `https://backend-ic7841.herokuapp.com/api/private/record/num/${"61493deaf82f050016417dd6"}/${"61493ee9f82f050016417e0c"}`,
+                `https://backend-ic7841.herokuapp.com/api/private/record/num/${bid}/${pid}`,
                 config
             );
             result.data.isFull = true;
