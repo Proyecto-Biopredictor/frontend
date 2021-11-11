@@ -449,7 +449,7 @@ export default function ShowBioprocesses() {
           <div className={classes.iconContainer}>
             <CSVDownloader
               data={toExport}
-              filename={toExport[0].name}
+              filename={name}
               config={{}}
             >
               <DownloadIcon fontSize={'medium'} color={'success'} />

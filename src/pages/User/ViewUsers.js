@@ -21,6 +21,9 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import axios from "axios";
 import AlertMessage from '../../components/AlertMessage';
+import ModeEditIcon from '@mui/icons-material/ModeEdit';
+import Modal from '@mui/material/Modal';
+import AssignPermission from './AssignPermission';
 
 const useStyles = makeStyles((theme) => ({
     table: {
@@ -98,6 +101,9 @@ export default function ViewUsers() {
     const [error, setError] = useState('');
     const [loading, setLoading] = React.useState(true);
     const [userId, setUserId] = React.useState('');;
+    const [openUser, setOpenUser] = React.useState(false);
+    const handleOpenUser = () => setOpenUser(true);
+    const handleCloseUser = () => setOpenUser(false);
 
     const classes = useStyles();
 
@@ -197,6 +203,15 @@ export default function ViewUsers() {
                 />}
             />
 
+            <Modal
+                open={openUser}
+                onClose={handleCloseUser}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+            >
+                <AssignPermission userId = {userId}/>
+            </Modal>
+
 
             <Grid
                 container
@@ -211,7 +226,7 @@ export default function ViewUsers() {
 
                     </Box>
                     <Box textAlign='center'>
-                        <Controls.Button color="primary" variant="contained" component={Link} to={`/register/`} text="Crear usuario"/>
+                        <Controls.Button color="primary" variant="contained" component={Link} to={`/register/`} text="Crear usuario" />
                     </Box>
 
                 </Paper>
@@ -257,6 +272,9 @@ export default function ViewUsers() {
                                             justifyContent="center"
                                             alignItems="center"
                                         >
+                                            <Tooltip title="Asignar permiso">
+                                                <Button color="primary" variant="contained" style={{ marginRight: 10 }} onClick={() => {setUserId(user._id); handleOpenUser()}}><ModeEditIcon /></Button>
+                                            </Tooltip>
                                             <Tooltip title="Información">
                                                 <Button className={classes.button} variant="contained" style={{ marginRight: 10 }} component={Link} to={`/profile/${user._id}`}><InfoIcon /></Button>
                                             </Tooltip>
