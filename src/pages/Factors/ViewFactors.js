@@ -301,7 +301,7 @@ export default function ViewFactors(props) {
                                     </TableCell>
                                     <TableCell>{factor.type === 'value' ? 'Valor' : 'Imagen'}</TableCell>
                                     <TableCell >
-                                        <div hidden={role? !role.export : false}>
+                                        <div hidden={role? !role.editFactor : false}>
                                             <Grid
                                                 container
                                                 direction="row"
