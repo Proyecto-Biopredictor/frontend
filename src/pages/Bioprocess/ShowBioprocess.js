@@ -148,10 +148,10 @@ export default function ShowBioprocesses() {
   useEffect( async() => {
     let unmounted = false;
     setLoading(true);
-    await getBioprocess();
+    
     await getPlacesBio();
     await getFilteredPlaces();
-    await beautifyCSV();
+    await getBioprocess();
     setLoading(false);
     return () => { unmounted = true; };
   }, []);
@@ -190,15 +190,16 @@ export default function ShowBioprocesses() {
     return placesExport;
   }
 
-  async function beautifyCSV(){
+  async function beautifyCSV(bioprocessP){
+
     const factors = await beautifyFactors();
     const places = beautifyPlaces();
     let toExport = {
-      id: bioprocess.id,
-      name: bioprocess.name,
-      description: bioprocess.description,
-      isTimeSeries: bioprocess.isTimeSeries,
-      type: bioprocess.type,
+      id: bioprocessP.id,
+      name: bioprocessP.name,
+      description: bioprocessP.description,
+      isTimeSeries: bioprocessP.isTimeSeries,
+      type: bioprocessP.type,
     }
     toExport = Object.assign(toExport,places);
     toExport = Object.assign(toExport,factors);
@@ -210,6 +211,9 @@ export default function ShowBioprocesses() {
       
       let response = await axios.get(`https://backend-ic7841.herokuapp.com/api/private/bioprocess/${id}`, config);
       setBioprocess(response.data.bioprocess);
+      let data = response.data.bioprocess;
+      
+      beautifyCSV(data);
     } catch (error) {
       setTimeout(() => {
         setOpen(false);
@@ -445,7 +449,7 @@ export default function ShowBioprocesses() {
           <div className={classes.iconContainer}>
             <CSVDownloader
               data={toExport}
-              filename={'bioprocess'}
+              filename={name}
               config={{}}
             >
               <DownloadIcon fontSize={'medium'} color={'success'} />

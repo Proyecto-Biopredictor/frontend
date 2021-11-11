@@ -113,7 +113,6 @@ export default function ShowBioprocesses() {
                 description: data.description,
                 latitude: data.latitude,
                 longitude: data.longitude,
-                bioprocesses: data.bioprocesses.length?data.bioprocesses:"N/A",
             }])
             
             setLoading(false);
@@ -185,7 +184,7 @@ export default function ShowBioprocesses() {
                             <span>Longitud: </span>
                             {longitude ? longitude : ''}
                         </Typography>
-                        <Tooltip title="Exportar lugar">
+                        {/* <Tooltip title="Exportar lugar">
                             <div className={classes.iconContainer}>
                                 <CSVDownloader
                                     data={toExport}
@@ -195,7 +194,7 @@ export default function ShowBioprocesses() {
                                     <DownloadIcon fontSize={'medium'} color={'success'} />
                                 </CSVDownloader>
                             </div>
-                        </Tooltip>
+                        </Tooltip> */}
                     </CardActions>
                 </Card>
             </Grid>

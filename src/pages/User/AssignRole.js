@@ -124,7 +124,11 @@ const AssignRole = ({ }) => {
         try {
             const role = {
                 bioprocessId: bioprocessValue.id,
-                role: roleType
+                bioprocessName: bioprocessValue.name,
+                role: roleType,
+                editFactor: true,
+                editData: true,
+                export: true
             }
             userValue.roles.push(role);
             const { data } = await axios.patch(
