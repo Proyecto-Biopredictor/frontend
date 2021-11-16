@@ -16,7 +16,16 @@ export default function ShowHistogram(props) {
         plugins: {
             tooltip: {
                 callbacks: {
-                    
+                    title: function() {},
+                    label: function(context) {
+                        let index = context.dataIndex;
+                        let dataset = context.dataset.data;
+                        let interval = "Intervalo: [";
+                        interval += dataset[index - 1].x;
+                        interval += ", " + context.parsed.x + "[";
+                        let frequence = "Frecuencia: " + context.parsed.y;
+                        return [interval, frequence];
+                    }
                 }
             }
         }
