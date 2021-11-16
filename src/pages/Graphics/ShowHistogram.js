@@ -12,30 +12,48 @@ export default function ShowHistogram(props) {
             y: {
                 beginAtZero: true
             }
+        },
+        plugins: {
+            tooltip: {
+                callbacks: {
+                    
+                }
+            }
         }
     };
 
-    const labels = ["red"];
     let configs = [];
 
     for (let key in data) {
-        if(key === "isFull"){
+        if (key === "isFull") {
             break;
         }
         let dataVariable = Array.from(data[key]);
-        dataVariable.sort(function(a, b){return a-b});
+        dataVariable.sort(function (a, b) { return a - b });
+
+        let classes = Math.sqrt(dataVariable.length);
+        let amplitude = 0;
+        let range = 0;
 
         let parseData = [];
-
-        while(dataVariable.length > 0){
-            let count = dataVariable.reduce((a, v) => (v === dataVariable[0] ? a + 1 : a), 0);
-
-            parseData.push({x: dataVariable[0], y: count});
-
-            dataVariable.splice(0, count);
+        if (classes > 0) {
+            range = dataVariable.at(-1) - dataVariable.at(0);
+            if (classes !== 0) {
+                amplitude = Math.round(range / classes);
+            }
+            let interval = Math.round(dataVariable[0] + amplitude);
+            for (let index = 0; index < dataVariable.length; index++) {
+                let frequence = 0;
+                while (dataVariable[index] < interval) {
+                    frequence++;
+                    index++;
+                }
+                parseData.push({ x: interval, y: frequence });
+                interval += amplitude;
+            }
         }
+
         const config = {
-            labels: labels,
             datasets: [{
                 label: key,
                 data: parseData,
