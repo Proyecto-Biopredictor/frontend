@@ -8,7 +8,7 @@ import { useForm, Form } from '../../components/useForm';
 import AlertMessage from '../../components/AlertMessage';
 import Grid from '@mui/material/Grid'
 import Controls from "../../components/controls/Controls";
-
+import logo from '../../assets/img/logo.png'
 
 const initialValues = {
   email: '',
@@ -22,7 +22,7 @@ const useStyles = makeStyles(theme => ({
     padding: theme.spacing(3)
   },
   inputField: {
-    width:"100%",
+    width: "100%",
     marginBottom: "20px"
   },
   placeholder: {
@@ -54,7 +54,7 @@ const Login = ({ history }) => {
 
     try {
       const { data } = await axios.post(
-        "https://backend-ic7841.herokuapp.com/api/auth/login",values,config
+        "https://backend-ic7841.herokuapp.com/api/auth/login", values, config
       );
 
       localStorage.setItem("authToken", data.token);
@@ -77,7 +77,7 @@ const Login = ({ history }) => {
   const loginHandler = async (e) => {
     e.preventDefault();
     setLoading(true);
-    if(validate())
+    if (validate())
       await login();
     setLoading(false);
   };
@@ -106,8 +106,17 @@ const Login = ({ history }) => {
   } = useForm(initialValues, true, validate);
 
   return (
-    <div>
-      <div className="login-screen">
+    <div className="login-content">
+      <Grid
+          container
+          direction="row"
+          justifyContent="center"
+          alignItems="center"
+        >
+          <img className="login-image" src={logo}></img>
+        </Grid>
+
+      <div className="login-screen">       
 
         {/* <form onSubmit={loginHandler} className="login-screen__form"> */}
         <Form onSubmit={loginHandler} className="login-screen__form">
@@ -124,7 +133,8 @@ const Login = ({ history }) => {
             <br />
           </div>
           <h3 className="login-screen__title">Inicia Sesión</h3>
-          <AlertMessage errorMessage={error} successMessage={""} openMessage={open}/>
+          <AlertMessage errorMessage={error} successMessage={""} openMessage={open} />
+
           <Grid item xs={12}>
             <Controls.Input
               name="email"
