@@ -4,11 +4,16 @@ import axios from "axios";
 import Container from '@material-ui/core/Container';
 import ShowBoxplot from './ShowBoxplot';
 import ShowHistogram from './ShowHistogram';
+import ToggleButton from '@mui/material/ToggleButton';
+import Grid from '@mui/material/Grid';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 
 function ShowGraphics() {
     const { pid, bid } = useParams();
     const [error, setError] = useState('');
-    const [data, setData] = useState({"isFull": false});
+    const [data, setData] = useState({ "_isFull": 0 });
+    const [graphics, setGraphics] = React.useState('histogram');
+
     const config = {
         headers: {
             "Content-Type": "application/json",
@@ -22,7 +27,6 @@ function ShowGraphics() {
                 `https://backend-ic7841.herokuapp.com/api/private/record/num/${bid}/${pid}`,
                 config
             );
-            result.data.isFull = true;
             setData(result.data);
         } catch (error) {
             setTimeout(() => {
@@ -34,20 +38,41 @@ function ShowGraphics() {
         }
     }
 
-    let boxplot;
     useEffect(() => {
         let unmounted = false;
         getData();
         return () => { unmounted = true; };
     }, []);
 
+    const handleChange = (event, newGraphics) => {
+        setGraphics(newGraphics);
+    };
+
     return (
         <Container>
-
-            <ShowHistogram data={data} />
-            {data.isFull && <div>
-                <ShowBoxplot data={data} />
-            </div>}
+            <Grid
+                container
+                alignItems="center"
+                justifyContent="center"
+            >
+                <ToggleButtonGroup
+                    color="primary"
+                    value={graphics}
+                    exclusive
+                    onChange={handleChange}
+                >
+                    <ToggleButton value="histogram">Histogramas</ToggleButton>
+                    <ToggleButton value="boxplot">Boxplots</ToggleButton>
+                </ToggleButtonGroup>
+            </Grid>
+            <div>
+                {graphics === "histogram" ?
+                    <ShowHistogram data={data} />
+                    : !data.hasOwnProperty("_isFull") && <div>
+                        <ShowBoxplot data={data} />
+                    </div>
+                }
+            </div>
         </Container>
     )
 }

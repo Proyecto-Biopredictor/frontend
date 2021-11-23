@@ -1,52 +1,48 @@
 import React, { useRef, useState, useEffect } from 'react'
 import { BoxPlotChart } from '@sgratzl/chartjs-chart-boxplot';
 
-const useCanvas = data => {
-
-    const canvasRef = useRef(null);
-    const config = {
-        // define label tree
-        labels: ["Variables"],
-        datasets: [{
-            label: 'Humedad',
-            backgroundColor: 'rgba(255,0,0,0.5)',
-            borderColor: 'red',
-            borderWidth: 1,
-            outlierColor: '#ffffff',
-            padding: 10,
-            itemRadius: 0,
-            data: [data["Humedad"]]
-        }, {
-            label: 'Temperatura',
-            backgroundColor: 'pink',
-            borderColor: 'purple',
-            borderWidth: 1,
-            outlierColor: '#ffffff',
-            padding: 10,
-            itemRadius: 0,
-            data: [data["Temperatura"]]
-        }]
-    };
-
-    useEffect(() => {
-
-        const canvas = canvasRef.current;
-        const context = canvas.getContext('2d');
-        let boxplot = new BoxPlotChart(context, { data: config });
-
-    }, []);
-
-    return canvasRef;
-}
-
 
 function ShowBoxplot(props) {
     const { data } = props;
-    
-    const canvasRef = useCanvas(data);
+    let configs = [];
+    let indexes = [];
+    let index = 0;
+    for (let key in data) {
+        indexes.push(index);
+        index++;
+        const config = {
+            // define label tree
+            labels: [""],
+            datasets: [{
+                label: key,
+                backgroundColor: 'rgba(255,0,0,0.5)',
+                borderColor: 'red',
+                borderWidth: 1,
+                outlierColor: '#ffffff',
+                padding: 5,
+                itemRadius: 0,
+                data: [data[key]]
+            }]
+        };
+        configs.push(config);
+    }
+
+
+    useEffect(() => {
+        indexes.forEach(i => {
+            const context = document.getElementById("canvas" + i).getContext("2d");
+            let boxplot = new BoxPlotChart(context, { data: configs[i] });
+        })
+
+    }, []);
 
     return (
-        <canvas ref={canvasRef}/>
+        <div>
+            {indexes.map((i) => (
+                <canvas id={"canvas" + i} />
+            ))}
+        </div>
+
     )
 }
 

@@ -34,9 +34,6 @@ export default function ShowHistogram(props) {
     let configs = [];
 
     for (let key in data) {
-        if (key === "isFull") {
-            break;
-        }
         let dataVariable = Array.from(data[key]);
         dataVariable.sort(function (a, b) { return a - b });
 
@@ -46,14 +43,14 @@ export default function ShowHistogram(props) {
 
         let parseData = [];
         if (classes > 0) {
-            range = parseFloat(dataVariable.at(-1)) - parseFloat(dataVariable.at(0));
+            range = dataVariable.at(-1) - dataVariable.at(0);
             if (classes !== 0) {
                 amplitude = Math.round(range / classes);
             }
-            let interval = Math.round(parseFloat(dataVariable.at(0)) + amplitude);
+            let interval = Math.round(dataVariable.at(0) + amplitude);
             for (let index = 0; index < dataVariable.length; index++) {
                 let frequence = 0;
-                while (parseFloat(dataVariable[index]) < interval) {
+                while (dataVariable[index] < interval) {
                     frequence++;
                     index++;
                 }
