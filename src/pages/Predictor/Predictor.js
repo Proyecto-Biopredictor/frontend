@@ -12,6 +12,7 @@ import { Link } from 'react-router-dom';
 import EcoIcon from '@material-ui/icons/Eco';
 import LocationOnIcon from '@material-ui/icons/LocationOn';
 import CalendarTodayIcon from '@mui/icons-material/CalendarToday';
+import { addPrediction } from '../../services/predictionService';
 
 const useStyles = makeStyles((theme) => ({
     table: {
@@ -74,10 +75,26 @@ export default function Predictor() {
     const [placeName, setPlaceName] = useState("");
 
     useEffect(() => {
-        console.log("maci");
         setPlace("");
         setPlaceName("");
     }, [bioprocess]);
+
+    const handleSubmit = async e => {
+        e.preventDefault()
+        if(initialDate !== "" && finalDate !== "" && bioprocess !== "" && place !== ""){
+            let values = {
+                bioprocessID: bioprocess,
+                placeID: place,
+                initialDate: initialDate,
+                finalDate: finalDate
+            }
+            console.log(values);
+            addPrediction(values);
+
+        }else{
+            console.log("Error: Falta al menos un dato")
+        }
+    }
 
     return (
         <div>
@@ -158,7 +175,7 @@ export default function Predictor() {
                         <Typography variant="h6" align="center">FechaFinal: {finalDate}</Typography>
                     </Box>
                     <Box textAlign='center'>
-                        <Controls.Button color="primary" variant="contained" component={Link} to={`/bioprocess/create/`} text="Realizar Predicción"/>
+                        <Controls.Button color="primary" variant="contained" onClick={handleSubmit} text="Realizar Predicción"/>
                     </Box>
 
                 </Paper>
