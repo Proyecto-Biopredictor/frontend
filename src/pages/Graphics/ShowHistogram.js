@@ -21,8 +21,9 @@ export default function ShowHistogram(props) {
                         let index = context.dataIndex;
                         let dataset = context.dataset.data;
                         let interval = "Intervalo: [";
-                        interval +=  index > 0 ? dataset[index - 1].x : " ";
-                        interval += ", " + context.parsed.x + "[";
+                        interval += context.parsed.x + ", ";
+                        interval += index < dataset.length - 1 ? dataset[index + 1].x : " ";
+                        interval += "[";
                         let frequence = "Frecuencia: " + context.parsed.y;
                         return [interval, frequence];
                     }
@@ -47,15 +48,16 @@ export default function ShowHistogram(props) {
             if (classes !== 0) {
                 amplitude = Math.round(range / classes);
             }
-            let interval = Math.round(dataVariable.at(0) + amplitude);
+            let interval = Math.round(dataVariable.at(0));
             for (let index = 0; index < dataVariable.length; index++) {
                 let frequence = 0;
+                let previous = interval;
+                interval += amplitude
                 while (dataVariable[index] < interval) {
                     frequence++;
                     index++;
                 }
-                parseData.push({ x: interval, y: frequence });
-                interval += amplitude;
+                parseData.push({ x: previous, y: frequence });
             }
         }
 
