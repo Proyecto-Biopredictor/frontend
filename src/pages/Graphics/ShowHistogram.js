@@ -16,8 +16,8 @@ export default function ShowHistogram(props) {
         plugins: {
             tooltip: {
                 callbacks: {
-                    title: function() {},
-                    label: function(context) {
+                    title: function () { },
+                    label: function (context) {
                         let index = context.dataIndex;
                         let dataset = context.dataset.data;
                         let interval = "Intervalo: [";
@@ -38,18 +38,17 @@ export default function ShowHistogram(props) {
         let dataVariable = Array.from(data[key]);
         dataVariable.sort(function (a, b) { return a - b });
 
-        let classes = Math.sqrt(dataVariable.length);
+        let classes = Math.ceil(Math.sqrt(dataVariable.length));
         let amplitude = 0;
         let range = 0;
 
         let parseData = [];
         if (classes > 0) {
             range = dataVariable.at(-1) - dataVariable.at(0);
-            if (classes !== 0) {
-                amplitude = Math.round(range / classes);
-            }
-            let interval = Math.round(dataVariable.at(0));
-            for (let index = 0; index < dataVariable.length; index++) {
+            amplitude = Math.round(range / classes);
+            let interval = Math.floor(dataVariable.at(0));
+            let index = 0;
+            while (index < dataVariable.length) {
                 let frequence = 0;
                 let previous = interval;
                 interval += amplitude
