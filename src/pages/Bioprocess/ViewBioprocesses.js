@@ -25,7 +25,8 @@ import AlertMessage from '../../components/AlertMessage';
 import { CSVLink } from "react-csv"
 import DownloadIcon from '@mui/icons-material/Download';
 import Download from '@mui/icons-material/Download';
-import { jsonToCSV, CSVDownloader } from 'react-papaparse'
+import { jsonToCSV, CSVDownloader } from 'react-papaparse';
+import {getUsers} from '../../services/userService';
 
 const useStyles = makeStyles((theme) => ({
     table: {
@@ -113,7 +114,8 @@ export default function ViewBioprocess() {
     const [openDialog, setOpenDialog] = React.useState(false);
     const [error, setError] = useState('');
     const [loading, setLoading] = React.useState(true);
-    const [bioprocessId, setBioprocessId] = React.useState('');;
+    const [bioprocessId, setBioprocessId] = React.useState('');
+    const [userId, setUserId] = useState(localStorage.getItem("uid"));
 
     const classes = useStyles();
 

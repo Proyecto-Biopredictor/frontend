@@ -1,7 +1,6 @@
 // withStyles & makeStyles
 
-
-import React from 'react';
+import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -54,12 +53,22 @@ const useStyles = makeStyles((theme) => ({
   
 export default function SideMenu() {
 
+  const [value, setValue] = useState(localStorage.getItem("type"));
+
+  useEffect(() => {
+    console.log(value);
+  }, [value])  
+
 
   const classes = useStyles();
   const history = useHistory();
 
   function moveRoute(route) {
     history.push(route);
+  }
+
+  function test(){
+    const type = localStorage.getItem("type");
   }
 
   return (
@@ -89,7 +98,9 @@ export default function SideMenu() {
             </ListItem>
           </List>
           <Divider />
-          <List>
+          {value === 'admin' &&
+            <div> 
+              <List>
             <ListItem button key={'register'} onClick={() => moveRoute('/register')}>
               <ListItemIcon>{1 % 2 === 0 ? <InboxIcon /> : <PersonAddIcon />}</ListItemIcon>
               <ListItemText primary={'Registrar Usuario'}/>
@@ -104,19 +115,23 @@ export default function SideMenu() {
           </List>
           <Divider />
           <List>
-            <ListItem button key={'lugar'} onClick={() => moveRoute('/place')}>
-              <ListItemIcon>{1 % 2 === 0 ? <InboxIcon /> : <LocationOnIcon />}</ListItemIcon>
-              <ListItemText primary={'Lugares'}/>
-            </ListItem>
-          </List>
-          <Divider />
-          <List>
             <ListItem button key={'usuarios'} onClick={() => moveRoute('/users')}>
               <ListItemIcon>{1 % 2 === 0 ? <InboxIcon /> : <PersonIcon />}</ListItemIcon>
               <ListItemText primary={'Usuarios'}/>
             </ListItem>
           </List>
           <Divider />
+            </div>
+          }
+          
+          <List>
+            <ListItem button key={'lugar'} onClick={() => moveRoute('/place')}>
+              <ListItemIcon>{1 % 2 === 0 ? <InboxIcon /> : <LocationOnIcon />}</ListItemIcon>
+              <ListItemText primary={'Lugares'}/>
+            </ListItem>
+          </List>
+          <Divider />
+          
           <List>
             <ListItem button key={'predictor'} onClick={() => moveRoute('/predictor')}>
               <ListItemIcon>{1 % 2 === 0 ? <InboxIcon /> : <BiotechIcon />}</ListItemIcon>
