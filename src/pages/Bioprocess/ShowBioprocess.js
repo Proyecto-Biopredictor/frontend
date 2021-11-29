@@ -153,7 +153,6 @@ export default function ShowBioprocesses() {
     setLoading(true);
     if(userType === "user"){
       const response = await getPermissions(localStorage.getItem("uid"), id);
-      console.log(response?.data?.role);
       setRole(response?.data?.role);
     }
     await getPlacesBio();
