@@ -27,6 +27,7 @@ import DownloadIcon from '@mui/icons-material/Download';
 import Download from '@mui/icons-material/Download';
 import { jsonToCSV, CSVDownloader } from 'react-papaparse';
 import {getUsers} from '../../services/userService';
+import { version } from 'react-dom/cjs/react-dom.development';
 
 const useStyles = makeStyles((theme) => ({
     table: {
@@ -115,7 +116,7 @@ export default function ViewBioprocess() {
     const [error, setError] = useState('');
     const [loading, setLoading] = React.useState(true);
     const [bioprocessId, setBioprocessId] = React.useState('');
-    const [userId, setUserId] = useState(localStorage.getItem("uid"));
+    const [userData, setUserData] = useState({});
 
     const classes = useStyles();
 
@@ -159,7 +160,37 @@ export default function ViewBioprocess() {
                 "https://backend-ic7841.herokuapp.com/api/private/bioprocess",
                 config
             );
-            wrapValues(bioprocesses.data.bioprocesses);
+            
+            
+            
+            console.log(bioprocesses.data.bioprocesses);
+            const currentUser = await getUsers(localStorage.getItem("uid"));
+            console.log(currentUser.data.user);
+            if(currentUser.data.user.type === "admin"){
+                wrapValues(bioprocesses.data.bioprocesses);
+
+            }else{
+                console.log(currentUser.data.user.roles)
+                let permittedBioprocesses = [];
+
+                currentUser.data.user.roles.forEach(element => {
+                    permittedBioprocesses.push(element.bioprocessId);
+                });
+
+                console.log(permittedBioprocesses);
+
+                let valuesToWrap = [];
+
+                bioprocesses.data.bioprocesses.forEach(element => {
+                    if(permittedBioprocesses.includes(element._id)){
+                        valuesToWrap.push(element);
+                    }
+                });
+
+                wrapValues(valuesToWrap);
+            }
+            
+            
 
 
         } catch (error) {
@@ -170,11 +201,20 @@ export default function ViewBioprocess() {
             }, 5000);
             return setError("Authentication failed!");
         }
+        
+
+        
+
     }
     useEffect(() => {
         let unmounted = false;
         getAllBioprocesses();
+        
+        
+        
         return () => { unmounted = true; };
+        
+
     }, []);
 
     const deleteBioprocessData = async () => {
@@ -239,7 +279,6 @@ export default function ViewBioprocess() {
                 <Paper className={classes.paper} elevation={3}>
                     <Box sx={{ width: 'auto' }} padding>
                         <Typography variant="h6" align="center">¿Se necesita un nuevo bioproceso?</Typography>
-
                     </Box>
                     <Box textAlign='center'>
                         <Controls.Button color="primary" variant="contained" component={Link} to={`/bioprocess/create/`} text="Crear bioproceso" />
