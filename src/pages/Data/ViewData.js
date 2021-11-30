@@ -139,7 +139,7 @@ function ViewData() {
     const [inputEdit, setInputEdit] = useState({});
     const [toExport, setExport] = useState([]);
     const userType = localStorage.getItem("type");
-    const [role, setRole] = useState([]);
+    const [role, setRole] = useState(undefined);
     const editMessage = "¿Desea actualizar este registro?";
     const deleteMessage = "¿Desea eliminar este registro?";
     const editMessage_2 = "";
