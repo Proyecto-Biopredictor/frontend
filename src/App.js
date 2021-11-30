@@ -25,6 +25,7 @@ import Profile from './pages/User/Profile'
 import Predictor from './pages/Predictor/Predictor';
 import UploadCSV from './pages/Data/UploadCSV';
 import ShowGraphics from './pages/Graphics/ShowGraphics';
+import AboutUs from './pages/AboutUs';
 
 const theme = createTheme({
   palette: {
@@ -77,6 +78,8 @@ function App() {
         <Box m={10}></Box>
           
           <Switch>
+            <Route exact path="/about" component={AboutUs}/>
+            
             <RequireAuth exact path='/'>   
               <Header />
               <SideMenu />
