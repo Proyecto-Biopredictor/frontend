@@ -15,6 +15,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import Slide from '@material-ui/core/Slide';
 import Tooltip from '@mui/material/Tooltip';
 import InfoIcon from '@material-ui/icons/Info';
+import LogoutIcon from '@mui/icons-material/Logout';
 import PageHeader from "../../components/PageHeader";
 import TableContainer from '@material-ui/core/TableContainer';
 import TablePagination from '@material-ui/core/TablePagination';
@@ -26,7 +27,7 @@ import { CSVLink } from "react-csv"
 import DownloadIcon from '@mui/icons-material/Download';
 import Download from '@mui/icons-material/Download';
 import { jsonToCSV, CSVDownloader } from 'react-papaparse';
-import {getUsers} from '../../services/userService';
+import {getUsers, editRoles} from '../../services/userService';
 import { version } from 'react-dom/cjs/react-dom.development';
 
 const useStyles = makeStyles((theme) => ({
@@ -116,7 +117,9 @@ export default function ViewBioprocess() {
     const [error, setError] = useState('');
     const [loading, setLoading] = React.useState(true);
     const [bioprocessId, setBioprocessId] = React.useState('');
-    const [userData, setUserData] = useState({});
+    const [openDialogAbandon, setOpenDialogAbandon] = useState(false);
+    const [currentUserRoles, setCurrentUserRoles] = useState({});
+    const [isAdmin, setIsAdmin] = useState(false);
 
     const classes = useStyles();
 
@@ -133,6 +136,15 @@ export default function ViewBioprocess() {
         deleteBioprocessData()
         setOpenDialog(false);
     }
+
+    const handleCloseAbandon = () => {
+        setOpenDialogAbandon(false);
+    };
+
+    const handleAcceptAbandon = () => {
+        abandonBioprocess();
+        setOpenDialogAbandon(false);
+    };
 
     const headers = [
         { label: 'id', key: 'id' },
@@ -161,16 +173,13 @@ export default function ViewBioprocess() {
                 config
             );
             
-            
-            
-            console.log(bioprocesses.data.bioprocesses);
             const currentUser = await getUsers(localStorage.getItem("uid"));
-            console.log(currentUser.data.user);
             if(currentUser.data.user.type === "admin"){
                 wrapValues(bioprocesses.data.bioprocesses);
+                setIsAdmin(true);
 
             }else{
-                console.log(currentUser.data.user.roles)
+                setCurrentUserRoles(currentUser.data.user.roles);
                 let permittedBioprocesses = [];
 
                 currentUser.data.user.roles.forEach(element => {
@@ -233,6 +242,24 @@ export default function ViewBioprocess() {
 
     }
 
+    const abandonBioprocess = async () => {
+        //console.log(currentUserRoles);
+        let newRoles = []
+        currentUserRoles.forEach(element => {
+            if(element.bioprocessId !== bioprocessId){
+                newRoles.push(element);
+            }
+        });
+
+        let newRolesObj = {"roles":newRoles}
+        //TODO
+        
+        editRoles(localStorage.getItem("uid"), newRolesObj);
+        console.log(newRolesObj);
+        console.log(localStorage.getItem("uid"))
+
+    }
+
     return (
         <div className={classes.root}>
             <CssBaseline />
@@ -256,6 +283,30 @@ export default function ViewBioprocess() {
                     </Button>
                     <Button onClick={handleAccept} color="secondary">
                         Eliminar
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            <Dialog
+                open={openDialogAbandon}
+                TransitionComponent={Transition}
+                keepMounted
+                onClose={handleCloseAbandon}
+                aria-labelledby="alert-dialog-slide-title"
+                aria-describedby="alert-dialog-slide-description"
+            >
+                <DialogTitle id="alert-dialog-slide-title">{"¿Desea abandonar este bioproceso?"}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-slide-description">
+                        Esta decisión no es reversible.
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleCloseAbandon} color="primary">
+                        Cancelar
+                    </Button>
+                    <Button onClick={handleAcceptAbandon} color="secondary">
+                        Abandonar
                     </Button>
                 </DialogActions>
             </Dialog>
@@ -362,10 +413,18 @@ export default function ViewBioprocess() {
                                                 <Button className={classes.button} variant="contained" style={{ marginRight: 10 }} component={Link} to={`/bioprocess/show/${bioprocess._id}`}><InfoIcon /></Button>
                                             </Tooltip>
                                             <Tooltip title="Eliminar">
-                                                <Button color="secondary" variant="contained" onClick={() => {
+                                                <Button color="secondary" variant="contained" style={{ marginRight: 10 }}  onClick={() => {
                                                     setOpenDialog(true); setBioprocessId(bioprocess._id);
                                                 }}><DeleteIcon /></Button>
                                             </Tooltip>
+                                            {!isAdmin &&
+                                                <Tooltip title="Abandonar Bioproceso">
+                                                    <Button color="warning" variant="contained" onClick={() => {
+                                                        setOpenDialogAbandon(true); setBioprocessId(bioprocess._id);
+                                                    }}><LogoutIcon /></Button>
+                                                </Tooltip>
+                                            }
+                                            
                                         </Grid>
                                     </TableCell>
                                 </TableRow>

@@ -58,3 +58,11 @@ export const getPermissions = async (uid, bid) => {
         return new TypeError("Authentication failed!");
     }
 }
+
+export const editRoles = async (uid, values) => {
+    try{
+        return await axios.get(`https://backend-ic7841.herokuapp.com/api/private/userRole/${uid}`, values, config);
+    }catch(error) {
+        return new TypeError("Authentication failed!");
+    }
+}
