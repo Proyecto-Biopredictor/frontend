@@ -59,9 +59,9 @@ export const getPermissions = async (uid, bid) => {
     }
 }
 
-export const editRoles = async (uid, values) => {
+export const editRoles = async (uid, newRoles) => {
     try{
-        return await axios.get(`https://backend-ic7841.herokuapp.com/api/private/userRole/${uid}`, values, config);
+        return await axios.post(`https://backend-ic7841.herokuapp.com/api/private/userRole/${uid}`, {"roles": newRoles}, config);
     }catch(error) {
         return new TypeError("Authentication failed!");
     }

@@ -243,7 +243,6 @@ export default function ViewBioprocess() {
     }
 
     const abandonBioprocess = async () => {
-        //console.log(currentUserRoles);
         let newRoles = []
         currentUserRoles.forEach(element => {
             if(element.bioprocessId !== bioprocessId){
@@ -251,13 +250,8 @@ export default function ViewBioprocess() {
             }
         });
 
-        let newRolesObj = {"roles":newRoles}
-        //TODO
-        
-        editRoles(localStorage.getItem("uid"), newRolesObj);
-        console.log(newRolesObj);
-        console.log(localStorage.getItem("uid"))
-
+        editRoles(localStorage.getItem("uid"), newRoles);
+        getAllBioprocesses();
     }
 
     return (
